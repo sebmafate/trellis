@@ -1,0 +1,15 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "trellis",
+  "description": "Trellis: skills and agents that carry a project from idea to shipped software.",
+  "owner": {
+    "name": "Sébastien Ferrand"
+  },
+  "plugins": [
+    {
+      "name": "trellis",
+      "description": "Skills and agents that carry a project from a raw idea to shipped software: incubate, architect, slice, deliver, resume.",
+      "source": "./"
+    }
+  ]
+}
