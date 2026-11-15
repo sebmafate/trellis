@@ -1,3 +1,5 @@
+<img src="assets/icon.svg" width="96" height="96" alt="Trellis icon">
+
 # Trellis
 
 *Français : [README.fr.md](README.fr.md)*
