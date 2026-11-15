@@ -6,7 +6,7 @@
 
 Un plugin [Claude Code](https://claude.com/claude-code) de skills et d'agents qui accompagne un projet de l'idée brute jusqu'au logiciel livré. Il donne au projet une structure pour grandir, sans décider de sa direction.
 
-> Statut : travail en cours (0.3.0). Sous [licence MIT](LICENSE).
+> Statut : travail en cours (0.4.0). Sous [licence MIT](LICENSE).
 
 ## Le principe
 
@@ -26,19 +26,29 @@ Trellis est **strict mais souple** : les skills signalent ce qui manque (pas de 
 | Nom | Type | Phase | État |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **disponible** |
+| `prior-art` | skill | incubation | **disponible** |
+| `devils-advocate` | agent | incubation, conception | **disponible** |
+| `ux` | skill | conception | **disponible** |
 | `architect` | skill | conception | **disponible** |
 | `adr` | skill | conception | **disponible** |
-| `ux` | skill | conception | **disponible** |
+| `spike` | skill | conception | **disponible** |
 | `ui` | skill | conception | **disponible** |
-| `test-strategy` | skill | conception | **disponible** |
-| `slice` | skill | développement | prévu |
-| `deliver` | skill | développement | prévu |
-| `resume` | skill | toutes | prévu |
-| `devils-advocate` | agent | incubation, conception | **disponible** |
 | `design-reviewer` | agent | conception | **disponible** |
-| `verifier` | agent | développement | prévu |
+| `security-reviewer` | agent | conception, publication | **disponible** |
+| `test-strategy` | skill | conception | **disponible** |
+| `bootstrap` | skill | développement | **disponible** |
+| `slice` | skill | développement | **disponible** |
+| `deliver` | skill | développement | **disponible** |
+| `verifier` | agent | développement | **disponible** |
+| `publish` | skill | publication | **disponible** |
+| `resume` | skill | toutes | **disponible** |
+| `change-course` | skill | toutes | **disponible** |
+| `retro` | skill | toutes | **disponible** |
+| `project-overview` | skill | toutes | **disponible** |
+| `coherence-checker` | agent | toutes | **disponible** |
+| `SessionStart` hook | hook | toutes | **disponible** |
 
-Candidats pour plus tard : `change-course`, `project-overview`, `publish`, `retro`, `prior-art`, `spike`, un agent de contrôle de cohérence, un hook `SessionStart`.
+Idées pour plus tard : une phase de maintenance (mises à jour de dépendances, dépréciation), un skill de documentation pour les utilisateurs finaux, un skill de prototype cliquable.
 
 ## Utilisation
 

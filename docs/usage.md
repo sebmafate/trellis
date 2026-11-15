@@ -61,19 +61,29 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | Name | Kind | Phase | Status |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **available** |
+| `prior-art` | skill | incubation | **available** |
+| `devils-advocate` | agent | incubation, design | **available** |
+| `ux` | skill | design | **available** |
 | `architect` | skill | design | **available** |
 | `adr` | skill | design | **available** |
-| `ux` | skill | design | **available** |
+| `spike` | skill | design | **available** |
 | `ui` | skill | design | **available** |
-| `test-strategy` | skill | design | **available** |
-| `slice` | skill | development | planned |
-| `deliver` | skill | development | planned |
-| `resume` | skill | any | planned |
-| `devils-advocate` | agent | incubation, design | **available** |
 | `design-reviewer` | agent | design | **available** |
-| `verifier` | agent | development | planned |
+| `security-reviewer` | agent | design, release | **available** |
+| `test-strategy` | skill | design | **available** |
+| `bootstrap` | skill | development | **available** |
+| `slice` | skill | development | **available** |
+| `deliver` | skill | development | **available** |
+| `verifier` | agent | development | **available** |
+| `publish` | skill | release | **available** |
+| `resume` | skill | any | **available** |
+| `change-course` | skill | any | **available** |
+| `retro` | skill | any | **available** |
+| `project-overview` | skill | any | **available** |
+| `coherence-checker` | agent | any | **available** |
+| `SessionStart` hook | hook | any | **available** |
 
-This page documents what exists. Planned items are described in the [README](../README.md) and will get their own section here when they ship.
+Every item has its own section below, followed by a suggested order of use.
 
 ## 4. Incubate an idea (`incubate`)
 
@@ -214,19 +224,116 @@ The design counterpart of `devils-advocate`: an independent, **read-only** agent
 
 It checks journeys against requirements, missing states, step counts, error messages, vocabulary consistency, and, for the UI part, platform fit, tokens, contrast, accessibility and components. It reports blocking, important and minor findings with file and section, and says "no blocking issue" when that is true. It cannot run the app, so contrast ratios it did not verify are labelled "stated, not checked".
 
-## 12. Suggested order
+## 12. Survey what exists (`prior-art`)
 
 ```
-incubate ─► (devils-advocate) ─► ux ─► architect ─► ui ─► (design-reviewer) ─► test-strategy ─► slice
+/trellis:prior-art
 ```
 
-`ux` before `architect` is the usual order (flows influence the architecture), but they can be done the other way round or iteratively. `ui` needs the platform from `architect`. Skip what does not apply (no interface: skip `ux`, `ui` and `design-reviewer`).
+A deeper, sourced version of the quick check in `incubate`. You agree on five to eight **criteria taken from your requirements**, then it looks at products, open-source projects, platform features and combinations of tools, evaluates each against the criteria (with links and the date checked, and vendor claims labelled as such), and ends with a verdict: **adopt, adapt, build or do nothing**. Written to `docs/prior-art.md`. "Adopt X instead" is a valid result.
 
-## 13. Languages
+## 13. Settle an unknown (`spike`)
+
+```
+/trellis:spike can a share extension write to the shared store in under 200 ms?
+```
+
+Frames **one question**, with success, failure and inconclusive criteria written **before** the experiment and a time box. It helps design the cheapest experiment, run it, and record the result in `docs/spikes/NNNN-title.md`, then feeds the verdict back into the ADR (a `proposed` decision becomes `accepted`, or is superseded), the architecture's risk table, the spec's kill criteria and the plan. Spike code is throwaway.
+
+## 14. Scaffold the project (`bootstrap`)
+
+```
+/trellis:bootstrap
+```
+
+Run after architecture and test strategy. It takes the stack from your ADRs, shows its plan, then uses the stack's **official generator** to create the structure, adds `docs/`, `.gitignore`, a README stub and `CHANGELOG.md`, and writes the **project's own `CLAUDE.md`** (where each document is, the real build and test commands, the rules). It ends with a **walking skeleton** that builds and passes one test. It never overwrites existing files, and creating a remote, pushing or enabling CI waits for your agreement.
+
+## 15. Plan the work (`slice`)
+
+```
+/trellis:slice
+```
+
+Cuts the work into `PLAN.md`: **vertical slices** (`SL0`, `SL1`...), each observable, testable and small, with acceptance criteria taken from the verification matrix, the requirements, journeys and screens it serves, a size (S / M / L) and dependencies. Slice 0 is the walking skeleton; risky things come early; every Must is covered by a slice (a coverage table checks it); error and empty states are planned too. Later slices stay coarse. Re-running it after a change keeps the IDs of done slices.
+
+## 16. Build a slice (`deliver`)
+
+```
+/trellis:deliver SL1
+```
+
+or "deliver the next slice". For one slice: it restates the criteria, writes the **tests first** and watches them fail, implements the minimum to pass, runs the tests, lint and build (and exercises user-facing work for real), offers an independent check by the `verifier`, then updates `PLAN.md`, `STATUS.md`, `CHANGELOG.md` and the test matrix, and commits if you agreed. It reports deviations instead of hiding them, never weakens a test to make it pass, and stops after each slice. It asks once whether each slice should be committed on its own branch.
+
+## 17. Verify independently (`verifier`)
+
+An agent that runs the checks and judges each acceptance criterion as **verified, failed or unverifiable, with evidence**. It also checks that the tests would really catch a regression (no empty assertions, nothing skipped or weakened), conformance to the architecture and design, scope, and that the documents were updated. Verdict: Accept, Accept with notes, or Reject. It reports and never fixes. Ask for it directly ("use the verifier agent on SL2") or accept `deliver`'s offer.
+
+## 18. Release (`publish`)
+
+```
+/trellis:publish
+```
+
+Pre-release checks (clean tree, planned slices done, full tests, release gates, changelog), a proposed version, release notes, a build from the release commit (including **Apple signing and notarisation**, app stores, packages or containers as your ADRs say), a **check of the built artifact in a clean environment**, then the release itself and a rollback plan. Every outward step (tag, upload, store submission, deploy, announcement) needs your explicit go.
+
+## 19. Pick a project back up (`resume`)
+
+```
+/trellis:resume
+```
+
+Reads `STATUS.md`, `PLAN.md` and git, and answers in one screen: the phase, what is done, what is in progress (branch, uncommitted work), what is open or stale, and **one next action** with the exact command. It points out when the status document and the repository disagree. Read-only; it offers to refresh `STATUS.md` and does so only if you agree.
+
+## 20. Change course (`change-course`)
+
+```
+/trellis:change-course drop the sync feature
+```
+
+For a new, modified or dropped requirement, a pivot or a technology change. It shows the **impact** across spec, ADRs, architecture, design, tests, plan and code, sizes the change and the cost of not changing, checks whether a kill criterion is touched, and proceeds on your decision. It then updates the documents **in dependency order** without renumbering anything: dropped requirements are marked `dropped`, changed decisions become new superseding ADRs.
+
+## 21. Look back (`retro`)
+
+```
+/trellis:retro
+```
+
+For the end of a phase, a milestone, a release or the project. It gathers facts (slices planned versus done, spikes, decisions, changes), checks the result against the **original success and kill criteria**, asks for your own view, and ends with an explicit verdict: continue, pivot, park, abandon or done. Actions say where they will live. Written to `docs/retro/YYYY-MM-DD-title.md`.
+
+## 22. See all your projects (`project-overview`)
+
+```
+/trellis:project-overview ~/projects
+```
+
+Reads each project folder (status, spec status, plan progress, git activity) and gives one comparable row per project with flags (stale, blocked, no status document, kill criterion near), then suggests what to **focus on, unblock and park**. Read-only; it writes a summary file only if you ask.
+
+## 23. Automatic checks (`coherence-checker`, `security-reviewer`)
+
+Two more read-only agents.
+
+- **`coherence-checker`** checks that documents and code still agree: requirement IDs and coverage across the documents, ADR statuses and index, `STATUS.md` freshness, components, stack and interface code against the architecture and design, tests against the verification matrix. It says which side is probably right. Run it every few slices, after a change of course, and before a release.
+- **`security-reviewer`** builds a lightweight **threat model** (assets, actors, trust boundaries, entry points) and checks personal data, secrets, authentication, input handling, storage and transport, dependencies and the release chain, with ranked findings and mitigations. It is a first pass, not a professional audit or legal advice.
+
+## 24. Session status hook
+
+When you open a session in a project that has a `STATUS.md`, Trellis adds its first lines to the context so Claude knows where the project stands (the file's content is treated as data, not instructions). It stays silent when there is no `STATUS.md`. Set the environment variable `TRELLIS_NO_STATUS=1` to turn it off.
+
+## 25. Suggested order
+
+```
+incubate ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
+   ─► (design-reviewer, security-reviewer) ─► test-strategy ─► bootstrap ─► slice
+   ─► deliver ⟲ (verifier) ─► publish
+```
+
+At any time: `resume`, `change-course`, `retro`, `project-overview`, `coherence-checker`, `adr`. Steps in parentheses are optional. Skip what does not apply (no interface: skip `ux`, `ui` and `design-reviewer`).
+
+## 26. Languages
 
 Names (skills, agents, files) are in English. Documents are generated in the language of your project: the language you write in, unless the project already has documents in another one. Templates exist in English and French (`skills/<name>/templates/*.en.md` and `*.fr.md`).
 
-## 14. Troubleshooting
+## 27. Troubleshooting
 
 | Symptom | Likely cause and fix |
 | --- | --- |
@@ -236,9 +343,10 @@ Names (skills, agents, files) are in English. Documents are generated in the lan
 | The interview feels too long | Say so. The skill sizes the interview to the idea and can skip topics you have already settled. |
 | `Invalid marketplace source format` | You passed an `ssh://…` URL. Use `git@host:owner/repo.git` instead (see section 1). |
 | `unable to get password from user` | You used the HTTPS URL on a private repository. Use the SSH form. |
+| The project status appears at the start of every session and I do not want it | Set the environment variable `TRELLIS_NO_STATUS=1`. |
 | An update did not arrive | Run `/plugin marketplace update trellis`, then restart the session. |
 
-## 15. Contributing and working on the plugin
+## 28. Contributing and working on the plugin
 
 Conventions for this repository (layout, naming, bilingual docs, "strict but soft") are in [`CLAUDE.md`](../CLAUDE.md). To check a change, run:
 

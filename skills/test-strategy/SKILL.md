@@ -65,7 +65,7 @@ Record the test tooling choices. Hard-to-reverse ones (a test framework tied to 
 
 ### 9. Check and hand off
 
-Check that every Must has a verification, every high-risk component has tests at a sensible level, and every open point has a next step. Report gaps plainly, and any testability problem found in the architecture. Update `STATUS.md`. Suggest `slice` next. Do not start it unprompted.
+Check that every Must has a verification, every high-risk component has tests at a sensible level, and every open point has a next step. Report gaps plainly, and any testability problem found in the architecture. Update `STATUS.md`. Suggest `bootstrap` next if the repository is not scaffolded yet, then `slice`. Do not start either unprompted.
 
 ## What not to do
 

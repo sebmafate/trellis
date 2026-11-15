@@ -1,0 +1,16 @@
+{
+  "description": "Surfaces the project's STATUS.md at the start of a session so Claude knows where the project stands",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-status.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

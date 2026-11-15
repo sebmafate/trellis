@@ -6,7 +6,7 @@
 
 A [Claude Code](https://claude.com/claude-code) plugin of skills and agents that carries a project from a raw idea to shipped software. It gives a project structure to grow on, without deciding its direction.
 
-> Status: early work in progress (0.3.0). Licensed under the [MIT License](LICENSE).
+> Status: early work in progress (0.4.0). Licensed under the [MIT License](LICENSE).
 
 ## The idea
 
@@ -26,19 +26,29 @@ Trellis is **strict but soft**: skills point out what is missing (no validated s
 | Name | Kind | Phase | Status |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **available** |
+| `prior-art` | skill | incubation | **available** |
+| `devils-advocate` | agent | incubation, design | **available** |
+| `ux` | skill | design | **available** |
 | `architect` | skill | design | **available** |
 | `adr` | skill | design | **available** |
-| `ux` | skill | design | **available** |
+| `spike` | skill | design | **available** |
 | `ui` | skill | design | **available** |
-| `test-strategy` | skill | design | **available** |
-| `slice` | skill | development | planned |
-| `deliver` | skill | development | planned |
-| `resume` | skill | any | planned |
-| `devils-advocate` | agent | incubation, design | **available** |
 | `design-reviewer` | agent | design | **available** |
-| `verifier` | agent | development | planned |
+| `security-reviewer` | agent | design, release | **available** |
+| `test-strategy` | skill | design | **available** |
+| `bootstrap` | skill | development | **available** |
+| `slice` | skill | development | **available** |
+| `deliver` | skill | development | **available** |
+| `verifier` | agent | development | **available** |
+| `publish` | skill | release | **available** |
+| `resume` | skill | any | **available** |
+| `change-course` | skill | any | **available** |
+| `retro` | skill | any | **available** |
+| `project-overview` | skill | any | **available** |
+| `coherence-checker` | agent | any | **available** |
+| `SessionStart` hook | hook | any | **available** |
 
-Later candidates: `change-course`, `project-overview`, `publish`, `retro`, `prior-art`, `spike`, a coherence-check agent, a `SessionStart` hook.
+Ideas for later: a maintenance phase (dependency updates, deprecation), a skill for end-user documentation, a clickable-prototype skill.
 
 ## Use it
 

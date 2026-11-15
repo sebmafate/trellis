@@ -37,7 +37,7 @@ Walk through these topics in order, skipping any that context already answers. F
 3. **Success**: how will you know it worked? Push for something observable ("I use it weekly", "a CRA takes 10 min").
 4. **Scope**: what is in the first usable version? What is explicitly **out**? Non-goals are mandatory; if the user has none, propose three.
 5. **Constraints**: platform, budget, time available, privacy, legal, who will maintain it, existing tools to reuse or integrate with.
-6. **Prior art**: what already exists? Offer a quick web search; do a deep survey only if the user asks.
+6. **Prior art**: what already exists? Offer a quick web search; for a deep, sourced survey with a build-or-adopt verdict, suggest the `prior-art` skill.
 7. **Riskiest assumption**: the one thing that, if false, kills the idea. Name it with the user.
 8. **Cheapest test**: the smallest experiment (hours or days, ideally without writing the app) that checks that assumption.
 9. **Kill criteria**: what result of the test, or what cost overrun, means "stop"? A spec without a kill criterion is incomplete.

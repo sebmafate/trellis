@@ -61,19 +61,29 @@ Trellis est **strict mais souple**. Si un prérequis manque (par exemple pas de 
 | Nom | Type | Phase | État |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **disponible** |
+| `prior-art` | skill | incubation | **disponible** |
+| `devils-advocate` | agent | incubation, conception | **disponible** |
+| `ux` | skill | conception | **disponible** |
 | `architect` | skill | conception | **disponible** |
 | `adr` | skill | conception | **disponible** |
-| `ux` | skill | conception | **disponible** |
+| `spike` | skill | conception | **disponible** |
 | `ui` | skill | conception | **disponible** |
-| `test-strategy` | skill | conception | **disponible** |
-| `slice` | skill | développement | prévu |
-| `deliver` | skill | développement | prévu |
-| `resume` | skill | toutes | prévu |
-| `devils-advocate` | agent | incubation, conception | **disponible** |
 | `design-reviewer` | agent | conception | **disponible** |
-| `verifier` | agent | développement | prévu |
+| `security-reviewer` | agent | conception, publication | **disponible** |
+| `test-strategy` | skill | conception | **disponible** |
+| `bootstrap` | skill | développement | **disponible** |
+| `slice` | skill | développement | **disponible** |
+| `deliver` | skill | développement | **disponible** |
+| `verifier` | agent | développement | **disponible** |
+| `publish` | skill | publication | **disponible** |
+| `resume` | skill | toutes | **disponible** |
+| `change-course` | skill | toutes | **disponible** |
+| `retro` | skill | toutes | **disponible** |
+| `project-overview` | skill | toutes | **disponible** |
+| `coherence-checker` | agent | toutes | **disponible** |
+| `SessionStart` hook | hook | toutes | **disponible** |
 
-Cette page documente ce qui existe. Les éléments prévus sont décrits dans le [README](../README.fr.md) et auront leur propre section ici à leur sortie.
+Chaque élément a sa propre section ci-dessous, suivie d'un ordre d'utilisation conseillé.
 
 ## 4. Incuber une idée (`incubate`)
 
@@ -214,19 +224,116 @@ L'équivalent design de `devils-advocate` : un agent indépendant en **lecture s
 
 Il vérifie les parcours par rapport aux exigences, les états manquants, le nombre d'étapes, les messages d'erreur, la cohérence du vocabulaire et, pour la partie UI, l'adéquation à la plateforme, les jetons, le contraste, l'accessibilité et les composants. Il rend des constats bloquants, importants et mineurs avec fichier et section, et dit « aucun problème bloquant » quand c'est vrai. Il ne peut pas lancer l'app : les ratios de contraste qu'il n'a pas vérifiés sont signalés « annoncés, non vérifiés ».
 
-## 12. Ordre conseillé
+## 12. Passer en revue l'existant (`prior-art`)
 
 ```
-incubate ─► (devils-advocate) ─► ux ─► architect ─► ui ─► (design-reviewer) ─► test-strategy ─► slice
+/trellis:prior-art
 ```
 
-`ux` avant `architect` est l'ordre habituel (les parcours influencent l'architecture), mais on peut inverser ou itérer. `ui` a besoin de la plateforme décidée par `architect`. Saute ce qui ne s'applique pas (pas d'interface : saute `ux`, `ui` et `design-reviewer`).
+Une version plus poussée et sourcée du survol fait par `incubate`. Vous convenez de cinq à huit **critères tirés de vos exigences**, puis il examine produits, projets open source, fonctions de plateformes et combinaisons d'outils, évalue chacun selon les critères (avec liens et date de vérification, et affirmations des éditeurs signalées comme telles), et conclut par un verdict : **adopter, adapter, construire ou ne rien faire**. Écrit dans `docs/prior-art.md`. « Adopte plutôt X » est un résultat valable.
 
-## 13. Langues
+## 13. Lever une inconnue (`spike`)
+
+```
+/trellis:spike une extension de partage peut-elle écrire dans le stockage partagé en moins de 200 ms ?
+```
+
+Cadre **une seule question**, avec des critères de succès, d'échec et de non-conclusion écrits **avant** l'expérience, et une durée maximale. Il aide à concevoir l'expérience la moins chère, à l'exécuter et à consigner le résultat dans `docs/spikes/NNNN-titre.md`, puis reporte le verdict dans l'ADR (une décision `proposée` devient `acceptée`, ou est remplacée), la table des risques de l'architecture, les critères d'abandon de la spécification et le plan. Le code d'un spike est jetable.
+
+## 14. Mettre en place le projet (`bootstrap`)
+
+```
+/trellis:bootstrap
+```
+
+À lancer après l'architecture et la stratégie de tests. Il reprend la stack de vos ADR, montre son plan, puis utilise le **générateur officiel** de la stack pour créer la structure, ajoute `docs/`, `.gitignore`, un README minimal et `CHANGELOG.md`, et écrit le **`CLAUDE.md` du projet** (où est chaque document, les vraies commandes de build et de test, les règles). Il se termine par un **squelette fonctionnel** qui compile et passe un test. Il n'écrase jamais de fichier existant, et créer un dépôt distant, pousser ou activer la CI attend votre accord.
+
+## 15. Planifier le travail (`slice`)
+
+```
+/trellis:slice
+```
+
+Découpe le travail dans `PLAN.md` : des **tranches verticales** (`SL0`, `SL1`...), chacune observable, testable et petite, avec des critères d'acceptation tirés de la matrice de vérification, les exigences, parcours et écrans qu'elle sert, une taille (S / M / L) et ses dépendances. La tranche 0 est le squelette fonctionnel ; les points risqués viennent tôt ; chaque Must est couvert par une tranche (un tableau de couverture le vérifie) ; les états d'erreur et de vide sont planifiés aussi. Les tranches lointaines restent grossières. Le relancer après un changement conserve les identifiants des tranches faites.
+
+## 16. Construire une tranche (`deliver`)
+
+```
+/trellis:deliver SL1
+```
+
+ou « livre la prochaine tranche ». Pour une tranche : il reformule les critères, écrit les **tests d'abord** et les voit échouer, implémente le minimum pour qu'ils passent, lance tests, lint et build (et essaie réellement ce que voit l'utilisateur), propose une vérification indépendante par le `verifier`, puis met à jour `PLAN.md`, `STATUS.md`, `CHANGELOG.md` et la matrice de tests, et commite si vous l'avez accepté. Il signale les écarts au lieu de les cacher, n'affaiblit jamais un test pour le faire passer, et s'arrête après chaque tranche. Il demande une fois si chaque tranche doit être commitée sur sa propre branche.
+
+## 17. Vérifier de façon indépendante (`verifier`)
+
+Un agent qui exécute les contrôles et juge chaque critère d'acceptation **vérifié, échoué ou invérifiable, preuve à l'appui**. Il vérifie aussi que les tests détecteraient vraiment une régression (pas d'assertions vides, rien d'ignoré ou d'affaibli), la conformité à l'architecture et au design, le périmètre, et la mise à jour des documents. Verdict : Accepter, Accepter avec remarques, ou Rejeter. Il rend un rapport et ne corrige jamais. Demande-le directement (« utilise l'agent verifier sur SL2 ») ou accepte la proposition de `deliver`.
+
+## 18. Publier (`publish`)
+
+```
+/trellis:publish
+```
+
+Contrôles avant publication (arbre propre, tranches prévues faites, tests complets, portes de publication, changelog), une version proposée, des notes de version, une construction depuis le commit de publication (dont **signature et notarisation Apple**, magasins d'applications, paquets ou conteneurs selon vos ADR), une **vérification de l'artefact construit dans un environnement propre**, puis la publication et un plan de retour arrière. Chaque étape visible de l'extérieur (étiquette, envoi, soumission à un magasin, déploiement, annonce) demande votre feu vert explicite.
+
+## 19. Reprendre un projet (`resume`)
+
+```
+/trellis:resume
+```
+
+Lit `STATUS.md`, `PLAN.md` et git, et répond en un écran : la phase, ce qui est fait, ce qui est en cours (branche, travail non commité), ce qui est ouvert ou périmé, et **une prochaine action** avec la commande exacte. Il signale quand le document de statut et le dépôt ne s'accordent pas. Lecture seule ; il propose de rafraîchir `STATUS.md` et ne le fait que si vous êtes d'accord.
+
+## 20. Changer de cap (`change-course`)
+
+```
+/trellis:change-course abandonner la synchronisation
+```
+
+Pour une exigence nouvelle, modifiée ou abandonnée, un pivot ou un changement de technologie. Il montre l'**impact** sur la spécification, les ADR, l'architecture, le design, les tests, le plan et le code, mesure le changement et le coût de ne pas changer, vérifie si un critère d'abandon est touché, et avance sur votre décision. Il met ensuite les documents à jour **dans l'ordre des dépendances** sans rien renuméroter : les exigences abandonnées sont marquées `dropped`, les décisions changées deviennent de nouveaux ADR qui remplacent les anciens.
+
+## 21. Faire le point (`retro`)
+
+```
+/trellis:retro
+```
+
+Pour la fin d'une phase, d'un jalon, d'une publication ou du projet. Il rassemble les faits (tranches prévues et faites, spikes, décisions, changements), compare le résultat aux **critères de succès et d'abandon d'origine**, demande votre propre point de vue, et conclut par un verdict explicite : continuer, pivoter, mettre en pause, abandonner ou terminé. Les actions disent où elles vivront. Écrit dans `docs/retro/AAAA-MM-JJ-titre.md`.
+
+## 22. Voir tous vos projets (`project-overview`)
+
+```
+/trellis:project-overview ~/projets
+```
+
+Lit chaque dossier de projet (statut, statut de la spécification, avancement du plan, activité git) et donne une ligne comparable par projet avec des alertes (périmé, bloqué, pas de document de statut, critère d'abandon proche), puis suggère sur quoi **se concentrer, quoi débloquer et quoi mettre en pause**. Lecture seule ; il n'écrit un fichier de synthèse que si vous le demandez.
+
+## 23. Contrôles automatiques (`coherence-checker`, `security-reviewer`)
+
+Deux autres agents en lecture seule.
+
+- **`coherence-checker`** vérifie que documents et code s'accordent encore : identifiants d'exigences et couverture entre les documents, statuts et index des ADR, fraîcheur de `STATUS.md`, composants, stack et code d'interface par rapport à l'architecture et au design, tests par rapport à la matrice de vérification. Il dit quel côté a probablement raison. À lancer toutes les quelques tranches, après un changement de cap et avant une publication.
+- **`security-reviewer`** construit un **modèle de menaces** léger (actifs, acteurs, frontières de confiance, points d'entrée) et vérifie données personnelles, secrets, authentification, traitement des entrées, stockage et transport, dépendances et chaîne de publication, avec des constats classés et des parades. C'est une première passe, pas un audit professionnel ni un avis juridique.
+
+## 24. Hook d'état au démarrage de session
+
+Quand vous ouvrez une session dans un projet qui a un `STATUS.md`, Trellis en ajoute les premières lignes au contexte pour que Claude sache où en est le projet (le contenu du fichier est traité comme une donnée, pas comme des instructions). Il reste silencieux sans `STATUS.md`. Définissez la variable d'environnement `TRELLIS_NO_STATUS=1` pour le désactiver.
+
+## 25. Ordre conseillé
+
+```
+incubate ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
+   ─► (design-reviewer, security-reviewer) ─► test-strategy ─► bootstrap ─► slice
+   ─► deliver ⟲ (verifier) ─► publish
+```
+
+À tout moment : `resume`, `change-course`, `retro`, `project-overview`, `coherence-checker`, `adr`. Les étapes entre parenthèses sont facultatives. Saute ce qui ne s'applique pas (pas d'interface : saute `ux`, `ui` et `design-reviewer`).
+
+## 26. Langues
 
 Les noms (skills, agents, fichiers) sont en anglais. Les documents sont générés dans la langue de ton projet : celle dans laquelle tu écris, sauf si le projet a déjà des documents dans une autre. Les gabarits existent en anglais et en français (`skills/<nom>/templates/*.en.md` et `*.fr.md`).
 
-## 14. Dépannage
+## 27. Dépannage
 
 | Symptôme | Cause probable et solution |
 | --- | --- |
@@ -236,9 +343,10 @@ Les noms (skills, agents, fichiers) sont en anglais. Les documents sont génér�
 | L'entretien paraît trop long | Dis-le. Le skill dimensionne l'entretien selon l'idée et peut sauter les sujets déjà réglés. |
 | `Invalid marketplace source format` | Tu as passé une URL `ssh://…`. Utilise `git@hôte:propriétaire/dépôt.git` (voir section 1). |
 | `unable to get password from user` | Tu as utilisé l'URL HTTPS sur un dépôt privé. Utilise la forme SSH. |
+| L'état du projet s'affiche à chaque début de session et je n'en veux pas | Définis la variable d'environnement `TRELLIS_NO_STATUS=1`. |
 | Une mise à jour n'est pas arrivée | Lance `/plugin marketplace update trellis`, puis redémarre la session. |
 
-## 15. Contribuer et travailler sur le plugin
+## 28. Contribuer et travailler sur le plugin
 
 Les conventions du dépôt (organisation, nommage, documentation bilingue, « strict mais souple ») sont dans [`CLAUDE.md`](../CLAUDE.md). Pour vérifier une modification :
 

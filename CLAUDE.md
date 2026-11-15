@@ -7,6 +7,7 @@ This repository is a Claude Code plugin and is meant to become public. Write acc
 - `.claude-plugin/plugin.json`: plugin manifest
 - `skills/<name>/SKILL.md`: one skill per directory; its templates live in `skills/<name>/templates/`
 - `agents/<name>.md`: one agent per file
+- `hooks/hooks.json` and `hooks/*.sh`: plugin hooks (currently the `SessionStart` status hook)
 - `docs/`: design notes and decisions about Trellis itself
 
 ## Conventions

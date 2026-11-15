@@ -52,7 +52,7 @@ For each ADR-worthy decision:
 1. State the question and which requirements and drivers bear on it.
 2. Present two to four options in a compact table judged on the drivers (qualitative marks like better / neutral / worse are fine; avoid fake numeric scores).
 3. **Recommend one**, with the reason in a sentence or two, and say what you are least sure about.
-4. If a key fact is unknown, propose a **spike**: what to try, the time box, and what result would decide. Record the decision as `proposed` until the spike is done.
+4. If a key fact is unknown, propose a **spike**: what to try, the time box, and what result would decide (the `spike` skill frames, runs and records it). Record the decision as `proposed` until the spike is done.
 5. When the user decides, record it using the `adr` skill's method (file, numbering, index). Do not move on with an undecided item silently; mark it open.
 
 When the user is stuck, offer the default you would take and why.
@@ -77,7 +77,8 @@ Update `STATUS.md`: phase `architecture`, next action, date. Say what comes next
 
 1. `ux`, if the project has an interface and no `DESIGN.md` yet (it can also be done before this step), then `ui` once the platform is decided.
 2. `test-strategy`, to turn the "Testing" notes and each requirement's "how to verify" into a `TESTING.md`.
-3. Slicing the work into deliverable, testable pieces (the `slice` skill, once available; until then, a hand-written `PLAN.md`).
+3. `bootstrap`, to scaffold the repository from these decisions (the project's `CLAUDE.md`, a walking skeleton).
+4. `slice`, to cut the work into deliverable, testable pieces in `PLAN.md`; then `deliver` builds them one by one.
 
 Do not start any of them unprompted.
 
