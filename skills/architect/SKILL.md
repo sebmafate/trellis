@@ -73,7 +73,13 @@ Report gaps plainly. If the `devils-advocate` agent is available, offer an indep
 
 ### 6. Hand off
 
-Update `STATUS.md`: phase `architecture`, next action, date. Say what comes next: slicing the work into deliverable, testable pieces (the `slice` skill, once available; until then, a hand-written `PLAN.md`). Do not start it unprompted.
+Update `STATUS.md`: phase `architecture`, next action, date. Say what comes next, in this order, skipping what does not apply:
+
+1. `ux`, if the project has an interface and no `DESIGN.md` yet (it can also be done before this step), then `ui` once the platform is decided.
+2. `test-strategy`, to turn the "Testing" notes and each requirement's "how to verify" into a `TESTING.md`.
+3. Slicing the work into deliverable, testable pieces (the `slice` skill, once available; until then, a hand-written `PLAN.md`).
+
+Do not start any of them unprompted.
 
 ## What not to do
 

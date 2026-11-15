@@ -6,16 +6,17 @@
 
 A [Claude Code](https://claude.com/claude-code) plugin of skills and agents that carries a project from a raw idea to shipped software. It gives a project structure to grow on, without deciding its direction.
 
-> Status: early work in progress (0.2.0). Licensed under the [MIT License](LICENSE).
+> Status: early work in progress (0.3.0). Licensed under the [MIT License](LICENSE).
 
 ## The idea
 
 Each phase writes a file in the project's repository, and the next phase reads it. The files are the shared memory; nothing lives only in a chat.
 
 ```
-idea ──► INCUBATION ──► DESIGN ───────────► DEVELOPMENT ────────► LIFE OF THE PROJECT
-         SPEC.md        ARCHITECTURE.md     PLAN.md               STATUS.md
-                        docs/adr/*.md       (deliverable slices)  CHANGELOG.md
+idea ──► INCUBATION ──► DESIGN ─────────────────► DEVELOPMENT ────────► LIFE OF THE PROJECT
+         SPEC.md        ARCHITECTURE.md + ADRs    PLAN.md               STATUS.md
+                        DESIGN.md (UX, UI)        (deliverable slices)  CHANGELOG.md
+                        TESTING.md
 ```
 
 Trellis is **strict but soft**: skills point out what is missing (no validated spec, no acceptance criteria) and say what it risks, then let you decide. Overrides are recorded in the documents.
@@ -27,10 +28,14 @@ Trellis is **strict but soft**: skills point out what is missing (no validated s
 | `incubate` | skill | incubation | **available** |
 | `architect` | skill | design | **available** |
 | `adr` | skill | design | **available** |
+| `ux` | skill | design | **available** |
+| `ui` | skill | design | **available** |
+| `test-strategy` | skill | design | **available** |
 | `slice` | skill | development | planned |
 | `deliver` | skill | development | planned |
 | `resume` | skill | any | planned |
 | `devils-advocate` | agent | incubation, design | **available** |
+| `design-reviewer` | agent | design | **available** |
 | `verifier` | agent | development | planned |
 
 Later candidates: `change-course`, `project-overview`, `publish`, `retro`, `prior-art`, `spike`, a coherence-check agent, a `SessionStart` hook.

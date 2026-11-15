@@ -48,9 +48,10 @@ Run `/help` or type `/trellis:` and look for `trellis:incubate`. If you see it, 
 Each phase writes a file in **your project's repository**; the next phase reads it. Files, not chat history, are the shared memory. You can stop for a month, come back, and nothing is lost.
 
 ```
-idea ──► INCUBATION ──► DESIGN ───────────► DEVELOPMENT ────────► LIFE OF THE PROJECT
-         SPEC.md        ARCHITECTURE.md     PLAN.md               STATUS.md
-                        docs/adr/*.md       (deliverable slices)  CHANGELOG.md
+idea ──► INCUBATION ──► DESIGN ─────────────────► DEVELOPMENT ────────► LIFE OF THE PROJECT
+         SPEC.md        ARCHITECTURE.md + ADRs    PLAN.md               STATUS.md
+                        DESIGN.md (UX, UI)        (deliverable slices)  CHANGELOG.md
+                        TESTING.md
 ```
 
 Trellis is **strict but soft**. If a prerequisite is missing (for example, no validated spec before design), the skill says what is missing and what it risks, then lets you decide. When you go ahead anyway, the override is written down in the document's decision log, so the choice stays visible later.
@@ -62,10 +63,14 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | `incubate` | skill | incubation | **available** |
 | `architect` | skill | design | **available** |
 | `adr` | skill | design | **available** |
+| `ux` | skill | design | **available** |
+| `ui` | skill | design | **available** |
+| `test-strategy` | skill | design | **available** |
 | `slice` | skill | development | planned |
 | `deliver` | skill | development | planned |
 | `resume` | skill | any | planned |
 | `devils-advocate` | agent | incubation, design | **available** |
+| `design-reviewer` | agent | design | **available** |
 | `verifier` | agent | development | planned |
 
 This page documents what exists. Planned items are described in the [README](../README.md) and will get their own section here when they ship.
@@ -165,11 +170,63 @@ It reads `SPEC.md`, `ARCHITECTURE.md`, `docs/adr/` and `STATUS.md`, and reports:
 
 Good moments to call it: right after `incubate` (before investing), and after `architect` (before slicing the work).
 
-## 8. Languages
+## 8. Design the user experience (`ux`)
+
+For any project with an interface. Run it after `incubate`, before or alongside `architect`:
+
+```
+/trellis:ux
+```
+
+It reads `SPEC.md` and works through: the users and their context, **testable UX goals**, the **journeys** (one per Must requirement, including the first run), the information structure, the **inventory of screens with all their states** (empty, loading, error, offline, first use...), low-fidelity ASCII wireframes for the critical screens, and the key interface texts. Everything cites requirement IDs, and it ends with a walk-through of each journey and a coverage check (every user-facing Must has a screen; every screen serves a requirement).
+
+The result is the **UX part of `DESIGN.md`**. It says nothing about colors or frameworks. For a command-line tool or an API, it treats commands, output and error messages as the interface. A project with no interface at all is told so and skipped.
+
+## 9. Define the visual system (`ui`)
+
+Run it once the UX part exists and the platform is decided:
+
+```
+/trellis:ui
+```
+
+It names the platform conventions to follow, proposes a **small set of semantic tokens** (color with light and dark values, type, spacing, shape, motion) with contrast ratios computed and recorded, lists the **components with their states** (preferring native ones, justifying custom ones), and writes the accessibility rules (target size, text scaling, screen-reader labels, focus order, reduced motion). The result is the **UI part of `DESIGN.md`**.
+
+If the platform has not been decided, it flags it and offers to produce platform-agnostic tokens.
+
+## 10. Plan the tests (`test-strategy`)
+
+Run it after the architecture (and the design, if there is an interface), before slicing:
+
+```
+/trellis:test-strategy
+```
+
+It identifies the risks that matter, picks a proportional mix of test levels, and builds a **verification matrix**: every requirement gets a concrete, observable check at a given level. It also covers test data (no personal data in the repository), environments, **quality gates** (what blocks, what only warns), non-functional and manual testing, and a **definition of done** for each slice. The result is `TESTING.md`.
+
+If something is hard to test because of how the system is built, it reports it as a finding to bring back to `architect`. It does not write the tests; that happens during delivery.
+
+## 11. Get a design critique (`design-reviewer`)
+
+The design counterpart of `devils-advocate`: an independent, **read-only** agent.
+
+> Use the design-reviewer agent on my DESIGN.md.
+
+It checks journeys against requirements, missing states, step counts, error messages, vocabulary consistency, and, for the UI part, platform fit, tokens, contrast, accessibility and components. It reports blocking, important and minor findings with file and section, and says "no blocking issue" when that is true. It cannot run the app, so contrast ratios it did not verify are labelled "stated, not checked".
+
+## 12. Suggested order
+
+```
+incubate ─► (devils-advocate) ─► ux ─► architect ─► ui ─► (design-reviewer) ─► test-strategy ─► slice
+```
+
+`ux` before `architect` is the usual order (flows influence the architecture), but they can be done the other way round or iteratively. `ui` needs the platform from `architect`. Skip what does not apply (no interface: skip `ux`, `ui` and `design-reviewer`).
+
+## 13. Languages
 
 Names (skills, agents, files) are in English. Documents are generated in the language of your project: the language you write in, unless the project already has documents in another one. Templates exist in English and French (`skills/<name>/templates/*.en.md` and `*.fr.md`).
 
-## 9. Troubleshooting
+## 14. Troubleshooting
 
 | Symptom | Likely cause and fix |
 | --- | --- |
@@ -181,7 +238,7 @@ Names (skills, agents, files) are in English. Documents are generated in the lan
 | `unable to get password from user` | You used the HTTPS URL on a private repository. Use the SSH form. |
 | An update did not arrive | Run `/plugin marketplace update trellis`, then restart the session. |
 
-## 10. Contributing and working on the plugin
+## 15. Contributing and working on the plugin
 
 Conventions for this repository (layout, naming, bilingual docs, "strict but soft") are in [`CLAUDE.md`](../CLAUDE.md). To check a change, run:
 
