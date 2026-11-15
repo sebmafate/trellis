@@ -63,6 +63,10 @@ Build the coverage table: every Must maps to at least one slice; every slice map
 
 From the template. Update `STATUS.md` (phase `development`, next action = the first slice). If the `devils-advocate` agent is available, offer a review of the plan: sizes, ordering, missing slices. Say the next step: `deliver` for the first slice. Do not start it unprompted.
 
+## Slicing an adopted project
+
+When `SPEC.md` marks requirements as `implemented` (for example after `adopt`), plan **only the remaining work**: requirements marked `planned`, plus the test gaps and debt items the user chose to address. Do not create slices for what already exists. Slice 0 is not a walking skeleton here: start from the first real piece of remaining work, and make sure the existing test suite runs as the baseline.
+
 ## Re-slicing after a change
 
 When requirements or architecture changed (see `change-course`): keep IDs of done and in-progress slices, mark obsolete slices as `dropped` with the reason, add new ones with new IDs, and recheck coverage.

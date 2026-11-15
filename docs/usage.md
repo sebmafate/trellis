@@ -9,16 +9,22 @@ Trellis is a [Claude Code](https://claude.com/claude-code) plugin. It adds skill
 You need Claude Code. Then install the plugin from this repository's marketplace:
 
 ```
-/plugin install trellis --marketplace https://git.vbmaf.net/sebastien/trellis.git
+/plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
 ```
 
-While the repository is private, the HTTPS URL fails (Git cannot ask for a password in this context). Use the SSH form instead:
+The shorthand `owner/repo` is accepted too:
 
 ```
-/plugin install trellis --marketplace git@git.vbmaf.net:sebastien/trellis.git
+/plugin install trellis --marketplace sebmafate/trellis
 ```
 
-Write it in this `git@host:path` form. Claude Code **rejects `ssh://…` URLs** ("Invalid marketplace source format"). That form has no room for a port, so a non-standard SSH port must be set in `~/.ssh/config` (here: `Host git.vbmaf.net` with `Port 2222`).
+**From a private fork or a self-hosted copy**, the HTTPS URL fails (Git cannot ask for a password in this context). Use the SSH form `git@host:owner/repo.git` instead, for example:
+
+```
+/plugin install trellis --marketplace git@example.com:owner/trellis.git
+```
+
+Claude Code **rejects `ssh://…` URLs** ("Invalid marketplace source format"). The `git@host:path` form has no room for a port, so a non-standard SSH port must be set in `~/.ssh/config` (`Host example.com` with `Port 2222`, for instance).
 
 The same thing in two steps, which is useful to know when you want to update it:
 
@@ -61,6 +67,7 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | Name | Kind | Phase | Status |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **available** |
+| `adopt` | skill | any (existing project) | **available** |
 | `prior-art` | skill | incubation | **available** |
 | `devils-advocate` | agent | incubation, design | **available** |
 | `ux` | skill | design | **available** |
@@ -88,6 +95,10 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | `SessionStart` hook | hook | any | **available** |
 
 Every item has its own section below, followed by a suggested order of use.
+
+### Already have a project?
+
+Trellis follows a project from its idea, but you can bring an **existing, advanced project** under it with the `adopt` skill (see section 26). It reconstructs the documents from the code, tests, CI and git history, marks everything **"reconstructed, to be confirmed"**, and never touches your code. Then the rest (`slice`, `deliver`, `autopilot`, `change-course`...) works on it.
 
 ## 4. Incubate an idea (`incubate`)
 
@@ -413,13 +424,36 @@ incubate ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect 
    ─► deliver or autopilot ⟲ (verifier) ─► publish
 ```
 
+For an **existing project**: `adopt` ─► (`security-reviewer`) ─► (`test-strategy` for the gaps) ─► `slice` (remaining work) ─► `deliver` or `autopilot`.
+
 At any time: `resume`, `change-course`, `retro`, `project-overview`, `coherence-checker`, `adr`. Steps in parentheses are optional. Skip what does not apply (no interface: skip `ux`, `ui` and `design-reviewer`).
 
-## 26. Languages
+## 26. Adopt an existing project (`adopt`)
+
+```
+/trellis:adopt standard
+/trellis:adopt full --draft
+```
+
+For a project that **already has code**. The code is the evidence and the documents are **hypotheses** until you confirm them.
+
+1. **Scope.** You choose a level: `minimal` (the project's `CLAUDE.md` and `STATUS.md`), `standard` (plus `ARCHITECTURE.md`, retroactive ADRs, a `TESTING.md` baseline and an adoption report) or `full` (plus a `SPEC.md` of what exists and what is next, and a `PLAN.md` of the **remaining work only**).
+2. **Inventory, read-only.** Stack, structure, verified build and test commands, tests and their gaps, CI and release, dependencies, git history (activity, most-changed files, conventions), existing documentation. It reports the existence of secrets-like files, never their contents.
+3. **Short interview** on what the code cannot tell: purpose and users, state for the user, what is done and what is next, pain points, why the key choices were made, constraints, success and stop criteria. "I don't know" becomes an open question. With `--draft` there is no interview: every intent item becomes an open question, which suits non-interactive sessions.
+4. **Drafts in `.trellis/adopt/`**, shown one by one. Each carries the banner *"Reconstructed on <date> from the code and history. To be confirmed."* and, per item, a **confidence** (high, medium, low) with its source. Retroactive ADRs have the status `accepted (reconstructed)`, list alternatives only when known, and say **"rationale unknown, to confirm"** rather than inventing one.
+5. **Adoption report** (`ADOPTION.md`): what was verified versus inferred, open questions, findings (debt, risks, missing tests, hotspots) and next steps.
+6. **Cross-check** of its own drafts, with an offer to run `coherence-checker` and `devils-advocate`.
+7. **Promotion**: once you accept, the drafts are placed in their final locations. Existing documents are never overwritten: differences are shown and merged only as you accept. `--promote` does only this step later.
+
+It never modifies code, tests or configuration, and it does not commit unless you ask. Afterwards, the useful steps are usually `security-reviewer`, the test gaps from the baseline, then `slice` for the remaining work and `deliver` or `autopilot`.
+
+**To confirm an item**, edit the document and remove its "to be confirmed" mark; the confirmation log in `ADOPTION.md` keeps the trace.
+
+## 27. Languages
 
 Names (skills, agents, files) are in English. Documents are generated in the language of your project: the language you write in, unless the project already has documents in another one. Templates exist in English and French (`skills/<name>/templates/*.en.md` and `*.fr.md`).
 
-## 27. Troubleshooting
+## 28. Troubleshooting
 
 | Symptom | Likely cause and fix |
 | --- | --- |
@@ -428,11 +462,11 @@ Names (skills, agents, files) are in English. Documents are generated in the lan
 | It asks things you already wrote down | Put the notes in the project folder (README, notes) before starting, so it reads them in step 1. |
 | The interview feels too long | Say so. The skill sizes the interview to the idea and can skip topics you have already settled. |
 | `Invalid marketplace source format` | You passed an `ssh://…` URL. Use `git@host:owner/repo.git` instead (see section 1). |
-| `unable to get password from user` | You used the HTTPS URL on a private repository. Use the SSH form. |
+| `unable to get password from user` | You used an HTTPS URL on a private repository (a private fork, for instance). Use the SSH form. |
 | The project status appears at the start of every session and I do not want it | Set the environment variable `TRELLIS_NO_STATUS=1`. |
 | An update did not arrive | Run `/plugin marketplace update trellis`, then restart the session. |
 
-## 28. Contributing and working on the plugin
+## 29. Contributing and working on the plugin
 
 Conventions for this repository (layout, naming, bilingual docs, "strict but soft") are in [`CLAUDE.md`](../CLAUDE.md). To check a change, run:
 

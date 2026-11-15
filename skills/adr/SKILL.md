@@ -46,6 +46,10 @@ Keep it to one page. Consequences must include the **negative** ones.
 - Maintain `docs/adr/README.md`: a table of number, title, status, date. Create it if missing.
 - If `ARCHITECTURE.md` exists, add or update the row in its decisions index and, where relevant, the traceability table.
 
+### Reconstructed (retroactive) ADRs
+
+When a decision was made long ago and is only visible in the code (typically during `adopt`), record it with status `accepted (reconstructed)`. State the decision date as unknown or inferred from history (for example "first commit touching X on <date>"). Describe the context from evidence and from what the user told you. List options **only if they are known**; otherwise write "alternatives not documented, to confirm". Describe the consequences **observed** in the code, including the negative ones. Never invent a rationale: write "rationale unknown, to confirm" instead. The user confirms the ADR later, and the mark is removed then.
+
 ### 5. Superseding or deprecating
 
 - **Superseding**: write the new ADR with `Supersedes: NNNN`, then change only the status of the old one to `superseded by MMMM`. Update the index.

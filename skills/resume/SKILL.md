@@ -45,7 +45,7 @@ Use this shape, skipping empty parts:
 
 ### 4. When there is nothing to go on
 
-- No Trellis documents but an existing repository: summarize what the repository shows (what it is, last activity) and offer to start from `incubate` or `bootstrap`.
+- No Trellis documents but an existing repository: summarize what the repository shows (what it is, last activity) and offer `adopt` to reconstruct the Trellis documents from the code and history (or `incubate` if it is only a prototype of an idea).
 - Documents but no repository: say so and offer to create one.
 - An empty folder: say so and offer `incubate`.
 

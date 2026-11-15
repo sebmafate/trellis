@@ -1,6 +1,6 @@
 ---
 name: bootstrap
-description: Scaffold a new project from its decisions: create the project's CLAUDE.md that tells Claude where the SPEC, ARCHITECTURE, DESIGN, TESTING, PLAN and ADRs are and how to work, the docs layout, .gitignore, a README, CHANGELOG, CI skeleton and a runnable hello-world with a passing test, using the stack chosen in the ADRs. Use after architecture and test strategy, before the first slice, when the user wants to set up, scaffold, initialise or start the project repository. Uses the stack's official generators rather than hand-written boilerplate.
+description: Scaffold a new project from its decisions: create the project's CLAUDE.md that tells Claude where the SPEC, ARCHITECTURE, DESIGN, TESTING, PLAN and ADRs are and how to work, the docs layout, .gitignore, a README, CHANGELOG, CI skeleton and a runnable hello-world with a passing test, using the stack chosen in the ADRs. Use after architecture and test strategy, before the first slice, when the user wants to set up, scaffold, initialise or start the project repository. Uses the stack's official generators rather than hand-written boilerplate. For a project that already has code, use `adopt` instead.
 ---
 
 # Bootstrap
@@ -27,6 +27,7 @@ Flag without blocking:
 
 - No architecture or no stack decision: offer `architect`.
 - No `TESTING.md`: the test harness choice is open; offer `test-strategy`, or pick the stack's default and note it.
+- A folder that already holds a working project (code, tests, history): this is not a new project. Offer `adopt`, which reconstructs the documents from what exists; do not add a hello-world skeleton to it.
 - A non-empty folder with its own structure: adapt to it.
 
 Document language: the project's. Templates are in `templates/` (`.en` / `.fr`), relative to this skill's directory.

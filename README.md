@@ -6,7 +6,7 @@
 
 A [Claude Code](https://claude.com/claude-code) plugin of skills and agents that carries a project from a raw idea to shipped software. It gives a project structure to grow on, without deciding its direction.
 
-> Status: early work in progress (0.6.0). Licensed under the [MIT License](LICENSE).
+> Status: early work in progress (0.7.0). Licensed under the [MIT License](LICENSE).
 
 ## The idea
 
@@ -26,6 +26,7 @@ Trellis is **strict but soft**: skills point out what is missing (no validated s
 | Name | Kind | Phase | Status |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **available** |
+| `adopt` | skill | any (existing project) | **available** |
 | `prior-art` | skill | incubation | **available** |
 | `devils-advocate` | agent | incubation, design | **available** |
 | `ux` | skill | design | **available** |
@@ -57,12 +58,12 @@ Ideas for later: a maintenance phase (dependency updates, deprecation), a skill 
 ## Use it
 
 ```
-/plugin install trellis --marketplace https://git.vbmaf.net/sebastien/trellis.git
+/plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
 ```
 
-While the repository is private, use the SSH form instead: `--marketplace git@git.vbmaf.net:sebastien/trellis.git`.
+The shorthand `--marketplace sebmafate/trellis` is accepted too.
 
-Then ask Claude to incubate an idea, or invoke the skill directly as `/trellis:incubate`. Full guide (SSH install, trying it without installing, what each step does, troubleshooting): [docs/usage.md](docs/usage.md).
+Then ask Claude to incubate an idea, or invoke the skill directly as `/trellis:incubate`. Full guide (install options, trying it without installing, what each step does, troubleshooting): [docs/usage.md](docs/usage.md).
 
 ## Languages
 

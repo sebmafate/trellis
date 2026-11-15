@@ -9,7 +9,7 @@ Answer **"what is the state of all my projects, and where should my time go?"** 
 
 ## Principles
 
-- **Evidence from the files.** Phase, status and next action come from `STATUS.md`, `SPEC.md`, `PLAN.md` and git. Where a project has no such documents, infer cautiously from git and the README, and say that it is an inference.
+- **Evidence from the files.** Phase, status and next action come from `STATUS.md`, `SPEC.md`, `PLAN.md` and git. Where a project has no such documents, infer cautiously from git and the README, and say that it is an inference. For a project that has code but no Trellis documents, suggest `adopt`.
 - **Read-only.** Never change a project. Write a summary file (for example `PROJECTS.md`) only when asked, in a place the user names.
 - **Short and comparable.** One row per project, same columns, so differences are visible at a glance.
 - **Advice with reasons.** Recommend focus and parking, but with the reason; the user decides.

@@ -6,7 +6,7 @@
 
 Un plugin [Claude Code](https://claude.com/claude-code) de skills et d'agents qui accompagne un projet de l'idée brute jusqu'au logiciel livré. Il donne au projet une structure pour grandir, sans décider de sa direction.
 
-> Statut : travail en cours (0.6.0). Sous [licence MIT](LICENSE).
+> Statut : travail en cours (0.7.0). Sous [licence MIT](LICENSE).
 
 ## Le principe
 
@@ -26,6 +26,7 @@ Trellis est **strict mais souple** : les skills signalent ce qui manque (pas de 
 | Nom | Type | Phase | État |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **disponible** |
+| `adopt` | skill | toutes (projet existant) | **disponible** |
 | `prior-art` | skill | incubation | **disponible** |
 | `devils-advocate` | agent | incubation, conception | **disponible** |
 | `ux` | skill | conception | **disponible** |
@@ -57,12 +58,12 @@ Idées pour plus tard : une phase de maintenance (mises à jour de dépendances,
 ## Utilisation
 
 ```
-/plugin install trellis --marketplace https://git.vbmaf.net/sebastien/trellis.git
+/plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
 ```
 
-Tant que le dépôt est privé, utiliser la forme SSH : `--marketplace git@git.vbmaf.net:sebastien/trellis.git`.
+La forme abrégée `--marketplace sebmafate/trellis` est acceptée aussi.
 
-Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis:incubate`. Guide complet (installation SSH, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
+Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis:incubate`. Guide complet (options d'installation, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
 
 ## Langues
 
