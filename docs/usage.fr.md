@@ -464,6 +464,7 @@ Les noms (skills, agents, fichiers) sont en anglais. Les documents sont génér�
 | Il demande ce que tu as déjà écrit | Mets tes notes dans le dossier du projet (README, notes) avant de commencer, pour qu'il les lise à l'étape 1. |
 | L'entretien paraît trop long | Dis-le. Le skill dimensionne l'entretien selon l'idée et peut sauter les sujets déjà réglés. |
 | `Invalid marketplace source format` | Tu as passé une URL `ssh://…`. Utilise `git@hôte:propriétaire/dépôt.git` (voir section 1). |
+| `Cannot add marketplace "trellis": its source doesn't match its extraKnownMarketplaces entry` | Le nom de marketplace `trellis` est déjà déclaré depuis une autre source (une installation précédente depuis un miroir ou un fork). Claude Code n'ajoute pas le même nom depuis une source différente. Supprime-la puis ajoute-la depuis la source voulue : `claude plugin marketplace remove trellis`, puis `claude plugin install trellis --marketplace <nouvelle source>`. La suppression désinstalle aussi le plugin, que la seconde commande réinstalle. |
 | `unable to get password from user` | Tu as utilisé une URL HTTPS sur un dépôt privé (un fork privé, par exemple). Utilise la forme SSH. |
 | L'état du projet s'affiche à chaque début de session et je n'en veux pas | Définis la variable d'environnement `TRELLIS_NO_STATUS=1`. |
 | Une mise à jour n'est pas arrivée | Lance `claude plugin marketplace update trellis` puis `claude plugin update trellis@trellis` dans un terminal, et démarre une nouvelle session. |
