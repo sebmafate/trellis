@@ -60,12 +60,12 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | Name | Kind | Phase | Status |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **available** |
-| `architect` | skill | design | planned |
-| `adr` | skill | design | planned |
+| `architect` | skill | design | **available** |
+| `adr` | skill | design | **available** |
 | `slice` | skill | development | planned |
 | `deliver` | skill | development | planned |
 | `resume` | skill | any | planned |
-| `devils-advocate` | agent | incubation, design | planned |
+| `devils-advocate` | agent | incubation, design | **available** |
 | `verifier` | agent | development | planned |
 
 This page documents what exists. Planned items are described in the [README](../README.md) and will get their own section here when they ship.
@@ -120,11 +120,56 @@ Requirements carry stable IDs (`R1`, `R2`, ...), a priority (Must / Should / Cou
 - **Override freely.** If the verdict is "test first" and you want to go on anyway, say so. It will be logged, not refused.
 - **Come back later.** Run it again in the same folder to revise the spec; it works in update mode.
 
-## 5. Languages
+## 5. Design the architecture (`architect`)
+
+Run it in the same folder, once `SPEC.md` exists:
+
+```
+/trellis:architect
+```
+
+or just ask: "What's the right architecture for this?"
+
+1. **Context.** It reads `SPEC.md` and `STATUS.md`. If the spec is missing or not validated, it warns you of the risk and offers to incubate first; you can continue anyway, and the assumptions it makes are listed.
+2. **Decision drivers.** From your Must requirements it proposes the three to five qualities that decide trade-offs (privacy, offline use, cost to run, maintainability by one person...). You adjust the ranking.
+3. **The list of decisions.** Platform, language, storage, hosting, authentication, testing, release... It separates what deserves an ADR (hard to reverse) from what is a one-line note.
+4. **One decision at a time.** Two to four real options, compared on *your* drivers, with a recommendation and what it is least sure about. If a key fact is unknown, it proposes a **spike** (a small time-boxed experiment) and records the decision as `proposed` until it is done. You decide; it records.
+5. **`ARCHITECTURE.md`.** Context, drivers, overview with a Mermaid diagram, components, data, key flows, cross-cutting concerns, a decisions index, and a **traceability table** (requirement → components → ADRs).
+6. **Coverage check.** Every Must must land on a component; every component must serve a requirement. Gaps are reported plainly.
+
+Tips: ask for the default it would take if you are stuck; say "this is a weekend tool" to keep the output short; run it again later to revise the design (accepted ADRs are superseded, never rewritten).
+
+## 6. Record a decision (`adr`)
+
+`architect` uses it automatically, but you can call it on its own whenever you make a technical choice:
+
+```
+/trellis:adr we chose SQLite over Postgres because the app is single-user and offline
+```
+
+It writes `docs/adr/NNNN-short-title.md` (numbered, one decision per file) with the context, **the options considered and why the others were rejected**, the decision, the consequences (including the negative ones), and a measurable trigger to revisit it. It also keeps `docs/adr/README.md` (the index) and the decisions table of `ARCHITECTURE.md` in sync.
+
+An accepted ADR is never edited. When a decision changes, ask for a new ADR that **supersedes** the old one: only the old one's status line changes. ADRs are never deleted or renumbered.
+
+## 7. Get a second opinion (`devils-advocate`)
+
+A skeptical reviewer that runs as a separate agent, so its opinion is not anchored on the conversation that produced the document. It is **read-only**: it reports, it never edits.
+
+Ask for it in plain words, for example:
+
+> Use the devils-advocate agent to review my SPEC.md.
+
+> Run trellis:devils-advocate on the architecture and the ADRs.
+
+It reads `SPEC.md`, `ARCHITECTURE.md`, `docs/adr/` and `STATUS.md`, and reports: an overall judgement, **blocking** problems, **important** ones, minor ones, the two or three questions you must answer, and what is solid. Every finding cites the file and section. It scales to the project (a weekend tool is not held to enterprise standards) and says "no blocking issue" when that is true.
+
+Good moments to call it: right after `incubate` (before investing), and after `architect` (before slicing the work).
+
+## 8. Languages
 
 Names (skills, agents, files) are in English. Documents are generated in the language of your project: the language you write in, unless the project already has documents in another one. Templates exist in English and French (`skills/<name>/templates/*.en.md` and `*.fr.md`).
 
-## 6. Troubleshooting
+## 9. Troubleshooting
 
 | Symptom | Likely cause and fix |
 | --- | --- |
@@ -136,7 +181,7 @@ Names (skills, agents, files) are in English. Documents are generated in the lan
 | `unable to get password from user` | You used the HTTPS URL on a private repository. Use the SSH form. |
 | An update did not arrive | Run `/plugin marketplace update trellis`, then restart the session. |
 
-## 7. Contributing and working on the plugin
+## 10. Contributing and working on the plugin
 
 Conventions for this repository (layout, naming, bilingual docs, "strict but soft") are in [`CLAUDE.md`](../CLAUDE.md). To check a change, run:
 

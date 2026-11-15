@@ -60,12 +60,12 @@ Trellis est **strict mais souple**. Si un prérequis manque (par exemple pas de 
 | Nom | Type | Phase | État |
 | --- | --- | --- | --- |
 | `incubate` | skill | incubation | **disponible** |
-| `architect` | skill | conception | prévu |
-| `adr` | skill | conception | prévu |
+| `architect` | skill | conception | **disponible** |
+| `adr` | skill | conception | **disponible** |
 | `slice` | skill | développement | prévu |
 | `deliver` | skill | développement | prévu |
 | `resume` | skill | toutes | prévu |
-| `devils-advocate` | agent | incubation, conception | prévu |
+| `devils-advocate` | agent | incubation, conception | **disponible** |
 | `verifier` | agent | développement | prévu |
 
 Cette page documente ce qui existe. Les éléments prévus sont décrits dans le [README](../README.fr.md) et auront leur propre section ici à leur sortie.
@@ -120,11 +120,56 @@ Les exigences ont des identifiants stables (`R1`, `R2`, ...), une priorité (Mus
 - **Déroge librement.** Si le verdict est « tester d'abord » et que tu veux continuer, dis-le. C'est consigné, pas refusé.
 - **Reviens plus tard.** Relance-le dans le même dossier pour réviser la spécification ; il fonctionne alors en mode mise à jour.
 
-## 5. Langues
+## 5. Concevoir l'architecture (`architect`)
+
+Lance-le dans le même dossier, une fois `SPEC.md` en place :
+
+```
+/trellis:architect
+```
+
+ou demande simplement : « Quelle est la bonne architecture pour ça ? »
+
+1. **Contexte.** Il lit `SPEC.md` et `STATUS.md`. Si la spécification manque ou n'est pas validée, il t'avertit du risque et propose d'incuber d'abord ; tu peux continuer quand même, et les hypothèses qu'il fait sont listées.
+2. **Critères de décision.** À partir de tes exigences Must, il propose les trois à cinq qualités qui tranchent les arbitrages (vie privée, usage hors ligne, coût d'exploitation, maintenabilité par une seule personne...). Tu ajustes le classement.
+3. **La liste des décisions.** Plateforme, langage, stockage, hébergement, authentification, tests, publication... Il sépare ce qui mérite un ADR (difficile à défaire) de ce qui tient en une ligne de note.
+4. **Une décision à la fois.** Deux à quatre vraies options, comparées sur *tes* critères, avec une recommandation et ce dont il est le moins sûr. Si un fait clé est inconnu, il propose un **spike** (petite expérience bornée dans le temps) et consigne la décision comme `proposée` jusqu'à sa réalisation. Tu décides ; il consigne.
+5. **`ARCHITECTURE.md`.** Contexte, critères, vue d'ensemble avec un diagramme Mermaid, composants, données, flux principaux, aspects transverses, un index des décisions et une **table de traçabilité** (exigence → composants → ADR).
+6. **Contrôle de couverture.** Chaque Must doit aboutir à un composant ; chaque composant doit servir une exigence. Les écarts sont signalés sans détour.
+
+Conseils : demande la valeur par défaut qu'il prendrait si tu hésites ; dis « c'est un outil de week-end » pour garder un résultat court ; relance-le plus tard pour réviser la conception (les ADR acceptés sont remplacés, jamais réécrits).
+
+## 6. Consigner une décision (`adr`)
+
+`architect` l'utilise automatiquement, mais tu peux l'appeler seul chaque fois que tu fais un choix technique :
+
+```
+/trellis:adr on a choisi SQLite plutôt que Postgres car l'app est mono-utilisateur et hors ligne
+```
+
+Il écrit `docs/adr/NNNN-titre-court.md` (numéroté, une décision par fichier) avec le contexte, **les options envisagées et pourquoi les autres sont écartées**, la décision, les conséquences (y compris négatives) et un déclencheur mesurable pour la réexaminer. Il tient aussi à jour `docs/adr/README.md` (l'index) et le tableau des décisions d'`ARCHITECTURE.md`.
+
+Un ADR accepté n'est jamais modifié. Quand une décision change, demande un nouvel ADR qui **remplace** l'ancien : seule la ligne de statut de l'ancien change. Les ADR ne sont jamais supprimés ni renumérotés.
+
+## 7. Demander un second avis (`devils-advocate`)
+
+Un relecteur sceptique qui s'exécute comme agent séparé : son avis n'est donc pas ancré dans la conversation qui a produit le document. Il est en **lecture seule** : il rend un rapport, il ne modifie rien.
+
+Demande-le avec des mots simples, par exemple :
+
+> Utilise l'agent devils-advocate pour relire mon SPEC.md.
+
+> Lance trellis:devils-advocate sur l'architecture et les ADR.
+
+Il lit `SPEC.md`, `ARCHITECTURE.md`, `docs/adr/` et `STATUS.md`, et rend : un jugement d'ensemble, les problèmes **bloquants**, les **importants**, les mineurs, les deux ou trois questions auxquelles tu dois répondre, et ce qui est solide. Chaque constat cite le fichier et la section. Il s'adapte au projet (un outil de week-end n'est pas jugé selon des normes d'entreprise) et dit « aucun problème bloquant » quand c'est vrai.
+
+Bons moments pour l'appeler : juste après `incubate` (avant d'investir), et après `architect` (avant de découper le travail).
+
+## 8. Langues
 
 Les noms (skills, agents, fichiers) sont en anglais. Les documents sont générés dans la langue de ton projet : celle dans laquelle tu écris, sauf si le projet a déjà des documents dans une autre. Les gabarits existent en anglais et en français (`skills/<nom>/templates/*.en.md` et `*.fr.md`).
 
-## 6. Dépannage
+## 9. Dépannage
 
 | Symptôme | Cause probable et solution |
 | --- | --- |
@@ -136,7 +181,7 @@ Les noms (skills, agents, fichiers) sont en anglais. Les documents sont génér�
 | `unable to get password from user` | Tu as utilisé l'URL HTTPS sur un dépôt privé. Utilise la forme SSH. |
 | Une mise à jour n'est pas arrivée | Lance `/plugin marketplace update trellis`, puis redémarre la session. |
 
-## 7. Contribuer et travailler sur le plugin
+## 10. Contribuer et travailler sur le plugin
 
 Les conventions du dépôt (organisation, nommage, documentation bilingue, « strict mais souple ») sont dans [`CLAUDE.md`](../CLAUDE.md). Pour vérifier une modification :
 
