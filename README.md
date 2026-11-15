@@ -58,10 +58,10 @@ Ideas for later: a maintenance phase (dependency updates, deprecation), a skill 
 ## Use it
 
 ```
-/plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
+claude plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
 ```
 
-The shorthand `--marketplace sebmafate/trellis` is accepted too.
+The shorthand `--marketplace sebmafate/trellis` is accepted too. Run it in a terminal, then start a new session. (In Claude Code's interactive interface you can type `/plugin install …` instead; hosts such as T3 Code do not offer that command.)
 
 Then ask Claude to incubate an idea, or invoke the skill directly as `/trellis:incubate`. Full guide (install options, trying it without installing, what each step does, troubleshooting): [docs/usage.md](docs/usage.md).
 

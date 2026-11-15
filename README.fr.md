@@ -58,10 +58,10 @@ Idées pour plus tard : une phase de maintenance (mises à jour de dépendances,
 ## Utilisation
 
 ```
-/plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
+claude plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
 ```
 
-La forme abrégée `--marketplace sebmafate/trellis` est acceptée aussi.
+La forme abrégée `--marketplace sebmafate/trellis` est acceptée aussi. À lancer dans un terminal, puis démarrer une nouvelle session. (Dans l'interface interactive de Claude Code, on peut taper `/plugin install …` ; des hôtes comme T3 Code n'offrent pas cette commande.)
 
 Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis:incubate`. Guide complet (options d'installation, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
 

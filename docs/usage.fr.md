@@ -6,22 +6,22 @@ Trellis est un plugin [Claude Code](https://claude.com/claude-code). Il ajoute d
 
 ## 1. Installer
 
-Il faut Claude Code. Puis installe le plugin depuis la marketplace de ce dépôt :
+Il faut Claude Code. Les commandes ci-dessous sont des **commandes de terminal** (`claude plugin …`), qui fonctionnent partout où Claude Code est installé, y compris dans des hôtes comme T3 Code. Dans l'interface interactive de Claude Code, on peut taper la même chose en commande à barre oblique (`/plugin install …`, `/plugin marketplace update …`) ; là où cette commande n'existe pas, utilise le terminal. Installe le plugin depuis la marketplace de ce dépôt :
 
 ```
-/plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
+claude plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
 ```
 
 La forme abrégée `owner/repo` est acceptée aussi :
 
 ```
-/plugin install trellis --marketplace sebmafate/trellis
+claude plugin install trellis --marketplace sebmafate/trellis
 ```
 
 **Depuis un fork privé ou une copie auto-hébergée**, l'URL HTTPS échoue (Git ne peut pas demander de mot de passe dans ce contexte). Utilise plutôt la forme SSH `git@hôte:propriétaire/dépôt.git`, par exemple :
 
 ```
-/plugin install trellis --marketplace git@example.com:proprietaire/trellis.git
+claude plugin install trellis --marketplace git@example.com:proprietaire/trellis.git
 ```
 
 Claude Code **refuse les URL `ssh://…`** (« Invalid marketplace source format »). La forme `git@hôte:chemin` ne peut pas porter de port : un port SSH non standard doit donc être déclaré dans `~/.ssh/config` (`Host example.com` avec `Port 2222`, par exemple).
@@ -29,9 +29,11 @@ Claude Code **refuse les URL `ssh://…`** (« Invalid marketplace source format
 La même chose en deux étapes, utile à connaître pour les mises à jour :
 
 ```
-/plugin marketplace add <URL du dépôt>
-/plugin install trellis@trellis
-/plugin marketplace update trellis
+claude plugin marketplace add <URL du dépôt>
+claude plugin install trellis@trellis
+claude plugin marketplace update trellis
+claude plugin update trellis@trellis
+claude plugin list
 ```
 
 ### Essayer sans installer
@@ -47,7 +49,7 @@ C'est aussi ainsi qu'on teste ses propres modifications en travaillant sur le pl
 
 ### Vérifier que ça marche
 
-Lance `/help` ou tape `/trellis:` et cherche `trellis:incubate`. Si tu le vois, le plugin est chargé.
+Lance `claude plugin list` dans un terminal : `trellis@trellis` doit apparaître comme activé. Les plugins sont chargés au démarrage d'une session : **démarre une nouvelle session** (un nouveau fil dans T3 Code) après l'installation ou une mise à jour. Puis tape `/trellis:` là où les commandes à barre oblique existent et cherche `trellis:incubate`, ou demande simplement à Claude d'incuber une idée.
 
 ## 2. Le principe en une image
 
@@ -457,14 +459,14 @@ Les noms (skills, agents, fichiers) sont en anglais. Les documents sont génér�
 
 | Symptôme | Cause probable et solution |
 | --- | --- |
-| `/trellis:incubate` est inconnu | Le plugin n'est pas chargé. Vérifie `/plugin`, ou lance Claude Code avec `--plugin-dir`. Redémarre la session après l'installation. |
+| `/trellis:incubate` est inconnu | Le plugin n'est pas chargé dans cette session. Vérifie `claude plugin list`, démarre une **nouvelle session** après l'installation, ou lance Claude Code avec `--plugin-dir`. |
 | Claude n'utilise pas le skill quand tu décris une idée | Appelle-le explicitement avec `/trellis:incubate`. |
 | Il demande ce que tu as déjà écrit | Mets tes notes dans le dossier du projet (README, notes) avant de commencer, pour qu'il les lise à l'étape 1. |
 | L'entretien paraît trop long | Dis-le. Le skill dimensionne l'entretien selon l'idée et peut sauter les sujets déjà réglés. |
 | `Invalid marketplace source format` | Tu as passé une URL `ssh://…`. Utilise `git@hôte:propriétaire/dépôt.git` (voir section 1). |
 | `unable to get password from user` | Tu as utilisé une URL HTTPS sur un dépôt privé (un fork privé, par exemple). Utilise la forme SSH. |
 | L'état du projet s'affiche à chaque début de session et je n'en veux pas | Définis la variable d'environnement `TRELLIS_NO_STATUS=1`. |
-| Une mise à jour n'est pas arrivée | Lance `/plugin marketplace update trellis`, puis redémarre la session. |
+| Une mise à jour n'est pas arrivée | Lance `claude plugin marketplace update trellis` puis `claude plugin update trellis@trellis` dans un terminal, et démarre une nouvelle session. |
 
 ## 29. Contribuer et travailler sur le plugin
 

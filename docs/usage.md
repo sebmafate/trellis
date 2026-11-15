@@ -6,22 +6,22 @@ Trellis is a [Claude Code](https://claude.com/claude-code) plugin. It adds skill
 
 ## 1. Install
 
-You need Claude Code. Then install the plugin from this repository's marketplace:
+You need Claude Code. The commands below are **terminal commands** (`claude plugin …`), which work everywhere Claude Code is installed, including hosts such as T3 Code. In Claude Code's own interactive interface you can type the same thing as a slash command (`/plugin install …`, `/plugin marketplace update …`); where that command does not exist, use the terminal. Install the plugin from this repository's marketplace:
 
 ```
-/plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
+claude plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
 ```
 
 The shorthand `owner/repo` is accepted too:
 
 ```
-/plugin install trellis --marketplace sebmafate/trellis
+claude plugin install trellis --marketplace sebmafate/trellis
 ```
 
 **From a private fork or a self-hosted copy**, the HTTPS URL fails (Git cannot ask for a password in this context). Use the SSH form `git@host:owner/repo.git` instead, for example:
 
 ```
-/plugin install trellis --marketplace git@example.com:owner/trellis.git
+claude plugin install trellis --marketplace git@example.com:owner/trellis.git
 ```
 
 Claude Code **rejects `ssh://…` URLs** ("Invalid marketplace source format"). The `git@host:path` form has no room for a port, so a non-standard SSH port must be set in `~/.ssh/config` (`Host example.com` with `Port 2222`, for instance).
@@ -29,9 +29,11 @@ Claude Code **rejects `ssh://…` URLs** ("Invalid marketplace source format"). 
 The same thing in two steps, which is useful to know when you want to update it:
 
 ```
-/plugin marketplace add <repository URL>
-/plugin install trellis@trellis
-/plugin marketplace update trellis
+claude plugin marketplace add <repository URL>
+claude plugin install trellis@trellis
+claude plugin marketplace update trellis
+claude plugin update trellis@trellis
+claude plugin list
 ```
 
 ### Try it without installing
@@ -47,7 +49,7 @@ This is also how you test your own changes while working on the plugin.
 
 ### Check that it works
 
-Run `/help` or type `/trellis:` and look for `trellis:incubate`. If you see it, the plugin is loaded.
+Run `claude plugin list` in a terminal: `trellis@trellis` should appear as enabled. Plugins are loaded when a session starts, so **start a new session** (a new thread in T3 Code) after installing or updating. Then type `/trellis:` where slash commands are available and look for `trellis:incubate`, or just ask Claude to incubate an idea.
 
 ## 2. The idea in one picture
 
@@ -457,14 +459,14 @@ Names (skills, agents, files) are in English. Documents are generated in the lan
 
 | Symptom | Likely cause and fix |
 | --- | --- |
-| `/trellis:incubate` is unknown | The plugin is not loaded. Check `/plugin`, or start Claude Code with `--plugin-dir`. Restart the session after installing. |
+| `/trellis:incubate` is unknown | The plugin is not loaded in this session. Check `claude plugin list`, start a **new session** after installing, or start Claude Code with `--plugin-dir`. |
 | Claude does not use the skill when you describe an idea | Call it explicitly with `/trellis:incubate`. |
 | It asks things you already wrote down | Put the notes in the project folder (README, notes) before starting, so it reads them in step 1. |
 | The interview feels too long | Say so. The skill sizes the interview to the idea and can skip topics you have already settled. |
 | `Invalid marketplace source format` | You passed an `ssh://…` URL. Use `git@host:owner/repo.git` instead (see section 1). |
 | `unable to get password from user` | You used an HTTPS URL on a private repository (a private fork, for instance). Use the SSH form. |
 | The project status appears at the start of every session and I do not want it | Set the environment variable `TRELLIS_NO_STATUS=1`. |
-| An update did not arrive | Run `/plugin marketplace update trellis`, then restart the session. |
+| An update did not arrive | Run `claude plugin marketplace update trellis` then `claude plugin update trellis@trellis` in a terminal, and start a new session. |
 
 ## 29. Contributing and working on the plugin
 
