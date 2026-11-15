@@ -1,0 +1,8 @@
+{
+  "name": "trellis",
+  "description": "Skills and agents that carry a project from a raw idea to shipped software: incubate, architect, slice, deliver, resume. Strict enough to keep documents honest, soft enough to stay usable.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Sébastien Ferrand"
+  }
+}
