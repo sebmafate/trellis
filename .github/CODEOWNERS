@@ -1,0 +1,5 @@
+# Code owners: automatically requested for review on pull requests (GitHub).
+# The last matching pattern takes precedence.
+
+# Default owner for everything in the repository
+*       @sebmafate
