@@ -41,6 +41,8 @@ Later candidates: `change-course`, `project-overview`, `publish`, `retro`, `prio
 /plugin install trellis --marketplace https://git.vbmaf.net/sebastien/trellis.git
 ```
 
+While the repository is private, use the SSH form instead: `--marketplace git@git.vbmaf.net:sebastien/trellis.git`.
+
 Then ask Claude to incubate an idea, or invoke the skill directly as `/trellis:incubate`. Full guide (SSH install, trying it without installing, what each step does, troubleshooting): [docs/usage.md](docs/usage.md).
 
 ## Languages

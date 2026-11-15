@@ -41,6 +41,8 @@ Candidats pour plus tard : `change-course`, `project-overview`, `publish`, `retr
 /plugin install trellis --marketplace https://git.vbmaf.net/sebastien/trellis.git
 ```
 
+Tant que le dépôt est privé, utiliser la forme SSH : `--marketplace git@git.vbmaf.net:sebastien/trellis.git`.
+
 Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis:incubate`. Guide complet (installation SSH, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
 
 ## Langues

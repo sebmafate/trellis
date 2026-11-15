@@ -12,11 +12,13 @@ You need Claude Code. Then install the plugin from this repository's marketplace
 /plugin install trellis --marketplace https://git.vbmaf.net/sebastien/trellis.git
 ```
 
-If the repository is private or your Git is set up for SSH, use the SSH URL instead:
+While the repository is private, the HTTPS URL fails (Git cannot ask for a password in this context). Use the SSH form instead:
 
 ```
-/plugin install trellis --marketplace ssh://git@git.vbmaf.net:2222/sebastien/trellis.git
+/plugin install trellis --marketplace git@git.vbmaf.net:sebastien/trellis.git
 ```
+
+Write it in this `git@host:path` form. Claude Code **rejects `ssh://…` URLs** ("Invalid marketplace source format"). That form has no room for a port, so a non-standard SSH port must be set in `~/.ssh/config` (here: `Host git.vbmaf.net` with `Port 2222`).
 
 The same thing in two steps, which is useful to know when you want to update it:
 
@@ -130,6 +132,8 @@ Names (skills, agents, files) are in English. Documents are generated in the lan
 | Claude does not use the skill when you describe an idea | Call it explicitly with `/trellis:incubate`. |
 | It asks things you already wrote down | Put the notes in the project folder (README, notes) before starting, so it reads them in step 1. |
 | The interview feels too long | Say so. The skill sizes the interview to the idea and can skip topics you have already settled. |
+| `Invalid marketplace source format` | You passed an `ssh://…` URL. Use `git@host:owner/repo.git` instead (see section 1). |
+| `unable to get password from user` | You used the HTTPS URL on a private repository. Use the SSH form. |
 | An update did not arrive | Run `/plugin marketplace update trellis`, then restart the session. |
 
 ## 7. Contributing and working on the plugin
