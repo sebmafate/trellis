@@ -74,6 +74,10 @@ Trellis est **strict mais souple**. Si un prérequis manque (par exemple pas de 
 | `bootstrap` | skill | développement | **disponible** |
 | `slice` | skill | développement | **disponible** |
 | `deliver` | skill | développement | **disponible** |
+| `autopilot` | skill | développement | **disponible** |
+| `product-owner` | agent | développement | **disponible** |
+| `task-writer` | agent | développement | **disponible** |
+| `developer` | agent | développement | **disponible** |
 | `verifier` | agent | développement | **disponible** |
 | `publish` | skill | publication | **disponible** |
 | `resume` | skill | toutes | **disponible** |
@@ -256,13 +260,95 @@ Cadre **une seule question**, avec des critères de succès, d'échec et de non-
 
 Découpe le travail dans `PLAN.md` : des **tranches verticales** (`SL0`, `SL1`...), chacune observable, testable et petite, avec des critères d'acceptation tirés de la matrice de vérification, les exigences, parcours et écrans qu'elle sert, une taille (S / M / L) et ses dépendances. La tranche 0 est le squelette fonctionnel ; les points risqués viennent tôt ; chaque Must est couvert par une tranche (un tableau de couverture le vérifie) ; les états d'erreur et de vide sont planifiés aussi. Les tranches lointaines restent grossières. Le relancer après un changement conserve les identifiants des tranches faites.
 
-## 16. Construire une tranche (`deliver`)
+## 16. Construire des tranches (`deliver` ou `autopilot`)
 
 ```
 /trellis:deliver SL1
 ```
 
 ou « livre la prochaine tranche ». Pour une tranche : il reformule les critères, écrit les **tests d'abord** et les voit échouer, implémente le minimum pour qu'ils passent, lance tests, lint et build (et essaie réellement ce que voit l'utilisateur), propose une vérification indépendante par le `verifier`, puis met à jour `PLAN.md`, `STATUS.md`, `CHANGELOG.md` et la matrice de tests, et commite si vous l'avez accepté. Il signale les écarts au lieu de les cacher, n'affaiblit jamais un test pour le faire passer, et s'arrête après chaque tranche. Il demande une fois si chaque tranche doit être commitée sur sa propre branche.
+
+### Ou laisser une équipe le faire : `autopilot`
+
+```
+/trellis:autopilot next --push
+/trellis:autopilot SL3 SL4 --parallel 2 --rounds 3 --push
+```
+
+`autopilot` fait travailler une petite **équipe d'agents** qui mène des tranches du plan jusqu'à une **pull request ouverte**, une PR par tranche. Il s'exécute dans votre session (lui seul peut vous parler) ; les agents font le travail :
+
+```
+product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─► push + une PR par tranche
+       │              │             │               │
+       └─────── décision à prendre ? ┴───────────────┘   il vous demande, puis reprend
+```
+
+| Rôle | Agent | Ce qu'il fait |
+| --- | --- | --- |
+| Product owner | `product-owner` | Propose la ou les prochaines tranches de `PLAN.md` : état de préparation, priorité, risque, lesquelles peuvent tourner en parallèle, et sur quelle branche de base. Vous confirmez. |
+| Rédacteur de tâches | `task-writer` | Décrit la tranche de façon **atomique** : petites tâches ordonnées, chacune avec son résultat attendu observable, le test à écrire d'abord, les fichiers probables et ce qui est hors périmètre. Dit ce qui manque s'il n'y arrive pas. |
+| Développeur | `developer` | Code et teste tâche par tâche sur une **branche dédiée dans un worktree dédié**, un commit par tâche, documents mis à jour. |
+| QA | `verifier` | Contrôle de façon indépendante par rapport à la consigne et aux critères. S'il rejette, ses constats numérotés repartent chez le **même développeur**, qui corrige, et la QA retest, jusqu'à `--rounds` tours (3 par défaut). |
+
+**Décisions.** Les agents ne peuvent pas vous poser de questions. Quand l'un d'eux a besoin d'une décision, il s'arrête et rend une demande structurée (question, options, recommandation, caractère architectural ou non). `autopilot` vous la pose, consigne un ADR dans la branche de la tranche si la décision est architecturale, puis **reprend le même agent** avec votre réponse. Les autres tranches indépendantes continuent pendant ce temps. Dans une session non interactive, il sauvegarde les questions dans le `state.md` du run et s'arrête, sans rien construire ni rien pousser ; relancez-le avec vos réponses dans le message (par exemple « Q1 = a, Q2 = a, et oui vous pouvez réécrire le critère de SL3 ») pour reprendre. Un critère vague dans le plan est traité de la même façon : il demande l'autorisation de le remplacer par des exemples concrets, dans la branche de la tranche.
+
+**Le résultat.** Pour chaque tranche qui passe la QA, il fait lui-même un contrôle final (tests, arbre propre, seulement les fichiers de la tranche, pas de secret évident), pousse la branche et ouvre **une pull request** avec une description générée (résumé, tâches, critères avec preuves, verdict QA, décisions, écarts, comment fusionner). Il utilise `fj` pour un hôte Forgejo ou Gitea et `gh` pour GitHub. **Il ne fusionne jamais, ne force jamais de poussée et ne pousse jamais sur votre branche par défaut.** Pousser et ouvrir des pull requests demandent l'autorisation donnée au départ (`--push` ou un oui) ; sans elle, vous n'obtenez que des branches locales.
+
+| Option | Signification | Par défaut |
+| --- | --- | --- |
+| `SL3 SL4` ou `next` | Tranches à traiter ; `next` laisse le product owner choisir | `next` |
+| `--push` | Autorise à pousser les branches et à ouvrir des pull requests | demandé |
+| `--parallel N` | Tranches menées en même temps | 1 |
+| `--rounds N` | Tours de QA par tranche avant de vous solliciter | 3 |
+| `--base BRANCHE` | Branche de base des tranches qui ne s'empilent pas | branche par défaut |
+| `--draft` | Ouvre les pull requests en brouillon | non |
+
+**Tranches empilées.** Une tranche qui dépend d'une autre pas encore fusionnée est construite sur **la branche de cette tranche** et sa pull request la cible : vous obtenez une chaîne de PR à fusionner **dans l'ordre**. Les tranches qui touchent les mêmes fichiers ou composants ne tournent pas en parallèle.
+
+**Fichiers conservés.** L'état du run, les consignes et les rapports vivent dans `.trellis/runs/<run>/` et les worktrees dans `.trellis/worktrees/`. Tout le dossier `.trellis/` est exclu de git en local (autopilot l'ajoute à `.git/info/exclude`, ce qui peut demander votre permission ; `bootstrap` le met dans `.gitignore`). Un run interrompu peut reprendre depuis son `state.md`.
+
+Vous pouvez aussi utiliser les agents seuls : demandez au `product-owner` « que construire ensuite ? », au `task-writer` de préparer une tranche avant de la construire à la main, ou au `verifier` de contrôler n'importe quel travail.
+
+### `deliver` ou `autopilot` ?
+
+| | `deliver` (skill) | `autopilot` (skill qui fait travailler une équipe) |
+| --- | --- | --- |
+| Qui travaille | Claude dans votre conversation | Une équipe d'agents : product owner, rédacteur de tâches, développeur, QA |
+| Supervision | Pas à pas ; vous voyez chaque test et chaque modification et pouvez piloter | Sans surveillance entre vos décisions ; un rapport et des pull requests à la fin |
+| Questions | Vous les pose au fil de l'eau | Rassemble les décisions, vous les pose, puis reprend l'agent |
+| Contrôle qualité | `verifier` facultatif à la fin | Intégré : une boucle QA (jusqu'à `--rounds`) avant toute poussée |
+| Votre copie de travail | Il y travaille (sur une branche de tranche si vous êtes d'accord) | Il n'y touche jamais ; worktrees et branches à lui |
+| Résultat | Un commit, si vous êtes d'accord | Une branche poussée et **une pull request par tranche** (avec autorisation) |
+| Travail en parallèle | Une tranche à la fois | Plusieurs tranches indépendantes ; PR empilées pour les dépendantes |
+| Contexte | Connaît toute la conversation | Chaque agent ne connaît que la consigne et les fichiers du projet |
+| Coût | Une conversation | Plusieurs agents par tranche et plusieurs tours ; le parallèle le multiplie |
+
+**Utilisez `deliver` quand**
+
+- c'est l'une des premières tranches, le squelette fonctionnel, ou tout ce qui fixe un modèle que la suite reprendra ;
+- la tranche est incertaine, touche l'architecture, ou demande du jugement visuel et d'interaction ;
+- les critères ne sont pas encore nets, ou vous prévoyez de prendre des décisions en route ;
+- vous voulez voir le code prendre forme et le corriger au fur et à mesure.
+
+**Utilisez `autopilot` quand**
+
+- le plan est solide : critères d'acceptation observables, aucune décision ouverte sur le chemin ;
+- la tranche suit un modèle déjà fixé par les précédentes ;
+- vous préférez des pull requests à relire plutôt qu'une conversation à suivre ;
+- plusieurs tranches sont indépendantes et vous les voulez en parallèle, ou vous voulez vous absenter pendant ce temps ;
+- tout ce qu'il lui faut peut se faire sans vous : pas de secrets, pas d'appareil, pas d'étape manuelle.
+
+**Évitez `autopilot` pour** le squelette fonctionnel (utilisez `bootstrap` et `deliver`), tout ce qui touche à la signature, aux identifiants ou à un appareil physique, et les tranches qui demandent une décision à laquelle vous n'avez pas réfléchi.
+
+**À savoir sur `autopilot`**
+
+- Chaque agent travaille uniquement à partir de la consigne et des fichiers du projet : meilleurs sont `PLAN.md`, `DESIGN.md` et `TESTING.md`, meilleur est le résultat. Un plan faible produit des tranches bloquées et des demandes de décision.
+- Il coûte plus cher que `deliver` : comptez plusieurs agents par tranche, davantage avec des tours de QA.
+- Les tranches parallèles modifient les mêmes fichiers de suivi (`PLAN.md`, `STATUS.md`, `CHANGELOG.md`) ; attendez-vous à de petits conflits de fusion, résolus en gardant les deux côtés.
+- Dans une session non interactive, les outils dont il a besoin (git, votre commande de test, votre CLI de forge) doivent être pré-autorisés ; une commande refusée est signalée et non ignorée. En session interactive, on vous le demande simplement.
+- Après la fusion, nettoyez avec les commandes qu'il donne (`git worktree remove <chemin>`, `git branch -d <branche>`).
+
+**Un bon rythme** : `deliver` pour les premières tranches, jusqu'à ce que les modèles et les tests soient établis, puis `autopilot` pour les tranches bien spécifiées, et votre propre relecture de chaque pull request avant de fusionner.
 
 ## 17. Vérifier de façon indépendante (`verifier`)
 
@@ -324,7 +410,7 @@ Quand vous ouvrez une session dans un projet qui a un `STATUS.md`, Trellis en aj
 ```
 incubate ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
    ─► (design-reviewer, security-reviewer) ─► test-strategy ─► bootstrap ─► slice
-   ─► deliver ⟲ (verifier) ─► publish
+   ─► deliver ou autopilot ⟲ (verifier) ─► publish
 ```
 
 À tout moment : `resume`, `change-course`, `retro`, `project-overview`, `coherence-checker`, `adr`. Les étapes entre parenthèses sont facultatives. Saute ce qui ne s'applique pas (pas d'interface : saute `ux`, `ui` et `design-reviewer`).

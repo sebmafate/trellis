@@ -74,6 +74,10 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | `bootstrap` | skill | development | **available** |
 | `slice` | skill | development | **available** |
 | `deliver` | skill | development | **available** |
+| `autopilot` | skill | development | **available** |
+| `product-owner` | agent | development | **available** |
+| `task-writer` | agent | development | **available** |
+| `developer` | agent | development | **available** |
 | `verifier` | agent | development | **available** |
 | `publish` | skill | release | **available** |
 | `resume` | skill | any | **available** |
@@ -256,13 +260,95 @@ Run after architecture and test strategy. It takes the stack from your ADRs, sho
 
 Cuts the work into `PLAN.md`: **vertical slices** (`SL0`, `SL1`...), each observable, testable and small, with acceptance criteria taken from the verification matrix, the requirements, journeys and screens it serves, a size (S / M / L) and dependencies. Slice 0 is the walking skeleton; risky things come early; every Must is covered by a slice (a coverage table checks it); error and empty states are planned too. Later slices stay coarse. Re-running it after a change keeps the IDs of done slices.
 
-## 16. Build a slice (`deliver`)
+## 16. Build slices (`deliver` or `autopilot`)
 
 ```
 /trellis:deliver SL1
 ```
 
 or "deliver the next slice". For one slice: it restates the criteria, writes the **tests first** and watches them fail, implements the minimum to pass, runs the tests, lint and build (and exercises user-facing work for real), offers an independent check by the `verifier`, then updates `PLAN.md`, `STATUS.md`, `CHANGELOG.md` and the test matrix, and commits if you agreed. It reports deviations instead of hiding them, never weakens a test to make it pass, and stops after each slice. It asks once whether each slice should be committed on its own branch.
+
+### Or let a team do it: `autopilot`
+
+```
+/trellis:autopilot next --push
+/trellis:autopilot SL3 SL4 --parallel 2 --rounds 3 --push
+```
+
+`autopilot` runs a small **team of agents** that takes slices from the plan to an **open pull request**, one PR per slice. It runs in your session (only it can talk to you); the agents do the work:
+
+```
+product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─► push + one PR per slice
+       │              │             │               │
+       └──────── decision needed? ──┴───────────────┘   it asks you, then resumes
+```
+
+| Role | Agent | What it does |
+| --- | --- | --- |
+| Product owner | `product-owner` | Proposes the next slice or slices from `PLAN.md`: readiness, priority, risk, which can run in parallel, and on which base branch. You confirm. |
+| Task writer | `task-writer` | Describes the slice **atomically**: small ordered tasks, each with an observable expected result, the test to write first, likely files and what is out of scope. Says what is missing if it cannot. |
+| Developer | `developer` | Codes and tests task by task on a **dedicated branch in a dedicated worktree**, one commit per task, documents updated. |
+| QA | `verifier` | Checks independently against the brief and the criteria. If it rejects, its numbered findings go back to the **same developer**, who fixes, and the QA re-tests, for up to `--rounds` rounds (default 3). |
+
+**Decisions.** The agents cannot ask you questions. When one needs a decision, it stops and returns a structured request (question, options, recommendation, whether it is architectural). `autopilot` asks you, records an ADR in the slice's branch if the decision is architectural, then **resumes the same agent** with your answer. Other independent slices keep moving meanwhile. In a non-interactive session, it saves the questions in the run's `state.md` and stops, with nothing built and nothing pushed; run it again with your answers in the message (for example "Q1 = a, Q2 = a, and yes you may rewrite the SL3 criterion") to resume. A vague criterion in the plan is treated the same way: it asks your permission to replace it with concrete examples, in the slice's branch.
+
+**The end result.** For each slice that passes QA, it runs a final check itself (tests, clean tree, only the slice's files, no obvious secret), pushes the branch, and opens **one pull request** with a generated description (summary, tasks, criteria with evidence, QA verdict, decisions, deviations, how to merge). It uses `fj` for a Forgejo or Gitea host and `gh` for GitHub. **It never merges, never force-pushes and never pushes to your default branch.** Pushing and opening pull requests need the authorisation you give at the start (`--push` or a yes); without it, you get local branches only.
+
+| Option | Meaning | Default |
+| --- | --- | --- |
+| `SL3 SL4` or `next` | Slices to run; `next` lets the product owner choose | `next` |
+| `--push` | Authorise pushing branches and opening pull requests | asked |
+| `--parallel N` | Slices in flight at once | 1 |
+| `--rounds N` | QA rounds per slice before escalating to you | 3 |
+| `--base BRANCH` | Base branch for slices that do not stack | default branch |
+| `--draft` | Open the pull requests as drafts | no |
+
+**Stacked slices.** A slice that depends on another that is not merged yet is built on **that slice's branch** and its pull request targets it, so you get a chain of PRs to merge **in order**. Slices that touch the same files or components are not run in parallel.
+
+**Files it keeps.** The run state, briefs and reports live in `.trellis/runs/<run>/` and the worktrees in `.trellis/worktrees/`. The whole `.trellis/` folder is excluded from git locally (autopilot adds it to `.git/info/exclude`, which may ask for your permission; `bootstrap` puts it in `.gitignore`). An interrupted run can be resumed from its `state.md`.
+
+You can also use the agents alone: ask the `product-owner` "what should we build next?", the `task-writer` to prepare a slice before building it by hand, or the `verifier` to check any piece of work.
+
+### `deliver` or `autopilot`?
+
+| | `deliver` (skill) | `autopilot` (skill running a team) |
+| --- | --- | --- |
+| Who works | Claude in your conversation | A team of agents: product owner, task writer, developer, QA |
+| Supervision | Step by step; you see every test and edit and can steer | Hands-off between your decisions; a report and pull requests at the end |
+| Questions | Asks you as they come up | Collects decisions, asks you, then resumes the agent |
+| Quality control | Optional `verifier` at the end | Built in: a QA loop (up to `--rounds`) before anything is pushed |
+| Your working copy | Works in it (on a slice branch if you agree) | Never touches it; worktrees and branches of its own |
+| Result | A commit, if you agree | A pushed branch and **a pull request per slice** (with authorisation) |
+| Parallel work | One slice at a time | Several independent slices; stacked PRs for dependent ones |
+| Context | Knows the whole conversation | Each agent knows only the brief and the project files |
+| Cost | One conversation | Several agents per slice and several rounds; parallel runs multiply it |
+
+**Use `deliver` when**
+
+- it is one of the first slices, the walking skeleton, or anything that sets a pattern the rest will follow;
+- the slice is uncertain, touches the architecture, or involves visual and interaction judgement;
+- the criteria are not crisp yet, or you expect to make decisions on the way;
+- you want to see the code take shape and correct it as it goes.
+
+**Use `autopilot` when**
+
+- the plan is solid: observable acceptance criteria, no open decision on the path;
+- the slice follows a pattern earlier slices already set;
+- you want pull requests to review rather than a conversation to follow;
+- several slices are independent and you want them in parallel, or you want to step away while it runs;
+- everything it needs can be done without you: no secrets, no device, no manual step.
+
+**Avoid `autopilot` for** the walking skeleton (use `bootstrap` and `deliver`), anything involving signing, credentials or a physical device, and slices that need a decision you have not thought about.
+
+**Things to know about `autopilot`**
+
+- Each agent works from the brief and the project files only, so the better `PLAN.md`, `DESIGN.md` and `TESTING.md` are, the better the result. A weak plan produces blocked slices and decision requests.
+- It costs more than `deliver`: expect several agent runs per slice, more with QA rounds.
+- Parallel slices edit the same tracking files (`PLAN.md`, `STATUS.md`, `CHANGELOG.md`); expect small merge conflicts there, resolved by keeping both sides.
+- In a non-interactive session the tools it needs (git, your test command, your forge CLI) must be pre-authorised; a refused command is reported rather than skipped. In an interactive session you are simply asked.
+- After merging, clean up with the commands it gives (`git worktree remove <path>`, `git branch -d <branch>`).
+
+**A good rhythm**: `deliver` for the first slices until patterns and tests are established, then `autopilot` for well-specified slices, and your own review of each pull request before merging.
 
 ## 17. Verify independently (`verifier`)
 
@@ -324,7 +410,7 @@ When you open a session in a project that has a `STATUS.md`, Trellis adds its fi
 ```
 incubate ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
    ─► (design-reviewer, security-reviewer) ─► test-strategy ─► bootstrap ─► slice
-   ─► deliver ⟲ (verifier) ─► publish
+   ─► deliver or autopilot ⟲ (verifier) ─► publish
 ```
 
 At any time: `resume`, `change-course`, `retro`, `project-overview`, `coherence-checker`, `adr`. Steps in parentheses are optional. Skip what does not apply (no interface: skip `ux`, `ui` and `design-reviewer`).

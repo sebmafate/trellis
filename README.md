@@ -6,7 +6,7 @@
 
 A [Claude Code](https://claude.com/claude-code) plugin of skills and agents that carries a project from a raw idea to shipped software. It gives a project structure to grow on, without deciding its direction.
 
-> Status: early work in progress (0.4.0). Licensed under the [MIT License](LICENSE).
+> Status: early work in progress (0.6.0). Licensed under the [MIT License](LICENSE).
 
 ## The idea
 
@@ -39,6 +39,10 @@ Trellis is **strict but soft**: skills point out what is missing (no validated s
 | `bootstrap` | skill | development | **available** |
 | `slice` | skill | development | **available** |
 | `deliver` | skill | development | **available** |
+| `autopilot` | skill | development | **available** |
+| `product-owner` | agent | development | **available** |
+| `task-writer` | agent | development | **available** |
+| `developer` | agent | development | **available** |
 | `verifier` | agent | development | **available** |
 | `publish` | skill | release | **available** |
 | `resume` | skill | any | **available** |

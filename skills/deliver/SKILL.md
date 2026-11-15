@@ -7,6 +7,8 @@ description: Build the next slice of a project's PLAN.md, one slice at a time: w
 
 Take **one slice** from `PLAN.md` to done: tested, verified, documented, committed. Small steps, honest reporting, documents kept in step with the code.
 
+**Autonomous alternative:** for well-specified slices, to run several in parallel, or to get pull requests without supervising, the `autopilot` skill runs a team of agents (product owner, task writer, developer, QA) and opens one pull request per slice. Use this skill instead when you want to steer step by step, or when the slice is uncertain, sets a pattern, or involves decisions you expect to make on the way. See the usage guide for the comparison.
+
 ## Principles
 
 - **One slice at a time.** Finish and report before starting another, unless the user asked for several ("deliver the next three"); then still do them one by one.
@@ -58,7 +60,7 @@ Fix what the checks find. If something cannot be verified here, say what and why
 
 ### 6. Commit
 
-If agreed: one commit for the slice, message in the imperative, mentioning the slice ID and the requirement IDs. Do not push unless asked.
+If agreed: one commit for the slice, message in the imperative, mentioning the slice ID and the requirement IDs. Stage deliberately: check `git status` and add only the files that belong to the slice, never generated files (caches, compiled files, build outputs, dependency folders); if the project lacks an ignore rule for them, say so rather than committing them. Do not push unless asked.
 
 ### 7. Report
 

@@ -39,7 +39,7 @@ List what you will create, with the commands you will run: the generator command
 
 - Run the stack's generator for the application or library structure, with the names and versions from the ADRs.
 - Create `docs/` with `docs/adr/` (and `docs/spikes/` if spikes exist). Keep `SPEC.md`, `ARCHITECTURE.md`, `DESIGN.md`, `TESTING.md`, `PLAN.md`, `STATUS.md` where the other skills put them (project root), or move them only if the user asks.
-- Add a `.gitignore` for the stack, a `README.md` stub (what it is, how to build and run, link to the docs), and a `CHANGELOG.md` with an "Unreleased" section.
+- Add a `.gitignore` for the stack (caches, build outputs, dependency folders, editor files), including `.trellis/`, where the `autopilot` skill keeps its isolated worktrees and run state. Add a `README.md` stub (what it is, how to build and run, link to the docs), and a `CHANGELOG.md` with an "Unreleased" section.
 - Add the lint and format configuration the stack decisions call for, if any.
 - Initialise git if needed. Make **no** first commit unless the user agrees.
 
