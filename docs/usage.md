@@ -88,6 +88,7 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | `task-writer` | agent | development | **available** |
 | `developer` | agent | development | **available** |
 | `verifier` | agent | development | **available** |
+| `pr-reviewer` | agent | development | **available** |
 | `publish` | skill | release | **available** |
 | `resume` | skill | any | **available** |
 | `change-course` | skill | any | **available** |
@@ -302,6 +303,7 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 | Task writer | `task-writer` | Describes the slice **atomically**: small ordered tasks, each with an observable expected result, the test to write first, likely files and what is out of scope. Says what is missing if it cannot. |
 | Developer | `developer` | Codes and tests task by task on a **dedicated branch in a dedicated worktree**, one commit per task, documents updated. |
 | QA | `verifier` | Checks independently against the brief and the criteria. If it rejects, its numbered findings go back to the **same developer**, who fixes, and the QA re-tests, for up to `--rounds` rounds (default 3). |
+| Reviewer (optional, `--review`) | `pr-reviewer` | Reviews the real diff like a human reviewer would, before the push: bugs, readability, consistency, risk, scope, accuracy of the PR description. See "Reviewing the pull request" below. |
 
 **Decisions.** The agents cannot ask you questions. When one needs a decision, it stops and returns a structured request (question, options, recommendation, whether it is architectural). `autopilot` asks you, records an ADR in the slice's branch if the decision is architectural, then **resumes the same agent** with your answer. Other independent slices keep moving meanwhile. In a non-interactive session, it saves the questions in the run's `state.md` and stops, with nothing built and nothing pushed; run it again with your answers in the message (for example "Q1 = a, Q2 = a, and yes you may rewrite the SL3 criterion") to resume. A vague criterion in the plan is treated the same way: it asks your permission to replace it with concrete examples, in the slice's branch.
 
@@ -315,12 +317,32 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 | `--rounds N` | QA rounds per slice before escalating to you | 3 |
 | `--base BRANCH` | Base branch for slices that do not stack | default branch |
 | `--draft` | Open the pull requests as drafts | no |
+| `--review` | Add a review by the `pr-reviewer` agent after QA and before pushing | off |
+| `--review-rounds N` | Fix rounds after a review that requests changes (`0` = report only) | 1 |
+| `--review-comment` | Post each review as one comment on its pull request without asking again | off (asked once the PRs are open) |
+
+#### Reviewing the pull request (`--review`)
+
+```
+/trellis:autopilot next --push --review
+/trellis:autopilot SL3 SL4 --push --review --review-comment
+```
+
+The QA answers "does the slice meet its criteria?". The review answers the other question, the one a careful colleague asks before merging: "would I be comfortable owning this code?". With `--review`, once a slice has passed QA and the final check, the `pr-reviewer` agent reads the **real diff** against the base branch and reports bugs and unhandled cases, unclear or needlessly complex code, duplication, deviations from the codebase's conventions and the ADRs, risky changes (security, dependencies, migrations), scope creep, and whether the pull request description says what the diff really does. It is **not given the developer's or the QA's reports**, so it forms its own opinion. It reports; it never edits, never approves and never posts.
+
+- **Before the push.** The review runs before the branch is pushed, so fixes land in the same pull request, and a run without `--push` is reviewed too.
+- **Verdict.** `approve`, `comments` (remarks, nothing blocking) or `changes-requested` (at least one blocking finding). The verdict is advisory; nothing is blocked on the forge.
+- **Fix loop.** On `changes-requested`, the numbered findings go back to the same developer, the QA re-tests and the reviewer looks again, for `--review-rounds` rounds (default 1; `0` = report only). If blocking findings remain, `autopilot` asks you: another round, take over with `deliver`, drop the slice, or push it as a draft with the findings listed. Remarks are summarised in a "Review" section of the pull request description.
+- **Posting a comment is separate and needs your say-so.** By default **nothing is posted**: once the pull requests are open, you are shown each review (verdict and full text) and asked which to post, as **one plain comment** per pull request (never the forge's approve or request-changes). With `--review-comment`, or a yes at the start, each review is posted without a further question. In a non-interactive session nothing is posted; the files and the exact commands are in the final report. The comment starts with a line saying it is an automated, advisory review. Posting needs an open pull request, so it also needs the push authorisation.
+- **Files.** `.trellis/runs/<run>/<ID>/review-N.md` (full report) and `review-comment.md` (the text that would be posted).
+
+It is an extra agent run per slice (more with fix rounds), and it uses the same model as the rest of the team, so it complements a human review and does not replace it.
 
 **Stacked slices.** A slice that depends on another that is not merged yet is built on **that slice's branch** and its pull request targets it, so you get a chain of PRs to merge **in order**. Slices that touch the same files or components are not run in parallel.
 
 **Files it keeps.** The run state, briefs and reports live in `.trellis/runs/<run>/` and the worktrees in `.trellis/worktrees/`. The whole `.trellis/` folder is excluded from git locally (autopilot adds it to `.git/info/exclude`, which may ask for your permission; `bootstrap` puts it in `.gitignore`). An interrupted run can be resumed from its `state.md`.
 
-You can also use the agents alone: ask the `product-owner` "what should we build next?", the `task-writer` to prepare a slice before building it by hand, or the `verifier` to check any piece of work.
+You can also use the agents alone: ask the `product-owner` "what should we build next?", the `task-writer` to prepare a slice before building it by hand, the `verifier` to check any piece of work, or the `pr-reviewer` to review any branch or pull request.
 
 ### `deliver` or `autopilot`?
 
@@ -329,7 +351,7 @@ You can also use the agents alone: ask the `product-owner` "what should we build
 | Who works | Claude in your conversation | A team of agents: product owner, task writer, developer, QA |
 | Supervision | Step by step; you see every test and edit and can steer | Hands-off between your decisions; a report and pull requests at the end |
 | Questions | Asks you as they come up | Collects decisions, asks you, then resumes the agent |
-| Quality control | Optional `verifier` at the end | Built in: a QA loop (up to `--rounds`) before anything is pushed |
+| Quality control | Optional `verifier` at the end | Built in: a QA loop (up to `--rounds`) before anything is pushed, plus an optional pull request review (`--review`) |
 | Your working copy | Works in it (on a slice branch if you agree) | Never touches it; worktrees and branches of its own |
 | Result | A commit, if you agree | A pushed branch and **a pull request per slice** (with authorisation) |
 | Parallel work | One slice at a time | Several independent slices; stacked PRs for dependent ones |
@@ -366,6 +388,10 @@ You can also use the agents alone: ask the `product-owner` "what should we build
 ## 17. Verify independently (`verifier`)
 
 An agent that runs the checks and judges each acceptance criterion as **verified, failed or unverifiable, with evidence**. It also checks that the tests would really catch a regression (no empty assertions, nothing skipped or weakened), conformance to the architecture and design, scope, and that the documents were updated. Verdict: Accept, Accept with notes, or Reject. It reports and never fixes. Ask for it directly ("use the verifier agent on SL2") or accept `deliver`'s offer.
+
+### And review the diff (`pr-reviewer`)
+
+An agent that reviews a branch or pull request like a human reviewer would: it reads the real diff and reports bugs and unhandled cases, readability and duplication, deviations from the codebase's conventions and the ADRs, risk (security, dependencies, breaking changes, migrations), scope creep and a description that does not match the diff. Findings are ranked **Blocking / Important / Suggestions** with `file:line`, and it ends with a verdict (`approve`, `comments`, `changes-requested`) and a ready-to-post comment. It does not re-run the acceptance criteria (the `verifier` does that), and it never edits, posts or approves anything. Ask for it directly ("use the pr-reviewer agent on this branch against main") or let `autopilot --review` run it.
 
 ## 18. Release (`publish`)
 

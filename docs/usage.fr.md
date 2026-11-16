@@ -88,6 +88,7 @@ Trellis est **strict mais souple**. Si un prérequis manque (par exemple pas de 
 | `task-writer` | agent | développement | **disponible** |
 | `developer` | agent | développement | **disponible** |
 | `verifier` | agent | développement | **disponible** |
+| `pr-reviewer` | agent | développement | **disponible** |
 | `publish` | skill | publication | **disponible** |
 | `resume` | skill | toutes | **disponible** |
 | `change-course` | skill | toutes | **disponible** |
@@ -302,6 +303,7 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 | Rédacteur de tâches | `task-writer` | Décrit la tranche de façon **atomique** : petites tâches ordonnées, chacune avec son résultat attendu observable, le test à écrire d'abord, les fichiers probables et ce qui est hors périmètre. Dit ce qui manque s'il n'y arrive pas. |
 | Développeur | `developer` | Code et teste tâche par tâche sur une **branche dédiée dans un worktree dédié**, un commit par tâche, documents mis à jour. |
 | QA | `verifier` | Contrôle de façon indépendante par rapport à la consigne et aux critères. S'il rejette, ses constats numérotés repartent chez le **même développeur**, qui corrige, et la QA retest, jusqu'à `--rounds` tours (3 par défaut). |
+| Relecteur (facultatif, `--review`) | `pr-reviewer` | Relit le vrai diff comme le ferait un relecteur humain, avant la poussée : bugs, lisibilité, cohérence, risques, périmètre, exactitude de la description de la PR. Voir « Relire la pull request » ci-dessous. |
 
 **Décisions.** Les agents ne peuvent pas vous poser de questions. Quand l'un d'eux a besoin d'une décision, il s'arrête et rend une demande structurée (question, options, recommandation, caractère architectural ou non). `autopilot` vous la pose, consigne un ADR dans la branche de la tranche si la décision est architecturale, puis **reprend le même agent** avec votre réponse. Les autres tranches indépendantes continuent pendant ce temps. Dans une session non interactive, il sauvegarde les questions dans le `state.md` du run et s'arrête, sans rien construire ni rien pousser ; relancez-le avec vos réponses dans le message (par exemple « Q1 = a, Q2 = a, et oui vous pouvez réécrire le critère de SL3 ») pour reprendre. Un critère vague dans le plan est traité de la même façon : il demande l'autorisation de le remplacer par des exemples concrets, dans la branche de la tranche.
 
@@ -315,12 +317,32 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 | `--rounds N` | Tours de QA par tranche avant de vous solliciter | 3 |
 | `--base BRANCHE` | Branche de base des tranches qui ne s'empilent pas | branche par défaut |
 | `--draft` | Ouvre les pull requests en brouillon | non |
+| `--review` | Ajoute une relecture par l'agent `pr-reviewer` après la QA et avant la poussée | désactivée |
+| `--review-rounds N` | Tours de correction après une relecture qui demande des modifications (`0` = rapport seulement) | 1 |
+| `--review-comment` | Poste chaque relecture en un commentaire sur sa pull request, sans redemander | non (demandé une fois les PR ouvertes) |
+
+#### Relire la pull request (`--review`)
+
+```
+/trellis:autopilot next --push --review
+/trellis:autopilot SL3 SL4 --push --review --review-comment
+```
+
+La QA répond à « la tranche respecte-t-elle ses critères ? ». La relecture répond à l'autre question, celle qu'un collègue attentif se pose avant de fusionner : « serais-je à l'aise pour maintenir ce code ? ». Avec `--review`, quand une tranche a passé la QA et le contrôle final, l'agent `pr-reviewer` lit le **vrai diff** par rapport à la branche de base et signale les bugs et les cas non gérés, le code peu clair ou inutilement complexe, les doublons, les écarts avec les conventions du code et les ADR, les changements risqués (sécurité, dépendances, migrations), le périmètre qui déborde, et si la description de la pull request dit bien ce que fait le diff. Il **ne reçoit ni le rapport du développeur ni celui de la QA** : il se forge son propre avis. Il rend un rapport ; il ne modifie rien, n'approuve rien et ne poste rien.
+
+- **Avant la poussée.** La relecture a lieu avant que la branche soit poussée : les corrections arrivent dans la même pull request, et un run sans `--push` est relu aussi.
+- **Verdict.** `approve`, `comments` (remarques, rien de bloquant) ou `changes-requested` (au moins un constat bloquant). Le verdict est consultatif ; rien n'est bloqué sur la forge.
+- **Boucle de correction.** Sur `changes-requested`, les constats numérotés repartent chez le même développeur, la QA retest et le relecteur regarde de nouveau, pendant `--review-rounds` tours (1 par défaut ; `0` = rapport seulement). S'il reste des constats bloquants, `autopilot` vous demande : un tour de plus, reprendre avec `deliver`, abandonner la tranche, ou la pousser en brouillon avec les constats listés. Les remarques sont résumées dans une section « Relecture automatique » de la description de la pull request.
+- **Poster un commentaire est une étape à part, qui demande votre accord.** Par défaut, **rien n'est posté** : une fois les pull requests ouvertes, on vous montre chaque relecture (verdict et texte complet) et on vous demande lesquelles poster, en **un simple commentaire** par pull request (jamais via « approuver » ou « demander des modifications » de la forge). Avec `--review-comment`, ou un oui au départ, chaque relecture est postée sans autre question. En session non interactive, rien n'est posté ; les fichiers et les commandes exactes sont dans le rapport final. Le commentaire commence par une ligne qui précise qu'il s'agit d'une relecture automatique et consultative. Poster demande une pull request ouverte, donc aussi l'autorisation de pousser.
+- **Fichiers.** `.trellis/runs/<run>/<ID>/review-N.md` (rapport complet) et `review-comment.md` (le texte qui serait posté).
+
+C'est un passage d'agent de plus par tranche (davantage avec des tours de correction), et il utilise le même modèle que le reste de l'équipe : il complète une relecture humaine et ne la remplace pas.
 
 **Tranches empilées.** Une tranche qui dépend d'une autre pas encore fusionnée est construite sur **la branche de cette tranche** et sa pull request la cible : vous obtenez une chaîne de PR à fusionner **dans l'ordre**. Les tranches qui touchent les mêmes fichiers ou composants ne tournent pas en parallèle.
 
 **Fichiers conservés.** L'état du run, les consignes et les rapports vivent dans `.trellis/runs/<run>/` et les worktrees dans `.trellis/worktrees/`. Tout le dossier `.trellis/` est exclu de git en local (autopilot l'ajoute à `.git/info/exclude`, ce qui peut demander votre permission ; `bootstrap` le met dans `.gitignore`). Un run interrompu peut reprendre depuis son `state.md`.
 
-Vous pouvez aussi utiliser les agents seuls : demandez au `product-owner` « que construire ensuite ? », au `task-writer` de préparer une tranche avant de la construire à la main, ou au `verifier` de contrôler n'importe quel travail.
+Vous pouvez aussi utiliser les agents seuls : demandez au `product-owner` « que construire ensuite ? », au `task-writer` de préparer une tranche avant de la construire à la main, au `verifier` de contrôler n'importe quel travail, ou au `pr-reviewer` de relire n'importe quelle branche ou pull request.
 
 ### `deliver` ou `autopilot` ?
 
@@ -329,7 +351,7 @@ Vous pouvez aussi utiliser les agents seuls : demandez au `product-owner` « que
 | Qui travaille | Claude dans votre conversation | Une équipe d'agents : product owner, rédacteur de tâches, développeur, QA |
 | Supervision | Pas à pas ; vous voyez chaque test et chaque modification et pouvez piloter | Sans surveillance entre vos décisions ; un rapport et des pull requests à la fin |
 | Questions | Vous les pose au fil de l'eau | Rassemble les décisions, vous les pose, puis reprend l'agent |
-| Contrôle qualité | `verifier` facultatif à la fin | Intégré : une boucle QA (jusqu'à `--rounds`) avant toute poussée |
+| Contrôle qualité | `verifier` facultatif à la fin | Intégré : une boucle QA (jusqu'à `--rounds`) avant toute poussée, plus une relecture de la pull request facultative (`--review`) |
 | Votre copie de travail | Il y travaille (sur une branche de tranche si vous êtes d'accord) | Il n'y touche jamais ; worktrees et branches à lui |
 | Résultat | Un commit, si vous êtes d'accord | Une branche poussée et **une pull request par tranche** (avec autorisation) |
 | Travail en parallèle | Une tranche à la fois | Plusieurs tranches indépendantes ; PR empilées pour les dépendantes |
@@ -366,6 +388,10 @@ Vous pouvez aussi utiliser les agents seuls : demandez au `product-owner` « que
 ## 17. Vérifier de façon indépendante (`verifier`)
 
 Un agent qui exécute les contrôles et juge chaque critère d'acceptation **vérifié, échoué ou invérifiable, preuve à l'appui**. Il vérifie aussi que les tests détecteraient vraiment une régression (pas d'assertions vides, rien d'ignoré ou d'affaibli), la conformité à l'architecture et au design, le périmètre, et la mise à jour des documents. Verdict : Accepter, Accepter avec remarques, ou Rejeter. Il rend un rapport et ne corrige jamais. Demande-le directement (« utilise l'agent verifier sur SL2 ») ou accepte la proposition de `deliver`.
+
+### Et relire le diff (`pr-reviewer`)
+
+Un agent qui relit une branche ou une pull request comme le ferait un relecteur humain : il lit le vrai diff et signale les bugs et les cas non gérés, la lisibilité et les doublons, les écarts avec les conventions du code et les ADR, les risques (sécurité, dépendances, changements incompatibles, migrations), le périmètre qui déborde et une description qui ne correspond pas au diff. Les constats sont classés **Bloquant / Important / Suggestions** avec `fichier:ligne`, et il termine par un verdict (`approve`, `comments`, `changes-requested`) et un commentaire prêt à poster. Il ne rejoue pas les critères d'acceptation (c'est le travail du `verifier`) et ne modifie, ne poste et n'approuve rien. Demandez-le directement (« utilise l'agent pr-reviewer sur cette branche par rapport à main ») ou laissez `autopilot --review` le lancer.
 
 ## 18. Publier (`publish`)
 

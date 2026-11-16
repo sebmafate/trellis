@@ -6,7 +6,7 @@
 
 Un plugin [Claude Code](https://claude.com/claude-code) de skills et d'agents qui accompagne un projet de l'idée brute jusqu'au logiciel livré. Il donne au projet une structure pour grandir, sans décider de sa direction.
 
-> Statut : travail en cours (0.7.0). Sous [licence MIT](LICENSE).
+> Statut : travail en cours (0.8.0). Sous [licence MIT](LICENSE).
 
 ## Le principe
 
@@ -45,6 +45,7 @@ Trellis est **strict mais souple** : les skills signalent ce qui manque (pas de 
 | `task-writer` | agent | développement | **disponible** |
 | `developer` | agent | développement | **disponible** |
 | `verifier` | agent | développement | **disponible** |
+| `pr-reviewer` | agent | développement | **disponible** |
 | `publish` | skill | publication | **disponible** |
 | `resume` | skill | toutes | **disponible** |
 | `change-course` | skill | toutes | **disponible** |

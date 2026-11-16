@@ -22,6 +22,12 @@ Verdict: **<accept / accept with notes>** after <N> round(s).
 
 <Notes and remaining remarks from the QA, if any.>
 
+## Review
+
+Automated review (`pr-reviewer`): **<approve / comments / changes requested>** after <N> round(s).
+
+<Remarks left open. Delete this whole section when no review was run.>
+
 ## Decisions
 
 <Decisions taken during the work, with links to any ADR written in this branch. "None" if none.>

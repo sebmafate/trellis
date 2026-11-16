@@ -22,6 +22,12 @@ Verdict : **<accepté / accepté avec remarques>** après <N> tour(s).
 
 <Remarques de la QA, le cas échéant.>
 
+## Relecture automatique
+
+Relecture automatique (`pr-reviewer`) : **<approuvé / remarques / modifications demandées>** après <N> tour(s).
+
+<Remarques restées ouvertes. Supprimer toute cette section si aucune relecture n'a été faite.>
+
 ## Décisions
 
 <Décisions prises pendant le travail, avec liens vers les ADR écrits dans cette branche. « Aucune » s'il n'y en a pas.>
