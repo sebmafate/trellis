@@ -43,7 +43,7 @@ Platform, budget, time, privacy, legal, maintenance, existing tools. Technology 
 
 ## Prior art
 
-What exists, and why it is or is not enough.
+What exists, and why it is or is not enough. Link `docs/prior-art.md` if a survey was done; otherwise say what was (or was not) looked at.
 
 ## Risks and assumptions
 

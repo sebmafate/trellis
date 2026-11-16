@@ -1,6 +1,6 @@
 ---
 name: prior-art
-description: Survey what already exists for an idea or a decision: products, open-source projects, platform-native features and commercial services, compared against the spec's requirements, with an honest build, buy, adapt or do-nothing verdict and dated sources. Use when the user asks "does this already exist", "what are the alternatives", "should I build or use something", or when an incubation needs more than a quick look. Writes docs/prior-art.md. Goes deeper than the quick check in `incubate`.
+description: Survey what already exists for an idea or a decision: products, open-source projects, platform-native features and commercial services, compared against the spec's requirements, with an honest build, buy, adapt or do-nothing verdict and dated sources, plus an optional market angle (how rivals position and price themselves, what would differentiate the project) when it is meant for other people. Use when the user asks "does this already exist", "what are the alternatives", "should I build or use something", or when an incubation needs more than a quick look. Writes docs/prior-art.md. Goes deeper than the quick check in `incubate`.
 ---
 
 # Prior art
@@ -25,6 +25,8 @@ Read `SPEC.md` (problem, users, requirements, constraints, the riskiest assumpti
 
 ### 1. Define the comparison
 
+First ask whether the project is meant for **other people** (a product, a public or shared tool) or only for the user. If it is meant for others, the survey includes a **market angle** (step 3b); for a personal tool, skip it.
+
 Agree with the user on the **criteria**: the Must requirements that discriminate, plus constraints that matter (platform, price, privacy and where data lives, licence, offline use, lock-in, maintenance, integration with tools the user already uses). Keep it to five to eight.
 
 ### 2. Search broadly
@@ -34,6 +36,18 @@ Look for: dedicated products, open-source projects, features of platforms or too
 ### 3. Evaluate the candidates
 
 For each serious candidate, record: what it is, link, what it covers of the criteria (per requirement where possible), price or licence, maintenance signals (last release, activity, bus factor), lock-in and data portability, and **why it would or would not do for this project**. Mark which facts are verified in primary sources and which are claims.
+
+### 3b. Market angle (only if the project is meant for others)
+
+Add what a builder needs to know beyond "does a tool exist":
+
+- **Segments and positioning**: who each serious candidate targets and how it presents itself.
+- **Pricing and business models**: free, freemium, subscription, one-off, open core, sponsored; the price points users actually accept.
+- **How users find and choose**: stores, search, communities, word of mouth; what reviews, forums and issue trackers praise and complain about.
+- **Signs of demand**: adoption, activity, complaints about gaps, requests nobody serves. Label anything estimated, and never present a guess as a figure.
+- **Differentiation**: what this project would do differently *that the target users value*, and whether that is enough, or easy for a rival to copy.
+
+Keep it to a page. This is not a market study: it cannot tell whether people would **pay or switch**, so turn that into the riskiest assumption and a cheap test (a landing page, five interviews, a prototype) rather than concluding from desk research.
 
 ### 4. Build, adopt, adapt or do nothing
 

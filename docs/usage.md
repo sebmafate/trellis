@@ -71,6 +71,7 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | `incubate` | skill | incubation | **available** |
 | `adopt` | skill | any (existing project) | **available** |
 | `prior-art` | skill | incubation | **available** |
+| `naming` | skill | incubation | **available** |
 | `devils-advocate` | agent | incubation, design | **available** |
 | `ux` | skill | design | **available** |
 | `architect` | skill | design | **available** |
@@ -152,6 +153,16 @@ Requirements carry stable IDs (`R1`, `R2`, ...), a priority (Must / Should / Cou
 - **Size follows the idea.** A small personal tool gets a short interview and a one-page spec.
 - **Override freely.** If the verdict is "test first" and you want to go on anyway, say so. It will be logged, not refused.
 - **Come back later.** Run it again in the same folder to revise the spec; it works in update mode.
+- **Existing products.** When the project is meant for **other people**, `incubate` proposes the `prior-art` survey by default (with its market angle) and logs it if you skip it. For a strictly personal tool, a quick search is enough.
+- **A name.** A working name is fine. `incubate` asks once whether you want help finding a real one, and offers the `naming` skill at the end (see below).
+
+### Find a name (`naming`)
+
+```
+/trellis:naming
+```
+
+Optional: it first asks whether you want help, and stops if you do not. It asks a short brief (what the name should evoke and not suggest, who will say and read it, languages, where it must be available, where the project will live), proposes about a dozen candidates across different directions (metaphor, coined word, evocative, other languages) with the reason and the known risk of each, and helps you cut to three to five finalists. It then **screens the finalists on the web** and records where and when: same or close names in the field, domains, repository and package names, app stores, meaning in other languages, and the public trademark registers it could really search. The verdict is "no conflict found in the places checked", "close conflict" or "blocking", never "free". Written to `docs/naming.md`; the chosen name goes into the spec's title and decision log. You can also ask it to check a name you already have. It is a first screening, not a trademark search or legal advice: for a commercial project, have the registers searched by a professional.
 
 ## 5. Design the architecture (`architect`)
 
@@ -248,7 +259,9 @@ It checks journeys against requirements, missing states, step counts, error mess
 /trellis:prior-art
 ```
 
-A deeper, sourced version of the quick check in `incubate`. You agree on five to eight **criteria taken from your requirements**, then it looks at products, open-source projects, platform features and combinations of tools, evaluates each against the criteria (with links and the date checked, and vendor claims labelled as such), and ends with a verdict: **adopt, adapt, build or do nothing**. Written to `docs/prior-art.md`. "Adopt X instead" is a valid result.
+A deeper, sourced version of the quick check in `incubate`, proposed by default when the project is meant for other people. You agree on five to eight **criteria taken from your requirements**, then it looks at products, open-source projects, platform features and combinations of tools, evaluates each against the criteria (with links and the date checked, and vendor claims labelled as such), and ends with a verdict: **adopt, adapt, build or do nothing**. Written to `docs/prior-art.md`. "Adopt X instead" is a valid result.
+
+For a project meant for others, it adds a short **market angle**: how the candidates position and price themselves, how users find and choose them, signs of demand and what would differentiate your project. It does not pretend to be a market study: whether people would pay or switch becomes the riskiest assumption and a cheap test.
 
 ## 13. Settle an unknown (`spike`)
 
@@ -463,7 +476,7 @@ When you open a session in a project that has a `STATUS.md`, Trellis adds its fi
 ## 25. Suggested order
 
 ```
-incubate ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
+incubate ─► (naming) ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
    ─► (design-reviewer, security-reviewer) ─► test-strategy ─► bootstrap ─► slice
    ─► deliver or autopilot ⟲ (verifier) ─► publish
 ```

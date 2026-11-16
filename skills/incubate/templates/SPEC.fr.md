@@ -43,7 +43,7 @@ Plateforme, budget, temps, vie privée, juridique, maintenance, outils existants
 
 ## Existant
 
-Ce qui existe, et pourquoi cela suffit ou non.
+Ce qui existe, et pourquoi cela suffit ou non. Renvoyer vers `docs/prior-art.md` si une étude a été faite ; sinon dire ce qui a (ou n'a pas) été regardé.
 
 ## Risques et hypothèses
 

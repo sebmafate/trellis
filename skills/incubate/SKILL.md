@@ -26,7 +26,7 @@ Pick the document language: the language the user writes in, unless the project 
 
 ### 1. Capture the seed
 
-Restate the idea in two sentences and ask the user to confirm or correct. Ask for a working name only if there is none.
+Restate the idea in two sentences and ask the user to confirm or correct. A working name is enough at this stage: ask for one only if there is none, and ask **once** whether the user wants help finding a real name (optional; it is offered at the end, see step 6, with the `naming` skill). Do not insist on a no.
 
 ### 2. Interview
 
@@ -37,7 +37,7 @@ Walk through these topics in order, skipping any that context already answers. F
 3. **Success**: how will you know it worked? Push for something observable ("I use it weekly", "a CRA takes 10 min").
 4. **Scope**: what is in the first usable version? What is explicitly **out**? Non-goals are mandatory; if the user has none, propose three.
 5. **Constraints**: platform, budget, time available, privacy, legal, who will maintain it, existing tools to reuse or integrate with.
-6. **Prior art**: what already exists? Offer a quick web search; for a deep, sourced survey with a build-or-adopt verdict, suggest the `prior-art` skill.
+6. **Prior art**: what already exists? Ask whether the project is meant for **other people** (a product, a public or shared tool) or only for the user. For a project meant for others, propose the `prior-art` skill **by default**, with its market angle (positioning, pricing, differentiation), and say that skipping it is a risk to log. For a strictly personal tool, a quick web search is enough unless the user wants more. Record what was found, or that nothing was searched, in the spec's prior-art section.
 7. **Riskiest assumption**: the one thing that, if false, kills the idea. Name it with the user.
 8. **Cheapest test**: the smallest experiment (hours or days, ideally without writing the app) that checks that assumption.
 9. **Kill criteria**: what result of the test, or what cost overrun, means "stop"? A spec without a kill criterion is incomplete.
@@ -74,7 +74,7 @@ Set the spec's status accordingly: `draft`, `validated`, `parked` or `abandoned`
 
 ### 6. Hand off
 
-Tell the user where the files are and what comes next (`architect`, or the test, or nothing). Do not start the next phase unprompted.
+Tell the user where the files are and what comes next (`architect`, or the test, or nothing). If the user said they want help with a name, offer the `naming` skill now, once the problem and users are clear. Do not start the next phase unprompted.
 
 ## What not to do
 

@@ -71,6 +71,7 @@ Trellis est **strict mais souple**. Si un prérequis manque (par exemple pas de 
 | `incubate` | skill | incubation | **disponible** |
 | `adopt` | skill | toutes (projet existant) | **disponible** |
 | `prior-art` | skill | incubation | **disponible** |
+| `naming` | skill | incubation | **disponible** |
 | `devils-advocate` | agent | incubation, conception | **disponible** |
 | `ux` | skill | conception | **disponible** |
 | `architect` | skill | conception | **disponible** |
@@ -152,6 +153,16 @@ Les exigences ont des identifiants stables (`R1`, `R2`, ...), une priorité (Mus
 - **La taille suit l'idée.** Un petit outil personnel donne un entretien court et une spécification d'une page.
 - **Déroge librement.** Si le verdict est « tester d'abord » et que tu veux continuer, dis-le. C'est consigné, pas refusé.
 - **Reviens plus tard.** Relance-le dans le même dossier pour réviser la spécification ; il fonctionne alors en mode mise à jour.
+- **Produits existants.** Quand le projet est destiné à **d'autres personnes**, `incubate` propose par défaut l'étude `prior-art` (avec son angle marché) et le consigne si tu la sautes. Pour un outil strictement personnel, une recherche rapide suffit.
+- **Un nom.** Un nom de travail suffit. `incubate` demande une fois si tu veux de l'aide pour en trouver un vrai, et propose le skill `naming` à la fin (voir ci-dessous).
+
+### Trouver un nom (`naming`)
+
+```
+/trellis:naming
+```
+
+Facultatif : il demande d'abord si tu veux de l'aide, et s'arrête si ce n'est pas le cas. Il pose un court cahier des charges (ce que le nom doit évoquer et ne pas suggérer, qui le dira et le lira, les langues, où il doit être disponible, où vivra le projet), propose une douzaine de candidats dans des pistes différentes (métaphore, mot inventé, évocateur, autres langues) avec la raison et le risque connu de chacun, et t'aide à retenir trois à cinq finalistes. Il **passe ensuite les finalistes au crible sur le web** et note où et quand : noms identiques ou proches dans le domaine, domaines, noms de dépôts et de paquets, boutiques d'applications, sens dans d'autres langues, et les registres publics de marques qu'il a réellement pu interroger. Le verdict est « aucun conflit trouvé dans les endroits vérifiés », « conflit proche » ou « bloquant », jamais « libre ». Écrit dans `docs/naming.md` ; le nom choisi entre dans le titre de la spécification et son journal des décisions. Tu peux aussi lui demander de vérifier un nom que tu as déjà. C'est un premier criblage, pas une recherche de marque ni un avis juridique : pour un projet commercial, fais consulter les registres par un professionnel.
 
 ## 5. Concevoir l'architecture (`architect`)
 
@@ -248,7 +259,9 @@ Il vérifie les parcours par rapport aux exigences, les états manquants, le nom
 /trellis:prior-art
 ```
 
-Une version plus poussée et sourcée du survol fait par `incubate`. Vous convenez de cinq à huit **critères tirés de vos exigences**, puis il examine produits, projets open source, fonctions de plateformes et combinaisons d'outils, évalue chacun selon les critères (avec liens et date de vérification, et affirmations des éditeurs signalées comme telles), et conclut par un verdict : **adopter, adapter, construire ou ne rien faire**. Écrit dans `docs/prior-art.md`. « Adopte plutôt X » est un résultat valable.
+Une version plus poussée et sourcée du survol fait par `incubate`, proposée par défaut quand le projet est destiné à d'autres personnes. Vous convenez de cinq à huit **critères tirés de vos exigences**, puis il examine produits, projets open source, fonctions de plateformes et combinaisons d'outils, évalue chacun selon les critères (avec liens et date de vérification, et affirmations des éditeurs signalées comme telles), et conclut par un verdict : **adopter, adapter, construire ou ne rien faire**. Écrit dans `docs/prior-art.md`. « Adopte plutôt X » est un résultat valable.
+
+Pour un projet destiné à d'autres personnes, il ajoute un court **angle marché** : comment les candidats se positionnent et fixent leurs prix, comment les utilisateurs les trouvent et les choisissent, les signes de demande et ce qui différencierait votre projet. Ce n'est pas une étude de marché : savoir si des gens paieraient ou changeraient devient l'hypothèse la plus risquée et un test peu coûteux.
 
 ## 13. Lever une inconnue (`spike`)
 
@@ -463,7 +476,7 @@ Quand vous ouvrez une session dans un projet qui a un `STATUS.md`, Trellis en aj
 ## 25. Ordre conseillé
 
 ```
-incubate ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
+incubate ─► (naming) ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
    ─► (design-reviewer, security-reviewer) ─► test-strategy ─► bootstrap ─► slice
    ─► deliver ou autopilot ⟲ (verifier) ─► publish
 ```
