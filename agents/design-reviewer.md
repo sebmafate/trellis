@@ -1,6 +1,7 @@
 ---
 name: design-reviewer
 description: Independent, read-only review of a project's UX and UI design (DESIGN.md) and, when code exists, of the interface code. Finds journeys that miss requirements, missing states, excess steps, inconsistent vocabulary, weak error messages, accessibility problems, token and component inconsistencies and deviations from platform conventions. It reports, it never edits. Use after the `ux` or `ui` skills, or whenever a skeptical design critique is wanted before building screens.
+model: opus
 tools: Read, Glob, Grep, WebSearch, WebFetch
 ---
 

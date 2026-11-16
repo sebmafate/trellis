@@ -320,6 +320,22 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 | `--review` | Add a review by the `pr-reviewer` agent after QA and before pushing | off |
 | `--review-rounds N` | Fix rounds after a review that requests changes (`0` = report only) | 1 |
 | `--review-comment` | Post each review as one comment on its pull request without asking again | off (asked once the PRs are open) |
+| `--dev-model MODEL` | Model of the `developer` (`sonnet`, `opus` or `haiku`) | the agent's own (`sonnet`) |
+| `--review-model MODEL` | Model of the judges, `verifier` and `pr-reviewer` | the agents' own (`opus`) |
+
+#### Which model for which agent?
+
+Each agent declares its model in the `model:` line of its header in `agents/<name>.md`. The defaults follow one idea: **a stronger model where the work is to judge or to specify, a cheaper one where it is to execute or to read mechanically.**
+
+| Agent | Model | Why |
+| --- | --- | --- |
+| `developer` | `sonnet` | Writes and runs the most, so it is the biggest cost. |
+| `verifier`, `pr-reviewer` | `opus` | They are judges: a judge stronger than the author catches more. A different model also gives a little more independence from the code's author. |
+| `task-writer` | `opus` | Its brief conditions everything that follows. |
+| `devils-advocate`, `security-reviewer`, `design-reviewer` | `opus` | Judgement and scepticism, called rarely. |
+| `product-owner`, `coherence-checker` | `sonnet` | Reading and cross-referencing, fairly mechanical. |
+
+`haiku` is not used by default: the saving is small next to the risk of missing a finding. To change it for one run, use `--dev-model` and `--review-model`; to change it for good, edit the `model:` line (`sonnet`, `opus`, `haiku`, or `inherit` to use your session's model). The aliases always point to the latest version of each family. If your plan does not include a model, `autopilot` falls back to the agent's own and says so in the run state; for a standalone agent, set `model: inherit`. Cost is not measured here: moving the developer to `sonnet` lowers it only if your session does not already run on a cheaper model.
 
 #### Reviewing the pull request (`--review`)
 

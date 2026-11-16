@@ -1,6 +1,7 @@
 ---
 name: developer
 description: Implements one slice from an atomic work brief, test first, on a dedicated branch in a dedicated git worktree: writes the tests, makes them pass task by task with one commit per task, runs tests, lint and build, updates PLAN, STATUS, CHANGELOG and the test matrix, and reports. Can also fix findings returned by the QA or the pull request reviewer. It cannot ask questions, so it stops and returns a decision request or a blocker instead of guessing. Never pushes, merges or touches other branches. Normally launched by the `autopilot` skill; for interactive work use the `deliver` skill instead.
+model: sonnet
 tools: Read, Glob, Grep, Edit, Write, Bash
 ---
 

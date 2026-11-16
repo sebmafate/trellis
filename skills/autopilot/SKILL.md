@@ -34,9 +34,13 @@ Parse what the user gave, in plain words or flags. Anything missing is asked **o
 | `--draft` | Open the pull requests as drafts | no |
 | `--review` | Add a pull request review by the `pr-reviewer` agent after QA and before pushing | off |
 | `--review-rounds N` | Fix rounds after a review that requests changes (`0` = report only, never loop) | 1 |
+| `--dev-model MODEL` | Model for the `developer` agent (`sonnet`, `opus` or `haiku`) | the agent's own (`sonnet`) |
+| `--review-model MODEL` | Model for the judges: the `verifier` (QA) and the `pr-reviewer` | the agents' own (`opus`) |
 | `--review-comment` | Authorise posting each review as **one comment** on its pull request, without asking again | off: asked after the pull requests are open |
 
 `--review-rounds` and `--review-comment` only matter with `--review` (passing either one switches the review on).
+
+**Models.** Each agent declares its own model in its header: `developer` and `product-owner` on `sonnet`, the judges and the task-writer on `opus`. The idea: a stronger model where the work is to judge or to specify, a cheaper one where it is to execute. `--dev-model` and `--review-model` change that for one run: you pass the value as the `model` parameter when you launch the agent, which takes precedence over its header. The `task-writer` and `product-owner` keep their headers. Accept only `sonnet`, `opus` or `haiku`; if a requested model is not available to the user (a plan without it), say so, fall back to the agent's header and note it in `state.md`. Warn once if `haiku` is chosen for the developer or a judge: it may miss defects.
 
 ## Principles
 
@@ -65,11 +69,11 @@ Check, and report gaps without blocking unless the run is impossible:
 
 ### 1. Run options
 
-Ask once for whatever the arguments did not settle: slices, `--parallel`, `--rounds`, base branch, draft or not, **whether to review the pull requests** (`--review`), and the **authorisation to push and open pull requests**. When asking, state exactly what that authorisation covers: the remote (show its URL), "push one new branch per slice and open one pull request per slice, never merge, never force-push".
+Ask once for whatever the arguments did not settle: slices, `--parallel`, `--rounds`, base branch, draft or not, the models if the user wants to change them (otherwise the agents' own, which you state), **whether to review the pull requests** (`--review`), and the **authorisation to push and open pull requests**. When asking, state exactly what that authorisation covers: the remote (show its URL), "push one new branch per slice and open one pull request per slice, never merge, never force-push".
 
 If the review is on, say how comments work: by default nothing is posted; once the pull requests are open you will be shown each review and asked which to post as a comment. With `--review-comment` (or a yes now) each review is posted as one comment on its pull request without a further question. Posting needs a pull request, so it also needs the push authorisation.
 
-Create `.trellis/runs/<run-id>/state.md` (create the folders if needed) (run id: date and a short word) with the options and a table of slices (status, branch, worktree, base, QA round, review verdict and round, agent IDs, PR link, review comment posted or not) and a "Decisions" section.
+Create `.trellis/runs/<run-id>/state.md` (create the folders if needed) (run id: date and a short word) with the options (including the models actually used) and a table of slices (status, branch, worktree, base, QA round, review verdict and round, agent IDs, PR link, review comment posted or not) and a "Decisions" section.
 
 ### 2. Product owner
 
@@ -93,11 +97,11 @@ For each confirmed slice, in dependency order:
 
 For each slice that is `ready` (several at once up to `--parallel`; launch independent slices' agents in the same message so they run concurrently):
 
-1. **Developer**: launch `trellis:developer` with the brief, the worktree path and the branch. Save its report to `<ID>/dev-report-1.md`.
+1. **Developer**: launch `trellis:developer` (with `model` set to `--dev-model` when given) with the brief, the worktree path and the branch. Save its report to `<ID>/dev-report-1.md`.
    - `done`: go to QA.
    - `needs-decision`: step 5, then resume the same developer with the answer.
    - `blocked`: tell the user, mark the slice `blocked`, continue with the others.
-2. **QA**: launch `trellis:verifier` with the worktree path, the brief, the plan's criteria and the developer's report. Save the report to `<ID>/qa-report-N.md`. Read the `VERDICT:` line:
+2. **QA**: launch `trellis:verifier` (with `model` set to `--review-model` when given) with the worktree path, the brief, the plan's criteria and the developer's report. Save the report to `<ID>/qa-report-N.md`. Read the `VERDICT:` line:
    - `accept` or `accept-with-notes`: the slice is ready to publish. Keep the notes for the pull request.
    - `reject`: send the QA's numbered findings to the same developer (resume it) in **fix mode**, then run the QA again with the previous findings. Repeat up to `--rounds` rounds.
    - `needs-decision`: step 5.
@@ -127,7 +131,7 @@ For each slice that passed QA, before publishing, check it yourself in its workt
 For each slice that passed the final gate, **before** anything is pushed, so that fixes land in the same pull request and a local-only run is reviewed too.
 
 1. **Draft the description.** Write the pull request description now (see step 8.3) into `.trellis/runs/<run-id>/<ID>/pr.md`, so the reviewer can check it against the diff. Refresh it after any fix round.
-2. **Reviewer**: launch `trellis:pr-reviewer` with the worktree path, the base branch, the slice and its criteria, the brief and the draft description. Do **not** pass the developer's or the QA's reports. Save its report to `<ID>/review-N.md` and, from its "Comment for the pull request" section, `<ID>/review-comment.md` (rewritten at each round: it must describe the final state). Read the `REVIEW:` line:
+2. **Reviewer**: launch `trellis:pr-reviewer` (with `model` set to `--review-model` when given) with the worktree path, the base branch, the slice and its criteria, the brief and the draft description. Do **not** pass the developer's or the QA's reports. Save its report to `<ID>/review-N.md` and, from its "Comment for the pull request" section, `<ID>/review-comment.md` (rewritten at each round: it must describe the final state). Read the `REVIEW:` line:
    - `approve` or `comments`: the slice is ready to publish. Keep the remarks for the pull request description (section "Review").
    - `changes-requested`: if rounds remain (`--review-rounds`, default 1), send the reviewer's numbered findings to the same developer (resume it) in **fix mode**, then run the QA (`verifier`, re-test mode) on the new state, re-run the final gate (step 6), and re-run the reviewer with its previous findings. A QA rejection at this point is an ordinary QA round of step 4 (bounded by `--rounds`, counting the rounds already used). With `--review-rounds 0` or rounds exhausted, go to 3.
    - `needs-decision`: step 5, then re-run or resume the reviewer with the answer.

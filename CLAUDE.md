@@ -20,4 +20,5 @@ This repository is a Claude Code plugin and is meant to become public. Write acc
 - **No personal data** in this repository (names, paths, project details): it will be public.
 - Do not commit unless asked.
 - **Keep `agents/developer.md` and `skills/deliver/SKILL.md` in step**: they describe the same delivery method (one autonomous inside `autopilot`, one interactive). Change one, check the other.
+- **Each agent declares its `model:`** in its header (`sonnet`, `opus` or `haiku`): `opus` for judges and specifiers, `sonnet` for executors. The table is in `docs/usage.md` (section 16, "Which model for which agent?"); keep it, the French guide and `autopilot`'s `--dev-model` / `--review-model` in step when a model changes.
 - **Agent status protocol**: `autopilot` relies on the first line of each agent report (`STATUS:` for product-owner, task-writer and developer; `VERDICT:` for the verifier, `REVIEW:` for the pr-reviewer). Do not change those words without updating `skills/autopilot/SKILL.md`.

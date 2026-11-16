@@ -320,6 +320,22 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 | `--review` | Ajoute une relecture par l'agent `pr-reviewer` après la QA et avant la poussée | désactivée |
 | `--review-rounds N` | Tours de correction après une relecture qui demande des modifications (`0` = rapport seulement) | 1 |
 | `--review-comment` | Poste chaque relecture en un commentaire sur sa pull request, sans redemander | non (demandé une fois les PR ouvertes) |
+| `--dev-model MODÈLE` | Modèle du `developer` (`sonnet`, `opus` ou `haiku`) | celui de l'agent (`sonnet`) |
+| `--review-model MODÈLE` | Modèle des juges, `verifier` et `pr-reviewer` | celui des agents (`opus`) |
+
+#### Quel modèle pour quel agent ?
+
+Chaque agent déclare son modèle dans la ligne `model:` de son en-tête, dans `agents/<nom>.md`. Les valeurs par défaut suivent une idée : **un modèle plus fort là où le travail consiste à juger ou à spécifier, un modèle moins coûteux là où il consiste à exécuter ou à lire de façon mécanique.**
+
+| Agent | Modèle | Pourquoi |
+| --- | --- | --- |
+| `developer` | `sonnet` | Il écrit et lance le plus de choses : c'est le plus gros poste de coût. |
+| `verifier`, `pr-reviewer` | `opus` | Ce sont des juges : un juge plus fort que l'auteur attrape plus de défauts. Un modèle différent apporte aussi un peu plus d'indépendance vis-à-vis de l'auteur du code. |
+| `task-writer` | `opus` | Sa consigne conditionne tout ce qui suit. |
+| `devils-advocate`, `security-reviewer`, `design-reviewer` | `opus` | Jugement et esprit critique, appelés rarement. |
+| `product-owner`, `coherence-checker` | `sonnet` | Lecture et mise en relation, plutôt mécaniques. |
+
+`haiku` n'est pas utilisé par défaut : le gain est faible face au risque de rater un constat. Pour changer pour un seul run, utilisez `--dev-model` et `--review-model` ; pour changer durablement, modifiez la ligne `model:` (`sonnet`, `opus`, `haiku`, ou `inherit` pour utiliser le modèle de votre session). Les alias pointent toujours vers la dernière version de chaque famille. Si votre abonnement n'inclut pas un modèle, `autopilot` retombe sur celui de l'agent et le note dans l'état du run ; pour un agent utilisé seul, mettez `model: inherit`. Le coût n'est pas mesuré ici : passer le développeur sur `sonnet` ne le réduit que si votre session ne tourne pas déjà sur un modèle moins cher.
 
 #### Relire la pull request (`--review`)
 

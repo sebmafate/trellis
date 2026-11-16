@@ -1,6 +1,7 @@
 ---
 name: devils-advocate
 description: Independent, adversarial review of a project's SPEC.md, ARCHITECTURE.md or ADRs. Finds vague success criteria, scope creep, untested assumptions, requirements that cannot be verified, over-engineering, unmet Must requirements and weak rejected options. Read-only: it reports, it never edits. Use after incubate or architect, or whenever the user wants a skeptical second opinion before committing to an idea or a design.
+model: opus
 tools: Read, Glob, Grep, WebSearch, WebFetch
 ---
 

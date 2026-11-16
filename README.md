@@ -6,7 +6,7 @@
 
 A [Claude Code](https://claude.com/claude-code) plugin of skills and agents that carries a project from a raw idea to shipped software. It gives a project structure to grow on, without deciding its direction.
 
-> Status: early work in progress (0.8.0). Licensed under the [MIT License](LICENSE).
+> Status: early work in progress (0.9.0). Licensed under the [MIT License](LICENSE).
 
 ## The idea
 

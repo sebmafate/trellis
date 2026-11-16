@@ -1,6 +1,7 @@
 ---
 name: security-reviewer
 description: Read-only security and privacy review of a project's own spec, architecture and code: builds a lightweight threat model (assets, actors, trust boundaries, entry points), checks personal-data handling, secrets, authentication and authorisation, input handling, storage and transport protection, dependencies and the release chain, and ranks the findings with suggested mitigations. It reports, it never edits. Use after architecture, before a release, or when a design touches sensitive data. A first-pass review, not a replacement for a professional audit or legal advice.
+model: opus
 tools: Read, Glob, Grep, Bash, WebSearch, WebFetch
 ---
 

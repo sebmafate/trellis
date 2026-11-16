@@ -6,7 +6,7 @@
 
 Un plugin [Claude Code](https://claude.com/claude-code) de skills et d'agents qui accompagne un projet de l'idée brute jusqu'au logiciel livré. Il donne au projet une structure pour grandir, sans décider de sa direction.
 
-> Statut : travail en cours (0.8.0). Sous [licence MIT](LICENSE).
+> Statut : travail en cours (0.9.0). Sous [licence MIT](LICENSE).
 
 ## Le principe
 
