@@ -1,6 +1,6 @@
 ---
 name: change-course
-description: Handle a change in a running project consistently: a new, modified or dropped requirement, a pivot, a technology change, a design change or a scope cut. It analyses the impact across SPEC, ADRs and ARCHITECTURE, DESIGN, TESTING, PLAN and the code, sizes the change, gets the user's decision, then updates every document in the right order without renumbering or rewriting history. Use when the user says "we need to change X", "drop this feature", "add this requirement", "let's switch to Y", or when a spike or review invalidates something.
+description: 'Handle a change in a running project consistently: a new, modified or dropped requirement, a pivot, a technology change, a design change or a scope cut. It analyses the impact across SPEC, ADRs and ARCHITECTURE, DESIGN, TESTING, PLAN and the code, sizes the change, gets the user''s decision, then updates every document in the right order without renumbering or rewriting history. Use when the user says "we need to change X", "drop this feature", "add this requirement", "let''s switch to Y", or when a spike or review invalidates something.'
 ---
 
 # Change course

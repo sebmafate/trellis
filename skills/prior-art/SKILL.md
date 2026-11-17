@@ -1,6 +1,6 @@
 ---
 name: prior-art
-description: Survey what already exists for an idea or a decision: products, open-source projects, platform-native features and commercial services, compared against the spec's requirements, with an honest build, buy, adapt or do-nothing verdict and dated sources, plus an optional market angle (how rivals position and price themselves, what would differentiate the project) when it is meant for other people. Use when the user asks "does this already exist", "what are the alternatives", "should I build or use something", or when an incubation needs more than a quick look. Writes docs/prior-art.md. Goes deeper than the quick check in `incubate`.
+description: 'Survey what already exists for an idea or a decision: products, open-source projects, platform-native features and commercial services, compared against the spec''s requirements, with an honest build, buy, adapt or do-nothing verdict and dated sources, plus an optional market angle (how rivals position and price themselves, what would differentiate the project) when it is meant for other people. Use when the user asks "does this already exist", "what are the alternatives", "should I build or use something", or when an incubation needs more than a quick look. Writes docs/prior-art.md. Goes deeper than the quick check in `incubate`.'
 ---
 
 # Prior art

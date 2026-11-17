@@ -1,6 +1,6 @@
 ---
 name: test-strategy
-description: Define how a project will be tested and verified, and write it as TESTING.md: the risks that matter, the mix of test levels, a verification matrix that maps every requirement to a check, test data and environments, quality gates, non-functional and manual testing, and the definition of done. Use after architecture (and UX/UI when there is an interface), before slicing the work, or when the user asks "how should we test this", "what tests do we need", or wants a test plan. Not for writing the tests themselves; that happens during delivery.
+description: 'Define how a project will be tested and verified, and write it as TESTING.md: the risks that matter, the mix of test levels, a verification matrix that maps every requirement to a check, test data and environments, quality gates, non-functional and manual testing, and the definition of done. Use after architecture (and UX/UI when there is an interface), before slicing the work, or when the user asks "how should we test this", "what tests do we need", or wants a test plan. Not for writing the tests themselves; that happens during delivery.'
 ---
 
 # Test strategy

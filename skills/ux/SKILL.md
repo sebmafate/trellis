@@ -1,6 +1,6 @@
 ---
 name: ux
-description: Design how a project is used (the user experience): user journeys derived from the requirements, information structure, an inventory of screens with all their states (empty, loading, error, offline, first use), low-fidelity wireframes and the key interface texts, written as the UX part of DESIGN.md. Use after incubation (before or alongside architecture) when the user asks how the app should work, flow, or look in terms of screens and navigation, or wants to review a flow. For visual style, tokens and components use `ui` instead. Applies to command-line tools and APIs too, treating commands, output and errors as the interface.
+description: 'Design how a project is used (the user experience): user journeys derived from the requirements, information structure, an inventory of screens with all their states (empty, loading, error, offline, first use), low-fidelity wireframes and the key interface texts, written as the UX part of DESIGN.md. Use after incubation (before or alongside architecture) when the user asks how the app should work, flow, or look in terms of screens and navigation, or wants to review a flow. For visual style, tokens and components use `ui` instead. Applies to command-line tools and APIs too, treating commands, output and errors as the interface.'
 ---
 
 # UX

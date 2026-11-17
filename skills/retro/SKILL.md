@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Run a retrospective at the end of a phase, a milestone, a release or a project: compare what happened with the spec's success and kill criteria, review estimates, decisions and spikes against reality, capture what worked and what did not, and reach an explicit verdict (continue, pivot, park, abandon, done) with concrete actions. Use when the user asks for a retrospective, a post-mortem or a review of the project, when a kill criterion may be met, or after a release. Writes docs/retro/YYYY-MM-DD-title.md.
+description: 'Run a retrospective at the end of a phase, a milestone, a release or a project: compare what happened with the spec''s success and kill criteria, review estimates, decisions and spikes against reality, capture what worked and what did not, and reach an explicit verdict (continue, pivot, park, abandon, done) with concrete actions. Use when the user asks for a retrospective, a post-mortem or a review of the project, when a kill criterion may be met, or after a release. Writes docs/retro/YYYY-MM-DD-title.md.'
 ---
 
 # Retro

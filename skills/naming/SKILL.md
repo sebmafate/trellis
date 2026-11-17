@@ -1,6 +1,6 @@
 ---
 name: naming
-description: Help find an original name for a project, then check each finalist for obvious conflicts (existing products in the same field, domain names, repository and package names, app stores, meaning in other languages) and record the choice. Optional: it always asks whether the user wants a name before doing anything. Use when the user says they need a name, is hesitating between names, wants a name checked, or when `incubate` finds the project has only a working name and the user wants help. Writes docs/naming.md. A first screening, not a trademark search or legal advice.
+description: 'Help find an original name for a project, then check each finalist for obvious conflicts (existing products in the same field, domain names, repository and package names, app stores, meaning in other languages) and record the choice. Optional: it always asks whether the user wants a name before doing anything. Use when the user says they need a name, is hesitating between names, wants a name checked, or when `incubate` finds the project has only a working name and the user wants help. Writes docs/naming.md. A first screening, not a trademark search or legal advice.'
 ---
 
 # Naming

@@ -1,6 +1,6 @@
 ---
 name: architect
-description: Design a project's architecture from its spec and produce ARCHITECTURE.md plus one ADR per significant decision. Walks through the choices that matter (platform, language, storage, hosting, auth, testing, release) one at a time, compares realistic options against the spec's requirements, recommends, and records each decision. Use after incubation, when the user asks "what's the right architecture / platform / language / stack", or wants an ARCHITECTURE.md with clear decisions. Also use to revisit the architecture when requirements change. For an existing project whose decisions are already in the code, use `adopt` to reconstruct them first.
+description: 'Design a project''s architecture from its spec and produce ARCHITECTURE.md plus one ADR per significant decision. Walks through the choices that matter (platform, language, storage, hosting, auth, testing, release) one at a time, compares realistic options against the spec''s requirements, recommends, and records each decision. Use after incubation, when the user asks "what''s the right architecture / platform / language / stack", or wants an ARCHITECTURE.md with clear decisions. Also use to revisit the architecture when requirements change. For an existing project whose decisions are already in the code, use `adopt` to reconstruct them first.'
 ---
 
 # Architect

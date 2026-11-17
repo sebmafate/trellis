@@ -1,6 +1,6 @@
 ---
 name: product-owner
-description: Read-only agent that proposes which slice or slices of a project's PLAN.md to build next, in what order, whether any can run in parallel, and on which base branch, with the reasons. Checks priorities against SPEC.md, dependencies, risk, open decisions and the state of the repository. Normally launched by the `autopilot` skill, but can be used alone to answer "what should we build next?". It proposes; the user decides.
+description: 'Read-only agent that proposes which slice or slices of a project''s PLAN.md to build next, in what order, whether any can run in parallel, and on which base branch, with the reasons. Checks priorities against SPEC.md, dependencies, risk, open decisions and the state of the repository. Normally launched by the `autopilot` skill, but can be used alone to answer "what should we build next?". It proposes; the user decides.'
 model: sonnet
 tools: Read, Glob, Grep, Bash
 ---

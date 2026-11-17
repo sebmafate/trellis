@@ -1,6 +1,6 @@
 ---
 name: incubate
-description: Turn a raw idea into a validated project spec (SPEC.md) through a one-question-at-a-time interview that challenges the idea instead of just recording it. Use when the user has an idea, says "I want to build X", asks whether an idea deserves to become a project, or wants a requirements document / PRD / cahier des charges. Covers problem, users, scope and non-goals, requirements, risks, cheapest test and kill criteria. Does not choose technology or architecture (that is the `architect` skill). For a project that already has code, use `adopt` first.
+description: 'Turn a raw idea into a validated project spec (SPEC.md) through a one-question-at-a-time interview that challenges the idea instead of just recording it. Use when the user has an idea, says "I want to build X", asks whether an idea deserves to become a project, or wants a requirements document / PRD / cahier des charges. Covers problem, users, scope and non-goals, requirements, risks, cheapest test and kill criteria. Does not choose technology or architecture (that is the `architect` skill). For a project that already has code, use `adopt` first.'
 ---
 
 # Incubate

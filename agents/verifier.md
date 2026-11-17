@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: Independent verification (the QA) that a delivered slice really meets its acceptance criteria. Runs the tests and checks, inspects the code and the tests, and judges each criterion as verified, failed or unverifiable with evidence. Also checks that the tests would actually catch a regression, that nothing was skipped or weakened, and that the architecture, design and documents were respected. Re-tests after fixes in the autopilot loop. It reports, it never fixes. Use after `deliver`, as the QA of `autopilot`, or before accepting any piece of work as done.
+description: 'Independent verification (the QA) that a delivered slice really meets its acceptance criteria. Runs the tests and checks, inspects the code and the tests, and judges each criterion as verified, failed or unverifiable with evidence. Also checks that the tests would actually catch a regression, that nothing was skipped or weakened, and that the architecture, design and documents were respected. Re-tests after fixes in the autopilot loop. It reports, it never fixes. Use after `deliver`, as the QA of `autopilot`, or before accepting any piece of work as done.'
 model: opus
 tools: Read, Glob, Grep, Bash
 ---

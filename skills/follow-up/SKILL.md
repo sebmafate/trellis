@@ -1,6 +1,6 @@
 ---
 name: follow-up
-description: Optional. Act on the feedback that arrived on an already open pull request: the comments a human reviewer left, and/or the CI checks that failed. It reads the feedback, triages it with the user, has the `developer` fix it on the PR's own branch, has the `verifier` re-test, and pushes the fix (with authorisation). Never runs by itself and `autopilot` never calls it. Use when the user says "address the review comments on PR 12", "fix the CI on my pull request", "handle the feedback on SL3's PR". Never merges, never force-pushes, never resolves threads.
+description: 'Optional. Act on the feedback that arrived on an already open pull request: the comments a human reviewer left, and/or the CI checks that failed. It reads the feedback, triages it with the user, has the `developer` fix it on the PR''s own branch, has the `verifier` re-test, and pushes the fix (with authorisation). Never runs by itself and `autopilot` never calls it. Use when the user says "address the review comments on PR 12", "fix the CI on my pull request", "handle the feedback on SL3''s PR". Never merges, never force-pushes, never resolves threads.'
 ---
 
 # Follow-up

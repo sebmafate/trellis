@@ -1,6 +1,6 @@
 ---
 name: coherence-checker
-description: Read-only check that a project's documents and code still agree: requirement IDs traced consistently across SPEC, ARCHITECTURE, DESIGN, TESTING and PLAN; ADR statuses and the decisions index; STATUS freshness; the code's structure, dependencies and interface against the architecture and design; tests against the verification matrix. It reports drift and says which side is probably right; it never edits. Use periodically, after several slices, after a change of course, or before a release.
+description: 'Read-only check that a project''s documents and code still agree: requirement IDs traced consistently across SPEC, ARCHITECTURE, DESIGN, TESTING and PLAN; ADR statuses and the decisions index; STATUS freshness; the code''s structure, dependencies and interface against the architecture and design; tests against the verification matrix. It reports drift and says which side is probably right; it never edits. Use periodically, after several slices, after a change of course, or before a release.'
 model: sonnet
 tools: Read, Glob, Grep, Bash
 ---

@@ -1,6 +1,6 @@
 ---
 name: publish
-description: Prepare and perform a release: check that the planned slices are done and verified, choose the version, finalise CHANGELOG and release notes, build the artifacts for the target platform (including Apple signing and notarisation, app stores, packages, containers, CLIs), verify the result on a clean install, tag, publish and plan the rollback. Use when the user wants to release, ship, publish, deploy, cut a version or distribute the project. Every outward-facing step needs explicit confirmation.
+description: 'Prepare and perform a release: check that the planned slices are done and verified, choose the version, finalise CHANGELOG and release notes, build the artifacts for the target platform (including Apple signing and notarisation, app stores, packages, containers, CLIs), verify the result on a clean install, tag, publish and plan the rollback. Use when the user wants to release, ship, publish, deploy, cut a version or distribute the project. Every outward-facing step needs explicit confirmation.'
 ---
 
 # Publish

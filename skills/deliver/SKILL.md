@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Build the next slice of a project's PLAN.md, one slice at a time: write the tests for its acceptance criteria first, implement the minimum to pass, verify (tests, build, independent verifier), update PLAN.md, STATUS.md, CHANGELOG.md and the other documents, and commit. Use when the user wants to implement, build, code or ship the next step or a named slice (for example "deliver SL3"), once a PLAN.md exists. Reports deviations instead of hiding them.
+description: 'Build the next slice of a project''s PLAN.md, one slice at a time: write the tests for its acceptance criteria first, implement the minimum to pass, verify (tests, build, independent verifier), update PLAN.md, STATUS.md, CHANGELOG.md and the other documents, and commit. Use when the user wants to implement, build, code or ship the next step or a named slice (for example "deliver SL3"), once a PLAN.md exists. Reports deviations instead of hiding them.'
 ---
 
 # Deliver

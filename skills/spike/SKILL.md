@@ -1,6 +1,6 @@
 ---
 name: spike
-description: Frame, run and record a spike: a small, time-boxed experiment that answers one question about feasibility, performance, an API or a risky assumption before committing to a decision, with success criteria set before running and an honest written verdict. Use when the architecture, an ADR or the spec has an unknown that could change the design ("we don't know if X works", "is Y fast enough", "can we do Z on this platform"), or when the user wants to de-risk something cheaply. Results feed back into ADRs, the architecture and the risk list.
+description: 'Frame, run and record a spike: a small, time-boxed experiment that answers one question about feasibility, performance, an API or a risky assumption before committing to a decision, with success criteria set before running and an honest written verdict. Use when the architecture, an ADR or the spec has an unknown that could change the design ("we don''t know if X works", "is Y fast enough", "can we do Z on this platform"), or when the user wants to de-risk something cheaply. Results feed back into ADRs, the architecture and the risk list.'
 ---
 
 # Spike

@@ -1,6 +1,6 @@
 ---
 name: pr-reviewer
-description: Independent, read-only code review of a slice's pull request, as a human reviewer would do it before merging. Reads the real diff against the base branch and looks for bugs and unhandled edge cases, unclear or needlessly complex code, duplication, deviations from the codebase's conventions, risky changes (security, performance, compatibility, migrations), scope creep, weak commit hygiene, and a pull request description that does not match what the diff does. It does not re-run the acceptance criteria (that is the `verifier`'s job). It reports, it never edits, never posts and never approves anything on the forge. Normally launched by the `autopilot` skill with `--review`; also usable alone on any branch or pull request.
+description: 'Independent, read-only code review of a slice''s pull request, as a human reviewer would do it before merging. Reads the real diff against the base branch and looks for bugs and unhandled edge cases, unclear or needlessly complex code, duplication, deviations from the codebase''s conventions, risky changes (security, performance, compatibility, migrations), scope creep, weak commit hygiene, and a pull request description that does not match what the diff does. It does not re-run the acceptance criteria (that is the `verifier`''s job). It reports, it never edits, never posts and never approves anything on the forge. Normally launched by the `autopilot` skill with `--review`; also usable alone on any branch or pull request.'
 model: opus
 tools: Read, Glob, Grep, Bash
 ---

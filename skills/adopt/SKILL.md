@@ -1,6 +1,6 @@
 ---
 name: adopt
-description: Bring an existing, already advanced project under Trellis by reconstructing its documents from the code, tests, CI and git history: the project's CLAUDE.md with verified commands, STATUS, ARCHITECTURE with retroactive ADRs, a SPEC of what exists and what is next, a TESTING baseline and a PLAN of the remaining work only. Everything reconstructed is marked "to confirm" with evidence and confidence, and the code is never modified. Use when the user wants to use Trellis on a project that already has code ("this project is well advanced", "document this project", "onboard this repo", "reverse-engineer the architecture"). For a new idea use `incubate` instead.
+description: 'Bring an existing, already advanced project under Trellis by reconstructing its documents from the code, tests, CI and git history: the project''s CLAUDE.md with verified commands, STATUS, ARCHITECTURE with retroactive ADRs, a SPEC of what exists and what is next, a TESTING baseline and a PLAN of the remaining work only. Everything reconstructed is marked "to confirm" with evidence and confidence, and the code is never modified. Use when the user wants to use Trellis on a project that already has code ("this project is well advanced", "document this project", "onboard this repo", "reverse-engineer the architecture"). For a new idea use `incubate` instead.'
 ---
 
 # Adopt

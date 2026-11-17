@@ -1,6 +1,6 @@
 ---
 name: bootstrap
-description: Scaffold a new project from its decisions: create the project's CLAUDE.md that tells Claude where the SPEC, ARCHITECTURE, DESIGN, TESTING, PLAN and ADRs are and how to work, the docs layout, .gitignore, a README, CHANGELOG, CI skeleton and a runnable hello-world with a passing test, using the stack chosen in the ADRs. Use after architecture and test strategy, before the first slice, when the user wants to set up, scaffold, initialise or start the project repository. Uses the stack's official generators rather than hand-written boilerplate. For a project that already has code, use `adopt` instead.
+description: 'Scaffold a new project from its decisions: create the project''s CLAUDE.md that tells Claude where the SPEC, ARCHITECTURE, DESIGN, TESTING, PLAN and ADRs are and how to work, the docs layout, .gitignore, a README, CHANGELOG, CI skeleton and a runnable hello-world with a passing test, using the stack chosen in the ADRs. Use after architecture and test strategy, before the first slice, when the user wants to set up, scaffold, initialise or start the project repository. Uses the stack''s official generators rather than hand-written boilerplate. For a project that already has code, use `adopt` instead.'
 ---
 
 # Bootstrap

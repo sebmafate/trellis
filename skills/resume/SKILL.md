@@ -1,6 +1,6 @@
 ---
 name: resume
-description: Pick a project back up after a pause: read STATUS.md, PLAN.md, the git history and the working tree, then say where the project stands, what is in progress, what is stale or inconsistent, and exactly what to do next. Use when the user returns to a project, asks "where were we", "what's next" or "what's the state of this project", or starts a session in a project folder and needs to get oriented. Read-mostly; it only updates STATUS.md if the user agrees.
+description: 'Pick a project back up after a pause: read STATUS.md, PLAN.md, the git history and the working tree, then say where the project stands, what is in progress, what is stale or inconsistent, and exactly what to do next. Use when the user returns to a project, asks "where were we", "what''s next" or "what''s the state of this project", or starts a session in a project folder and needs to get oriented. Read-mostly; it only updates STATUS.md if the user agrees.'
 ---
 
 # Resume

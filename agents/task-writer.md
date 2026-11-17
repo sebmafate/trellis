@@ -1,6 +1,6 @@
 ---
 name: task-writer
-description: Read-only agent that turns one slice of a project's PLAN.md into an atomic work brief: small ordered tasks, each with an observable expected result, the test to write first, the likely files, and what is out of scope, plus a readiness verdict and the decisions that must be made before coding. It never writes code or files; it returns the brief. Normally launched by the `autopilot` skill before the developer starts; also usable alone to prepare a slice.
+description: 'Read-only agent that turns one slice of a project''s PLAN.md into an atomic work brief: small ordered tasks, each with an observable expected result, the test to write first, the likely files, and what is out of scope, plus a readiness verdict and the decisions that must be made before coding. It never writes code or files; it returns the brief. Normally launched by the `autopilot` skill before the developer starts; also usable alone to prepare a slice.'
 model: opus
 tools: Read, Glob, Grep
 ---

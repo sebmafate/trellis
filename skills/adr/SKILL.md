@@ -1,6 +1,6 @@
 ---
 name: adr
-description: Record one architecture decision as a numbered Architecture Decision Record in docs/adr/, with the context, the options considered (including the rejected ones and why), the decision and its consequences. Use when a significant technical choice has been made or is being made ("we decided to use X", "let's record this", "why did we pick Y?"), when a past decision changes (supersede it), or when the `architect` skill needs a decision written down. Not for trivial choices that are cheap to reverse.
+description: 'Record one architecture decision as a numbered Architecture Decision Record in docs/adr/, with the context, the options considered (including the rejected ones and why), the decision and its consequences. Use when a significant technical choice has been made or is being made ("we decided to use X", "let''s record this", "why did we pick Y?"), when a past decision changes (supersede it), or when the `architect` skill needs a decision written down. Not for trivial choices that are cheap to reverse.'
 ---
 
 # ADR: record a decision

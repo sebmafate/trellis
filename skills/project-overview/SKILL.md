@@ -1,6 +1,6 @@
 ---
 name: project-overview
-description: Give a portfolio view of several projects at once: for each project folder, its phase, status, last activity, next action and warning signs (stale, blocked, no status document, kill criteria near), then suggest where to focus and what to park. Use when the user asks "where do all my projects stand", "what should I work on", "overview of my projects", or wants to review an idea list or a folder of projects. Read-only; it writes a summary file only if asked.
+description: 'Give a portfolio view of several projects at once: for each project folder, its phase, status, last activity, next action and warning signs (stale, blocked, no status document, kill criteria near), then suggest where to focus and what to park. Use when the user asks "where do all my projects stand", "what should I work on", "overview of my projects", or wants to review an idea list or a folder of projects. Read-only; it writes a summary file only if asked.'
 ---
 
 # Project overview

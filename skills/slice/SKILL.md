@@ -1,6 +1,6 @@
 ---
 name: slice
-description: Break a project's spec, architecture, design and test strategy into a PLAN.md of small vertical slices that are each deliverable, demonstrable and testable, with acceptance criteria and traceability to requirement IDs. Use after architecture (and UX/UI and test strategy) and before building, when the user asks to plan the work, split the spec into steps, make a backlog or roadmap, or re-plan after a change. Not for implementing a slice (that is `deliver`).
+description: 'Break a project''s spec, architecture, design and test strategy into a PLAN.md of small vertical slices that are each deliverable, demonstrable and testable, with acceptance criteria and traceability to requirement IDs. Use after architecture (and UX/UI and test strategy) and before building, when the user asks to plan the work, split the spec into steps, make a backlog or roadmap, or re-plan after a change. Not for implementing a slice (that is `deliver`).'
 ---
 
 # Slice

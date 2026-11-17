@@ -1,6 +1,6 @@
 ---
 name: ui
-description: Define a project's visual and interaction system once the platform is known: platform conventions to follow, a minimal set of semantic design tokens (color for light and dark, type, spacing, shape, motion), the reusable components with their states, and accessibility rules, written as the UI part of DESIGN.md. Use after `ux` and `architect`, when the user asks about visual style, design tokens, theming, dark mode, components, or accessibility of the interface. Prefers native platform components over custom ones.
+description: 'Define a project''s visual and interaction system once the platform is known: platform conventions to follow, a minimal set of semantic design tokens (color for light and dark, type, spacing, shape, motion), the reusable components with their states, and accessibility rules, written as the UI part of DESIGN.md. Use after `ux` and `architect`, when the user asks about visual style, design tokens, theming, dark mode, components, or accessibility of the interface. Prefers native platform components over custom ones.'
 ---
 
 # UI
