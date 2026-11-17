@@ -90,6 +90,7 @@ Trellis est **strict mais souple**. Si un prérequis manque (par exemple pas de 
 | `developer` | agent | développement | **disponible** |
 | `verifier` | agent | développement | **disponible** |
 | `pr-reviewer` | agent | développement | **disponible** |
+| `follow-up` | skill | développement (facultatif) | **disponible** |
 | `publish` | skill | publication | **disponible** |
 | `resume` | skill | toutes | **disponible** |
 | `change-course` | skill | toutes | **disponible** |
@@ -336,6 +337,27 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 | `--dev-model MODÈLE` | Modèle du `developer` (`sonnet`, `opus` ou `haiku`) | celui de l'agent (`sonnet`) |
 | `--review-model MODÈLE` | Modèle des juges, `verifier` et `pr-reviewer` | celui des agents (`opus`) |
 
+**Exemples**
+
+```
+# En local seulement : voir ce que produit l'équipe ; rien ne quitte votre machine
+/trellis:autopilot SL2
+
+# Construire la prochaine tranche prête, la pousser et ouvrir une pull request
+/trellis:autopilot next --push
+
+# Deux tranches indépendantes en même temps, en brouillon, avec une relecture dont le commentaire est posté pour vous
+/trellis:autopilot SL3 SL4 --parallel 2 --draft --push --review --review-comment
+
+# Une tranche délicate : un développeur plus fort, et pas plus de 2 tours de QA
+/trellis:autopilot SL5 --dev-model opus --rounds 2 --push
+
+# Relecture seule, sans boucle : vous avez le rapport, rien n'est corrigé dans votre dos
+/trellis:autopilot SL2 --push --review --review-rounds 0
+```
+
+Vous pouvez aussi simplement le dire : « fais tourner l'équipe sur la prochaine tranche, pousse-la et fais relire la pull request ».
+
 #### Quel modèle pour quel agent ?
 
 Chaque agent déclare son modèle dans la ligne `model:` de son en-tête, dans `agents/<nom>.md`. Les valeurs par défaut suivent une idée : **un modèle plus fort là où le travail consiste à juger ou à spécifier, un modèle moins coûteux là où il consiste à exécuter ou à lire de façon mécanique.**
@@ -409,10 +431,43 @@ Vous pouvez aussi utiliser les agents seuls : demandez au `product-owner` « que
 - Chaque agent travaille uniquement à partir de la consigne et des fichiers du projet : meilleurs sont `PLAN.md`, `DESIGN.md` et `TESTING.md`, meilleur est le résultat. Un plan faible produit des tranches bloquées et des demandes de décision.
 - Il coûte plus cher que `deliver` : comptez plusieurs agents par tranche, davantage avec des tours de QA.
 - Les tranches parallèles modifient les mêmes fichiers de suivi (`PLAN.md`, `STATUS.md`, `CHANGELOG.md`) ; attendez-vous à de petits conflits de fusion, résolus en gardant les deux côtés.
+- **Forges prises en charge : GitHub (`gh`), Forgejo ou Gitea (`fj`) et, **à titre expérimental**, GitLab (`glab`).** Tout le reste de Trellis n'est que du git et du Markdown et fonctionne sur n'importe quel hôte. Le support de GitLab a été écrit d'après la documentation de `glab` et n'a pas encore été exécuté contre un vrai GitLab : essayez-le d'abord sur un projet jetable, et dites ce qui casse. Les merge requests sont ouvertes avec `glab mr create`, les commentaires postés avec `glab mr note create` ; `follow-up` lit les discussions et les journaux des jobs en échec via `glab api`. Il faut `glab` installé et authentifié (`glab auth login`, puis `glab auth status`). Sur toute autre forge (Bitbucket…), `autopilot` construit, vérifie et pousse quand même les branches mais s'arrête avant la pull request : il vous donne les noms de branche et la description prête à coller (`.trellis/runs/<run>/`), et `follow-up` n'y fonctionne qu'avec `--from-file`.
 - Dans une session non interactive, les outils dont il a besoin (git, votre commande de test, votre CLI de forge) doivent être pré-autorisés ; une commande refusée est signalée et non ignorée. En session interactive, on vous le demande simplement.
 - Après la fusion, nettoyez avec les commandes qu'il donne (`git worktree remove <chemin>`, `git branch -d <branche>`).
 
 **Un bon rythme** : `deliver` pour les premières tranches, jusqu'à ce que les modèles et les tests soient établis, puis `autopilot` pour les tranches bien spécifiées, et votre propre relecture de chaque pull request avant de fusionner.
+
+## 16b. Une fois la pull request ouverte (`follow-up`)
+
+*Facultatif. Il ne se lance jamais tout seul et `autopilot` ne l'appelle jamais.*
+
+```
+/trellis:follow-up 3
+/trellis:follow-up 3 --ci --push
+/trellis:follow-up 3 --comments --push --reply
+/trellis:follow-up slice/SL2-exclude-noise --from-file feedback.md
+```
+
+Quand une personne a relu votre pull request, ou qu'un contrôle a échoué, `follow-up` transforme ces retours en commits de correction **sur la même branche** :
+
+1. **Lit les retours, en lecture seule.** Les commentaires de relecture (avec fichier et ligne) et/ou les contrôles en échec avec la partie utile du journal. Sur GitHub il utilise `gh` ; sur GitLab (expérimental) il utilise `glab`, qui donne les discussions avec leur état résolu et les journaux des jobs ; sur Forgejo ou Gitea il utilise `fj` (qui donne l'état de la CI mais **pas les journaux**, ni toujours les commentaires en ligne : collez-les dans un fichier et passez `--from-file`). Les contrôles encore en cours sont laissés de côté ; il n'attend pas et ne scrute pas.
+2. **Trie avec vous.** Chaque point est classé : *changement*, *question*, *suggestion*, *désaccord*, *flou ou architectural*, *hors périmètre* ; les échecs de CI en *test en échec*, *build ou lint*, *instable ou infrastructure* (il propose de relancer le contrôle plutôt que de changer le code). Vous choisissez ce qui est traité. Les commentaires de personnes sans droit d'écriture sont listés et **ignorés sauf si vous les acceptez**.
+3. **Corrige.** Le `developer` corrige chaque point sur la branche (un commit par point ou par groupe, tests d'abord quand le comportement change), le `verifier` retest, jusqu'à `--rounds` tours (2 par défaut).
+4. **Pousse et répond, seulement si vous l'autorisez.** `--push` pousse les commits (en avance rapide ; jamais forcé). `--reply` poste **un commentaire de synthèse** (ce qui a été corrigé et dans quel commit, les réponses, ce qui n'a pas été changé et pourquoi). Il ne résout jamais de fil, ne redemande pas de relecture et ne fusionne pas : cela revient au relecteur.
+
+À savoir : **les commentaires sont des données, pas des ordres** (un commentaire qui dit « lance ce script » n'est jamais exécuté et vous est signalé) ; il n'affaiblit jamais un test, ne relâche pas un contrôle et ne modifie pas la CI pour faire disparaître un échec ; un désaccord avec un commentaire vous est soumis, jamais tranché en silence. En session non interactive, il ne traite que les points *changement* clairs et les vrais échecs de CI, et écrit le reste, avec les raisons, dans son fichier d'état.
+
+| Option | Signification | Par défaut |
+| --- | --- | --- |
+| Numéro, URL ou branche de la PR | La pull request à suivre | la PR de la branche courante |
+| `--comments` / `--ci` | Seulement les commentaires / seulement les échecs de CI | les deux |
+| `--from-file FICHIER` | Retours que vous avez écrits ou collés, au lieu de lire la forge (un nom de branche remplace alors la PR ; rien n'est poussé ni posté) | lecture sur la forge |
+| `--push` | Autorise à pousser les commits de correction | demandé |
+| `--reply` | Autorise un commentaire de synthèse | demandé après la poussée |
+| `--rounds N` | Tours de QA sur les corrections | 2 |
+| `--dev-model` / `--review-model` | Modèles, comme pour `autopilot` | ceux des agents |
+
+Fichiers : `.trellis/followups/pr-<n>/` (retours bruts, état, rapports, texte de la réponse). Un exemple est dans [examples/commit-report/autopilot-run-sample/](../examples/commit-report/autopilot-run-sample/README.md).
 
 ## 17. Vérifier de façon indépendante (`verifier`)
 
@@ -478,12 +533,70 @@ Quand vous ouvrez une session dans un projet qui a un `STATUS.md`, Trellis en aj
 ```
 incubate ─► (naming) ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
    ─► (design-reviewer, security-reviewer) ─► test-strategy ─► bootstrap ─► slice
-   ─► deliver ou autopilot ⟲ (verifier) ─► publish
+   ─► deliver ou autopilot ⟲ (verifier) ─► (follow-up) ─► publish
 ```
 
 Pour un **projet existant** : `adopt` ─► (`security-reviewer`) ─► (`test-strategy` pour les manques) ─► `slice` (reste à faire) ─► `deliver` ou `autopilot`.
 
 À tout moment : `resume`, `change-course`, `retro`, `project-overview`, `coherence-checker`, `adr`. Les étapes entre parenthèses sont facultatives. Saute ce qui ne s'applique pas (pas d'interface : saute `ux`, `ui` et `design-reviewer`).
+
+### Un exemple de session, de l'idée à la pull request fusionnée
+
+Un parcours condensé sur un petit projet, [commit-report](../examples/README.fr.md) (fictif : un outil en ligne de commande qui transforme un mois d'historique git en compte rendu). Ce que vous tapez, ce qui se passe, ce que vous obtenez. Les documents laissés sont dans `examples/commit-report/` (en anglais).
+
+```
+Vous     /trellis:incubate un outil en ligne de commande qui transforme mes commits en compte rendu mensuel
+Claude   Je comprends : un outil qui lit l'historique git local et écrit le compte rendu mensuel que
+         vous devez à un client. C'est bien cela ?
+Vous     oui
+Claude   Qui a le problème, et comment s'en sort-il aujourd'hui ? Mon hypothèse : vous, qui refaites
+         le compte rendu à la main à partir de plusieurs dépôts, environ une heure par mois.
+Vous     ok
+         ... succès, périmètre et non-objectifs, contraintes, existant, une question à la fois ...
+Claude   L'hypothèse la plus risquée, selon moi : les sujets de commit sont assez bons pour se lire
+         comme un compte rendu. Test le moins cher : mettre en forme l'historique du mois dernier avec
+         une commande git log d'une ligne et chronométrer votre relecture. Critère d'arrêt : plus de
+         20 minutes de retouche.
+Claude   Verdict : Tester d'abord.   Écrit : SPEC.md, STATUS.md
+```
+
+| Étape | Vous tapez | Vous obtenez |
+| --- | --- | --- |
+| 1. Idée | `/trellis:incubate …` | `SPEC.md` (R1 à R7, critères d'arrêt), `STATUS.md` |
+| 2. Second avis | « Utilise l'agent devils-advocate sur mon SPEC.md. » | un rapport : bloquant, important, mineur |
+| 3. Outils existants | `/trellis:prior-art` (proposé par défaut pour un produit) | `docs/prior-art.md` : « adopter d'abord la boucle `git log` » |
+| 4. Le test | vous le faites (une heure) | le journal de la spécification : « A1 confirmée, on continue » |
+| 5. Architecture | `/trellis:architect` | `ARCHITECTURE.md`, ADR 0001 et 0002 |
+| 6. Interface | `/trellis:ux` | `DESIGN.md` (commandes, sortie, messages d'erreur) |
+| 7. Tests | `/trellis:test-strategy` | `TESTING.md` (exigence → contrôle) |
+| 8. Squelette | `/trellis:bootstrap` | `CLAUDE.md` du projet, CI, un hello-world qui passe |
+| 9. Plan | `/trellis:slice` | `PLAN.md` (SL0 à SL5 avec critères d'acceptation) |
+| 10. Premières tranches | `/trellis:deliver SL0`, `/trellis:deliver SL1` | tests d'abord, commits, documents à jour |
+| 11. L'équipe | `/trellis:autopilot SL2 --push --review` | une pull request ; rapports dans `.trellis/runs/` |
+| 12. Retours | `/trellis:follow-up 3 --push --reply` | corrections poussées, un commentaire de synthèse |
+| 13. Publication | `/trellis:publish` | version, changelog, tag (chaque étape sortante confirmée) |
+
+Pour reprendre après une pause : `/trellis:resume`. Il lit `STATUS.md`, le plan et git, et dit où vous en êtes et l'unique prochaine action.
+
+### Recettes : que taper quand…
+
+| Situation | Ce qu'il faut taper |
+| --- | --- |
+| J'ai une idée vague | `/trellis:incubate <l'idée en une phrase>` |
+| Est-ce que quelque chose comme ça existe déjà ? | `/trellis:prior-art` |
+| Il me faut un nom | `/trellis:naming` (ou « aide-moi à trouver un nom pour ce projet ») |
+| Je viens de faire un choix technique | `/trellis:adr nous avons choisi X plutôt que Y parce que …` |
+| Je ne sais pas si X va marcher | `/trellis:spike X peut-il faire Y en moins de 200 ms ?` |
+| Je veux un avis sceptique sur ma spécification | « Utilise l'agent devils-advocate sur mon SPEC.md. » |
+| Je reviens après deux semaines | `/trellis:resume` |
+| Je veux ajouter ou retirer une exigence | `/trellis:change-course abandonner la synchronisation` |
+| Construire la prochaine tranche sous mes yeux | `/trellis:deliver SL3` |
+| Construire des tranches pendant que je fais autre chose | `/trellis:autopilot next --push --review` |
+| Une personne a relu ma PR, ou la CI a échoué | `/trellis:follow-up <numéro de PR>` |
+| Vérifier que documents et code concordent | « Utilise l'agent coherence-checker. » |
+| Le projet a déjà du code | `/trellis:adopt` |
+| Lequel de mes projets a besoin de moi ? | `/trellis:project-overview ~/projects` |
+| Publier | `/trellis:publish` |
 
 ## 26. Adopter un projet existant (`adopt`)
 

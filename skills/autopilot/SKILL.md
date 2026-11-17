@@ -62,7 +62,7 @@ Check, and report gaps without blocking unless the run is impossible:
 
 - `PLAN.md` exists with slices that have acceptance criteria; the project's `CLAUDE.md` gives build and test commands. If not, offer `slice` and `bootstrap`.
 - It is a git repository with a remote (`git remote get-url origin`). Without one, the run can still produce local branches; say that pull requests are not possible.
-- The **forge** and its CLI: from the remote URL, GitHub (`gh`) or another host with a Forgejo or Gitea CLI (`fj`; check `fj auth list`). If no usable CLI is authenticated, branches will be pushed but the pull request must be opened by the user.
+- The **forge** and its CLI: from the remote URL, GitHub (`gh`), GitLab (`glab`; check `glab auth status --hostname <host>`) or another host with a Forgejo or Gitea CLI (`fj`; check `fj auth list`). For a self-hosted host the URL does not tell the forge: use the CLI that is authenticated for that host. GitLab support is **experimental** (written from `glab`'s documentation, not yet run against a real GitLab): say so once. On GitLab read "pull request" as "merge request". Other forges (Bitbucket…) are not supported: do not guess a CLI, treat it like "no usable CLI". If no usable CLI is authenticated, branches will be pushed but the pull request must be opened by the user (give the branch names and the path of the ready-to-paste description).
 - The working tree is clean enough: unrelated uncommitted changes are noted and left alone. You never touch the user's main checkout.
 - Exclude run files from git without editing tracked files: ensure `.trellis/` is listed in `.git/info/exclude`. The run state, briefs, reports and worktrees live under `.trellis/` (not under `.claude/`, which Claude Code protects from writes).
 - An unfinished run in `.trellis/runs/`: offer to resume it from its `state.md`.
@@ -149,6 +149,7 @@ Only if the user authorised it. For each slice, in dependency order:
 4. Open **one pull request per slice** with the forge CLI. Base: the slice's base branch (the default branch, or the previous slice's branch when stacked). Title: `<ID>: <slice title>`, prefixed `WIP: ` when drafts were asked on a Forgejo or Gitea host.
    - Forgejo or Gitea: `fj -H <host> pr create "<title>" --base <base> --head <branch> --body-file <pr.md>`
    - GitHub: `gh pr create --base <base> --head <branch> --title "<title>" --body-file <pr.md>` (`--draft` for drafts)
+   - GitLab (merge request): `glab mr create --source-branch <branch> --target-branch <base> --title "<title>" --description-file <pr.md> --yes` (`--draft` for drafts; with an older `glab` without `--description-file`, use `--description "$(cat <pr.md>)"`)
    - If no CLI is usable, give the user the branch name, the target and the description file instead.
 5. Record the pull request link in `state.md`.
 
@@ -159,6 +160,7 @@ For stacked slices, say in each pull request which one it depends on and that th
 - With `--review-comment` (or a yes given at the start): post each `<ID>/review-comment.md` as **one comment** on its pull request, without asking again.
   - Forgejo or Gitea: `fj -H <host> pr comment <number> --body-file <review-comment.md>`
   - GitHub: `gh pr comment <number> --body-file <review-comment.md>`
+  - GitLab: `glab mr note create <number> --message "$(cat <review-comment.md>)"`
 - Otherwise: show the user, for each slice, the verdict and the full text of the comment, and ask once which ones to post (all, none, or a list), recommending to post. Post only what the user accepts.
 - In a non-interactive session you cannot ask: post nothing, keep the files, and give the user the exact command for each comment in the final report.
 - Before posting, reread the text: no secret, no personal data, no local path. Follow the attribution rules in force for pull request text in this session. Never post a review, an approval or a "request changes" through the forge's review feature: a single plain comment only.
@@ -172,7 +174,7 @@ Give the user a short, scannable summary:
 - Decisions taken and ADRs written; decisions still open.
 - What was not verified, and any QA or review notes to look at; Blocking review findings still open.
 - **Merge order** (important when stacked) and the cleanup commands to run after merging: `git worktree remove <path>` and `git branch -d <branch>` for each slice.
-- What remains in the plan, and the suggested next run.
+- What remains in the plan, and the suggested next run. Mention, once and without running it, that `/trellis:follow-up <PR>` can act on a human review or a failing CI later (optional).
 
 Do not merge anything, and do not start another run unprompted.
 

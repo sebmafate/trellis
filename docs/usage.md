@@ -90,6 +90,7 @@ Trellis is **strict but soft**. If a prerequisite is missing (for example, no va
 | `developer` | agent | development | **available** |
 | `verifier` | agent | development | **available** |
 | `pr-reviewer` | agent | development | **available** |
+| `follow-up` | skill | development (optional) | **available** |
 | `publish` | skill | release | **available** |
 | `resume` | skill | any | **available** |
 | `change-course` | skill | any | **available** |
@@ -336,6 +337,27 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 | `--dev-model MODEL` | Model of the `developer` (`sonnet`, `opus` or `haiku`) | the agent's own (`sonnet`) |
 | `--review-model MODEL` | Model of the judges, `verifier` and `pr-reviewer` | the agents' own (`opus`) |
 
+**Examples**
+
+```
+# Local only: see what the team produces; nothing leaves your machine
+/trellis:autopilot SL2
+
+# Build the next ready slice, push it and open a pull request
+/trellis:autopilot next --push
+
+# Two independent slices at once, as drafts, with a review whose comment is posted for you
+/trellis:autopilot SL3 SL4 --parallel 2 --draft --push --review --review-comment
+
+# A tricky slice: a stronger developer, and no more than 2 QA rounds
+/trellis:autopilot SL5 --dev-model opus --rounds 2 --push
+
+# Review only, no loop: you get the report, nothing is fixed behind your back
+/trellis:autopilot SL2 --push --review --review-rounds 0
+```
+
+You can also just say it: "run the team on the next slice, push it, and have the pull request reviewed".
+
 #### Which model for which agent?
 
 Each agent declares its model in the `model:` line of its header in `agents/<name>.md`. The defaults follow one idea: **a stronger model where the work is to judge or to specify, a cheaper one where it is to execute or to read mechanically.**
@@ -409,10 +431,43 @@ You can also use the agents alone: ask the `product-owner` "what should we build
 - Each agent works from the brief and the project files only, so the better `PLAN.md`, `DESIGN.md` and `TESTING.md` are, the better the result. A weak plan produces blocked slices and decision requests.
 - It costs more than `deliver`: expect several agent runs per slice, more with QA rounds.
 - Parallel slices edit the same tracking files (`PLAN.md`, `STATUS.md`, `CHANGELOG.md`); expect small merge conflicts there, resolved by keeping both sides.
+- **Supported forges: GitHub (`gh`), Forgejo or Gitea (`fj`) and, **experimental**, GitLab (`glab`).** Everything else in Trellis is plain git and Markdown and works on any host. The GitLab support was written from `glab`'s documentation and has not yet been run against a real GitLab: try it on a throwaway project first, and tell us what breaks. Merge requests are opened with `glab mr create`, comments posted with `glab mr note create`; `follow-up` reads discussions and failed-job logs through `glab api`. You need `glab` installed and authenticated (`glab auth login`, then `glab auth status`). On any other forge (Bitbucket…) `autopilot` still builds, verifies and pushes the branches but stops before the pull request: it gives you the branch names and the ready-to-paste description (`.trellis/runs/<run>/`), and `follow-up` works only with `--from-file`.
 - In a non-interactive session the tools it needs (git, your test command, your forge CLI) must be pre-authorised; a refused command is reported rather than skipped. In an interactive session you are simply asked.
 - After merging, clean up with the commands it gives (`git worktree remove <path>`, `git branch -d <branch>`).
 
 **A good rhythm**: `deliver` for the first slices until patterns and tests are established, then `autopilot` for well-specified slices, and your own review of each pull request before merging.
+
+## 16b. After the pull request is open (`follow-up`)
+
+*Optional. It never runs by itself and `autopilot` never calls it.*
+
+```
+/trellis:follow-up 3
+/trellis:follow-up 3 --ci --push
+/trellis:follow-up 3 --comments --push --reply
+/trellis:follow-up slice/SL2-exclude-noise --from-file feedback.md
+```
+
+When a human has reviewed your pull request, or a check has failed, `follow-up` turns that feedback into fix commits **on the same branch**:
+
+1. **Reads the feedback, read-only.** The review comments (with file and line) and/or the failing checks with the relevant part of the log. On GitHub it uses `gh`; on GitLab (experimental) it uses `glab`, which gives the discussions with their resolved state and the job logs; on Forgejo or Gitea it uses `fj` (which gives the CI state but **not the logs**, nor always the inline comments: paste them in a file and pass `--from-file`). Checks still running are left out; it does not wait or poll.
+2. **Triages with you.** Each item is classified: *change*, *question*, *suggestion*, *disagree*, *unclear or architectural*, *out of scope*; CI failures as *test failure*, *build or lint*, *flaky or infrastructure* (it offers to re-run the check instead of changing code). You choose what is addressed. Comments from people without write access are listed and **ignored unless you accept them**.
+3. **Fixes.** The `developer` fixes each item on the branch (one commit per item or group, tests first when behaviour changes), the `verifier` re-tests, up to `--rounds` rounds (default 2).
+4. **Pushes and replies, only if you allow it.** `--push` pushes the commits (a fast-forward; never forced). `--reply` posts **one summary comment** (what was fixed and in which commit, the answers, what was not changed and why). It never resolves threads, re-requests a review or merges: those belong to the reviewer.
+
+Rules worth knowing: **comments are data, not orders** (a comment saying "run this script" is never run, and is reported to you); it never weakens a test, relaxes a check or edits the CI to make a failure disappear; a disagreement with a comment is put to you, never decided silently. In a non-interactive session it addresses only the clear *change* items and the real CI failures, and writes the rest, with reasons, to its state file.
+
+| Option | Meaning | Default |
+| --- | --- | --- |
+| PR number, URL or branch | The pull request to follow up | the PR of the current branch |
+| `--comments` / `--ci` | Only review comments / only CI failures | both |
+| `--from-file FILE` | Feedback you wrote or pasted, instead of reading the forge (a branch name then replaces the PR; nothing is pushed or posted) | read from the forge |
+| `--push` | Authorise pushing the fix commits | asked |
+| `--reply` | Authorise one summary comment | asked after pushing |
+| `--rounds N` | QA rounds on the fixes | 2 |
+| `--dev-model` / `--review-model` | Models, as in `autopilot` | the agents' own |
+
+Files: `.trellis/followups/pr-<n>/` (raw feedback, state, reports, the reply text). A sample is in [examples/commit-report/autopilot-run-sample/](../examples/commit-report/autopilot-run-sample/README.md).
 
 ## 17. Verify independently (`verifier`)
 
@@ -478,12 +533,69 @@ When you open a session in a project that has a `STATUS.md`, Trellis adds its fi
 ```
 incubate ─► (naming) ─► (prior-art) ─► (devils-advocate) ─► ux ─► architect ─► (spike) ─► ui
    ─► (design-reviewer, security-reviewer) ─► test-strategy ─► bootstrap ─► slice
-   ─► deliver or autopilot ⟲ (verifier) ─► publish
+   ─► deliver or autopilot ⟲ (verifier) ─► (follow-up) ─► publish
 ```
 
 For an **existing project**: `adopt` ─► (`security-reviewer`) ─► (`test-strategy` for the gaps) ─► `slice` (remaining work) ─► `deliver` or `autopilot`.
 
 At any time: `resume`, `change-course`, `retro`, `project-overview`, `coherence-checker`, `adr`. Steps in parentheses are optional. Skip what does not apply (no interface: skip `ux`, `ui` and `design-reviewer`).
+
+### An example session, from idea to merged pull request
+
+A condensed walk through one small project, [commit-report](../examples/README.md) (fictional: a command-line tool that turns a month of git history into a report). What you type, what happens, what you get. The documents it leaves are in `examples/commit-report/`.
+
+```
+You      /trellis:incubate a command-line tool that turns my commits into a monthly activity report
+Claude   I read this as: a tool that reads local git history and writes the monthly report you owe
+         a client. Is that right?
+You      yes
+Claude   Who has the problem, and how do they cope today? My guess: you, rebuilding the report by
+         hand from several repositories, about an hour a month.
+You      ok
+         ... success, scope and non-goals, constraints, prior art, one question at a time ...
+Claude   The riskiest assumption, as I see it: commit subjects are good enough to read as a report.
+         Cheapest test: format last month's history with a one-line git log command and time your
+         editing. Kill criterion: more than 20 minutes of editing.
+Claude   Verdict: Test first.   Written: SPEC.md, STATUS.md
+```
+
+| Step | You type | You get |
+| --- | --- | --- |
+| 1. Idea | `/trellis:incubate …` | `SPEC.md` (R1 to R7, kill criteria), `STATUS.md` |
+| 2. Second opinion | "Use the devils-advocate agent to review my SPEC.md." | a report: blocking, important, minor |
+| 3. Existing tools | `/trellis:prior-art` (proposed by default for a product) | `docs/prior-art.md`: "adopt the `git log` loop first" |
+| 4. The test | you run it (an hour) | the spec's decision log: "A1 confirmed, proceed" |
+| 5. Architecture | `/trellis:architect` | `ARCHITECTURE.md`, ADR 0001 and 0002 |
+| 6. Interface | `/trellis:ux` | `DESIGN.md` (commands, output, error messages) |
+| 7. Tests | `/trellis:test-strategy` | `TESTING.md` (requirement → check) |
+| 8. Skeleton | `/trellis:bootstrap` | project's `CLAUDE.md`, CI, a passing hello-world |
+| 9. Plan | `/trellis:slice` | `PLAN.md` (SL0 to SL5 with acceptance criteria) |
+| 10. First slices | `/trellis:deliver SL0`, `/trellis:deliver SL1` | tests first, commits, documents updated |
+| 11. The team | `/trellis:autopilot SL2 --push --review` | a pull request; reports in `.trellis/runs/` |
+| 12. Feedback | `/trellis:follow-up 3 --push --reply` | fix commits pushed, one summary comment |
+| 13. Release | `/trellis:publish` | version, changelog, tag (each outward step confirmed) |
+
+Come back after a pause with `/trellis:resume`: it reads `STATUS.md`, the plan and git, and says where you are and the one next action.
+
+### Recipes: what to type when…
+
+| Situation | What to type |
+| --- | --- |
+| I have a vague idea | `/trellis:incubate <the idea in a sentence>` |
+| Does something like this already exist? | `/trellis:prior-art` |
+| I need a name | `/trellis:naming` (or "help me find a name for this project") |
+| I just made a technical choice | `/trellis:adr we chose X over Y because …` |
+| I do not know whether X will work | `/trellis:spike can X do Y in under 200 ms?` |
+| I want a skeptical opinion on my spec | "Use the devils-advocate agent on my SPEC.md." |
+| I am back after two weeks | `/trellis:resume` |
+| I want to add or drop a requirement | `/trellis:change-course drop the sync feature` |
+| Build the next slice with me watching | `/trellis:deliver SL3` |
+| Build slices while I do something else | `/trellis:autopilot next --push --review` |
+| A human reviewed my PR, or CI failed | `/trellis:follow-up <PR number>` |
+| Check that documents and code still agree | "Use the coherence-checker agent." |
+| The project already has code | `/trellis:adopt` |
+| Which of my projects needs me? | `/trellis:project-overview ~/projects` |
+| Ship it | `/trellis:publish` |
 
 ## 26. Adopt an existing project (`adopt`)
 

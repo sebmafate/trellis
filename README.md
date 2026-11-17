@@ -6,7 +6,7 @@
 
 A [Claude Code](https://claude.com/claude-code) plugin of skills and agents that carries a project from a raw idea to shipped software. It gives a project structure to grow on, without deciding its direction.
 
-> Status: early work in progress (0.10.0). Licensed under the [MIT License](LICENSE).
+> Status: early work in progress (0.11.0). Licensed under the [MIT License](LICENSE).
 
 ## The idea
 
@@ -47,6 +47,7 @@ Trellis is **strict but soft**: skills point out what is missing (no validated s
 | `developer` | agent | development | **available** |
 | `verifier` | agent | development | **available** |
 | `pr-reviewer` | agent | development | **available** |
+| `follow-up` | skill | development (optional) | **available** |
 | `publish` | skill | release | **available** |
 | `resume` | skill | any | **available** |
 | `change-course` | skill | any | **available** |
@@ -55,7 +56,11 @@ Trellis is **strict but soft**: skills point out what is missing (no validated s
 | `coherence-checker` | agent | any | **available** |
 | `SessionStart` hook | hook | any | **available** |
 
-Ideas for later: a maintenance phase (dependency updates, deprecation), a skill for end-user documentation, a clickable-prototype skill.
+Everything beyond the core path is **optional**: `naming`, `prior-art`, `autopilot`, its `--review` step and `follow-up` only run when you ask for them.
+
+**See it before using it:** [examples/](examples/README.md) shows the documents of a small fictional project phase by phase, and the usage guide has an [example session](docs/usage.md) and a table of recipes ("what to type when...").
+
+Ideas for later: a maintenance phase (dependency updates, deprecation), a skill for end-user documentation, a clickable-prototype skill, lessons carried from one project's retrospective to the next.
 
 ## Use it
 

@@ -6,7 +6,7 @@
 
 Un plugin [Claude Code](https://claude.com/claude-code) de skills et d'agents qui accompagne un projet de l'idée brute jusqu'au logiciel livré. Il donne au projet une structure pour grandir, sans décider de sa direction.
 
-> Statut : travail en cours (0.10.0). Sous [licence MIT](LICENSE).
+> Statut : travail en cours (0.11.0). Sous [licence MIT](LICENSE).
 
 ## Le principe
 
@@ -47,6 +47,7 @@ Trellis est **strict mais souple** : les skills signalent ce qui manque (pas de 
 | `developer` | agent | développement | **disponible** |
 | `verifier` | agent | développement | **disponible** |
 | `pr-reviewer` | agent | développement | **disponible** |
+| `follow-up` | skill | développement (facultatif) | **disponible** |
 | `publish` | skill | publication | **disponible** |
 | `resume` | skill | toutes | **disponible** |
 | `change-course` | skill | toutes | **disponible** |
@@ -55,7 +56,11 @@ Trellis est **strict mais souple** : les skills signalent ce qui manque (pas de 
 | `coherence-checker` | agent | toutes | **disponible** |
 | `SessionStart` hook | hook | toutes | **disponible** |
 
-Idées pour plus tard : une phase de maintenance (mises à jour de dépendances, dépréciation), un skill de documentation pour les utilisateurs finaux, un skill de prototype cliquable.
+Tout ce qui dépasse le parcours principal est **facultatif** : `naming`, `prior-art`, `autopilot`, son étape `--review` et `follow-up` ne s'exécutent que si vous les demandez.
+
+**À voir avant d'utiliser :** [examples/](examples/README.fr.md) montre les documents d'un petit projet fictif phase par phase, et le guide d'usage contient un [exemple de session](docs/usage.fr.md) et un tableau de recettes (« que taper quand... »).
+
+Idées pour plus tard : une phase de maintenance (mises à jour de dépendances, dépréciation), un skill de documentation pour les utilisateurs finaux, un skill de prototype cliquable, les leçons d'une rétrospective reprises au projet suivant.
 
 ## Utilisation
 
