@@ -72,6 +72,21 @@ The shorthand `--marketplace sebmafate/trellis` is accepted too. Run it in a ter
 
 Then ask Claude to incubate an idea, or invoke the skill directly as `/trellis:incubate`. Full guide (install options, trying it without installing, what each step does, troubleshooting): [docs/usage.md](docs/usage.md).
 
+## Example prompts
+
+Each one works as typed, from the root of your project. The full table of recipes is in the [usage guide](docs/usage.md).
+
+1. **Turn an idea into a spec.** `/trellis:incubate a small tool that turns my meeting notes into a list of dated actions`
+   Claude interviews you one question at a time, challenges the idea (users, scope, non-goals, risks, a cheap test, kill criteria) and writes `SPEC.md` with numbered requirements.
+2. **Bring a project that already has code under Trellis.** `/trellis:adopt standard`
+   Claude reads the code, tests, CI and git history, asks a few questions the code cannot answer, then drafts `CLAUDE.md`, `ARCHITECTURE.md`, retroactive ADRs and a test baseline in `.trellis/adopt/`, each item marked "to confirm" with its evidence. It does not modify your code.
+3. **Pick a project back up after a pause.** `/trellis:resume`
+   Claude reads `STATUS.md`, `PLAN.md`, the git history and the working tree, then tells you where the project stands, what is stale or inconsistent, and the exact next step.
+4. **Get a skeptical second opinion.** `Use the devils-advocate agent on my SPEC.md.`
+   A read-only agent reports vague success criteria, scope creep, requirements that cannot be verified and weak rejected options. It edits nothing.
+5. **Build slices while you do something else.** `/trellis:autopilot next --push --review`
+   A small team of agents builds the next slice test first on its own branch, checks it independently and reviews the diff. With `--push` it opens one pull request per slice; without it, everything stays local. It never merges.
+
 ## What Trellis runs
 
 Trellis is Markdown (skills and agent prompts) plus one small shell script. It has no server, no account, no telemetry and no dependency to install, and it does not read, store or send credentials. Here is everything it can do on your machine or on the network, and when.

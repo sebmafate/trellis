@@ -72,6 +72,21 @@ La forme abrégée `--marketplace sebmafate/trellis` est acceptée aussi. À lan
 
 Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis:incubate`. Guide complet (options d'installation, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
 
+## Exemples de prompts
+
+Chacun fonctionne tel quel, depuis la racine de ton projet. Le tableau complet des recettes est dans le [guide d'usage](docs/usage.fr.md).
+
+1. **Transformer une idée en spécification.** `/trellis:incubate un petit outil qui transforme mes notes de réunion en liste d'actions datées`
+   Claude t'interroge une question à la fois, challenge l'idée (utilisateurs, périmètre, hors-périmètre, risques, test peu coûteux, critères d'arrêt) et écrit `SPEC.md` avec des exigences numérotées.
+2. **Placer sous Trellis un projet qui a déjà du code.** `/trellis:adopt standard`
+   Claude lit le code, les tests, la CI et l'historique git, pose quelques questions auxquelles le code ne répond pas, puis rédige `CLAUDE.md`, `ARCHITECTURE.md`, des ADR rétroactifs et une base de tests dans `.trellis/adopt/`, chaque élément marqué « à confirmer » avec sa preuve. Il ne modifie pas ton code.
+3. **Reprendre un projet après une pause.** `/trellis:resume`
+   Claude lit `STATUS.md`, `PLAN.md`, l'historique git et l'arbre de travail, puis dit où en est le projet, ce qui est périmé ou incohérent, et la prochaine étape exacte.
+4. **Obtenir un avis sceptique.** `Utilise l'agent devils-advocate sur mon SPEC.md.`
+   Un agent en lecture seule signale les critères de succès flous, la dérive de périmètre, les exigences invérifiables et les options écartées trop faibles. Il ne modifie rien.
+5. **Construire des tranches pendant que tu fais autre chose.** `/trellis:autopilot next --push --review`
+   Une petite équipe d'agents construit la prochaine tranche en test d'abord sur sa propre branche, la vérifie de façon indépendante et relit le diff. Avec `--push`, elle ouvre une pull request par tranche ; sans, tout reste local. Elle ne fusionne jamais.
+
 ## Ce que Trellis exécute
 
 Trellis est du Markdown (skills et prompts d'agents) plus un petit script shell. Il n'a ni serveur, ni compte, ni télémétrie, ni dépendance à installer, et il ne lit, ne stocke ni n'envoie aucun identifiant. Voici tout ce qu'il peut faire sur ta machine ou sur le réseau, et quand.
