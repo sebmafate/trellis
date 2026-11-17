@@ -2,6 +2,8 @@
   "name": "trellis",
   "description": "Skills and agents that carry a project from a raw idea to shipped software: incubate, design (UX, UI, architecture, tests), slice, deliver, publish, resume. Strict enough to keep documents honest, soft enough to stay usable.",
   "version": "0.11.0",
+  "homepage": "https://github.com/sebmafate/trellis",
+  "repository": "https://github.com/sebmafate/trellis",
   "license": "MIT",
   "author": {
     "name": "Sébastien Ferrand"

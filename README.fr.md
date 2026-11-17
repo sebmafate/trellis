@@ -72,6 +72,26 @@ La forme abrégée `--marketplace sebmafate/trellis` est acceptée aussi. À lan
 
 Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis:incubate`. Guide complet (options d'installation, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
 
+## Ce que Trellis exécute
+
+Trellis est du Markdown (skills et prompts d'agents) plus un petit script shell. Il n'a ni serveur, ni compte, ni télémétrie, ni dépendance à installer, et il ne lit, ne stocke ni n'envoie aucun identifiant. Voici tout ce qu'il peut faire sur ta machine ou sur le réseau, et quand.
+
+**Au début d'une session (hook, automatique).** Le hook `SessionStart` (`hooks/session-status.sh`) lit les 30 premières lignes du `STATUS.md` de ton projet, s'il existe, et les ajoute au contexte de Claude, étiquetées comme des données du projet. Il ne fait aucun appel réseau et n'affiche rien s'il n'y a pas de `STATUS.md`. Définis `TRELLIS_NO_STATUS=1` pour le désactiver.
+
+**Sur tes fichiers, quand tu invoques un skill ou un agent.**
+- Les skills écrivent les documents du projet (`SPEC.md`, `ARCHITECTURE.md`, `PLAN.md`, `STATUS.md`, `docs/`…) et, pour `autopilot`, `follow-up` et `adopt`, des fichiers de travail sous `.trellis/`.
+- L'agent `developer` crée une branche et un worktree git, lance les commandes de tests, de lint et de build propres à ton projet, et fait des commits locaux. Il ne pousse ni ne fusionne jamais.
+- Les agents en lecture seule (`verifier`, `pr-reviewer`, `coherence-checker`, `product-owner`, `security-reviewer`) lancent des commandes de lecture comme `git log`, `git diff` et tes commandes de test, et ne modifient rien.
+
+**Sur le web, seulement pour la recherche.** `naming`, `prior-art` et les agents `devils-advocate`, `design-reviewer` et `security-reviewer` peuvent chercher et lire des pages web publiques. Les requêtes portent sur ton idée, les noms comparés ou les normes vérifiées : elles peuvent donc reprendre ce que les documents de ton projet en disent.
+
+**Sur ta forge git, seulement à ta demande.**
+- `autopilot` pousse une branche (jamais avec `--force`) et ouvre une pull request par tranche **seulement si tu l'as autorisé**, avec ta connexion existante à `gh` (GitHub), `fj` (Forgejo ou Gitea) ou `glab` (GitLab, à titre expérimental). Avec `--review-comment`, il poste un commentaire de relecture par pull request.
+- `follow-up` lit les commentaires de relecture et les contrôles d'une pull request, et ne pousse des corrections sur sa branche et ne poste un commentaire de synthèse qu'après les étapes que tu acceptes.
+- `publish` demande un accord explicite avant chaque étape sortante : commit, push d'un tag, envoi d'un artefact, création d'une release, déploiement.
+
+Rien d'autre ne quitte ta machine. Si tu n'utilises que les skills de cadrage et de conception, Trellis reste dans les fichiers de ton projet et la recherche web ci-dessus.
+
 ## Langues
 
 Les noms (skills, agents, fichiers) sont en anglais. La documentation et les gabarits sont en anglais et en français ; les documents générés suivent la langue du projet.

@@ -72,6 +72,26 @@ The shorthand `--marketplace sebmafate/trellis` is accepted too. Run it in a ter
 
 Then ask Claude to incubate an idea, or invoke the skill directly as `/trellis:incubate`. Full guide (install options, trying it without installing, what each step does, troubleshooting): [docs/usage.md](docs/usage.md).
 
+## What Trellis runs
+
+Trellis is Markdown (skills and agent prompts) plus one small shell script. It has no server, no account, no telemetry and no dependency to install, and it does not read, store or send credentials. Here is everything it can do on your machine or on the network, and when.
+
+**At the start of a session (hook, automatic).** The `SessionStart` hook (`hooks/session-status.sh`) reads the first 30 lines of `STATUS.md` in your project, if the file exists, and adds them to Claude's context, labelled as project data. It makes no network call and prints nothing when there is no `STATUS.md`. Set `TRELLIS_NO_STATUS=1` to turn it off.
+
+**On your files, when you invoke a skill or agent.**
+- Skills write the project's documents (`SPEC.md`, `ARCHITECTURE.md`, `PLAN.md`, `STATUS.md`, `docs/`…) and, for `autopilot`, `follow-up` and `adopt`, working files under `.trellis/`.
+- The `developer` agent creates a branch and a git worktree, runs your project's own tests, lint and build commands, and makes local commits. It never pushes or merges.
+- The read-only agents (`verifier`, `pr-reviewer`, `coherence-checker`, `product-owner`, `security-reviewer`) run read-only commands such as `git log`, `git diff` and your test commands, and edit nothing.
+
+**On the web, only for research.** `naming`, `prior-art` and the `devils-advocate`, `design-reviewer` and `security-reviewer` agents can search and read public web pages. The queries are about your idea, the names you are comparing or the standards being checked, so they can contain what your project documents say about them.
+
+**On your git forge, only when you ask.**
+- `autopilot` pushes a branch (never with `--force`) and opens one pull request per slice **only if you authorised it**, using your existing `gh` (GitHub), `fj` (Forgejo or Gitea) or `glab` (GitLab, experimental) login. With `--review-comment` it posts one review comment per pull request.
+- `follow-up` reads a pull request's review comments and checks, and pushes fixes to its branch and posts a summary comment only after the steps you agree to.
+- `publish` asks for an explicit go before each outward step: committing, pushing a tag, uploading an artifact, creating a release, deploying.
+
+Nothing else leaves your machine. If you only use the planning and design skills, Trellis stays within your project's files and the web research above.
+
 ## Languages
 
 Names (skills, agents, files) are in English. Documentation and templates are in English and French; generated documents follow the language of the project.
