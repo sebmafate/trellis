@@ -74,6 +74,22 @@ The shorthand `--marketplace sebmafate/trellis` is accepted too. Run it in a ter
 
 Then ask Claude to incubate an idea, or invoke the skill directly as `/trellis-flow:incubate`. Full guide (install options, trying it without installing, what each step does, troubleshooting): [docs/usage.md](docs/usage.md).
 
+### Only a few skills, or another coding agent
+
+Five skills work on their own, without the plugin's agents or hook: `incubate`, `prior-art`, `naming`, `adr` and `spike`. Each is a `SKILL.md` with its templates. You can install just those, in Claude Code or in another coding agent, with the third-party [`skills`](https://github.com/vercel-labs/skills) CLI (it needs Node.js 22.20 or later):
+
+```
+npx skills add sebmafate/trellis --list
+npx skills add sebmafate/trellis --skill adr --skill spike
+```
+
+What to know before you do:
+
+- Installed this way they are plain skills, called by their short name (`adr`), not `/trellis-flow:adr`.
+- They sometimes suggest other Trellis skills or agents (for example `architect` or `devils-advocate`). Those are not installed this way; use the plugin for the whole path.
+- Do not install everything with `--skill '*'`: `autopilot` and `follow-up` call agents that only the plugin provides.
+- The `skills` CLI is a tool from Vercel Labs, not part of Trellis. It sends anonymous usage data; set `DISABLE_TELEMETRY=1` or `DO_NOT_TRACK=1` to turn that off. Trellis itself has no telemetry.
+
 ## Name change (0.12.0)
 
 The project is still called **Trellis** and its repository is still `sebmafate/trellis`. Only the plugin's identifier changed, from `trellis` to **`trellis-flow`**, so that it cannot be mistaken for an unrelated project that has the same name.

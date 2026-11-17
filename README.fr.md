@@ -74,6 +74,22 @@ La forme abrégée `--marketplace sebmafate/trellis` est acceptée aussi. À lan
 
 Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis-flow:incubate`. Guide complet (options d'installation, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
 
+### Seulement quelques skills, ou un autre agent de code
+
+Cinq skills fonctionnent seuls, sans les agents ni le hook du plugin : `incubate`, `prior-art`, `naming`, `adr` et `spike`. Chacun est un `SKILL.md` avec ses gabarits. Tu peux n'installer que ceux-là, dans Claude Code ou dans un autre agent de code, avec la CLI tierce [`skills`](https://github.com/vercel-labs/skills) (elle demande Node.js 22.20 ou plus récent) :
+
+```
+npx skills add sebmafate/trellis --list
+npx skills add sebmafate/trellis --skill adr --skill spike
+```
+
+Ce qu'il faut savoir avant de le faire :
+
+- Installés ainsi, ce sont de simples skills, appelés par leur nom court (`adr`), pas par `/trellis-flow:adr`.
+- Ils proposent parfois d'autres skills ou agents de Trellis (par exemple `architect` ou `devils-advocate`). Ceux-là ne sont pas installés de cette façon : utilise le plugin pour le parcours complet.
+- N'installe pas tout avec `--skill '*'` : `autopilot` et `follow-up` appellent des agents que seul le plugin fournit.
+- La CLI `skills` est un outil de Vercel Labs, extérieur à Trellis. Elle envoie des données d'usage anonymes ; définis `DISABLE_TELEMETRY=1` ou `DO_NOT_TRACK=1` pour les désactiver. Trellis lui-même n'a aucune télémétrie.
+
 ## Changement de nom (0.12.0)
 
 Le projet s'appelle toujours **Trellis** et son dépôt reste `sebmafate/trellis`. Seul l'identifiant du plugin a changé, de `trellis` à **`trellis-flow`**, pour qu'on ne le confonde pas avec un projet distinct qui porte le même nom.
