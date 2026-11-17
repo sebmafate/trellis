@@ -638,7 +638,7 @@ Names (skills, agents, files) are in English. Documents are generated in the lan
 
 ## 29. Contributing and working on the plugin
 
-Conventions for this repository (layout, naming, bilingual docs, "strict but soft") are in [`CLAUDE.md`](../CLAUDE.md). To check a change, run:
+Conventions for this repository (layout, naming, bilingual docs, "strict but soft") are in [`.claude/CLAUDE.md`](../.claude/CLAUDE.md). To check a change, run:
 
 ```sh
 claude plugin validate .

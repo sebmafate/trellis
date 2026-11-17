@@ -639,7 +639,7 @@ Les noms (skills, agents, fichiers) sont en anglais. Les documents sont génér�
 
 ## 29. Contribuer et travailler sur le plugin
 
-Les conventions du dépôt (organisation, nommage, documentation bilingue, « strict mais souple ») sont dans [`CLAUDE.md`](../CLAUDE.md). Pour vérifier une modification :
+Les conventions du dépôt (organisation, nommage, documentation bilingue, « strict mais souple ») sont dans [`.claude/CLAUDE.md`](../.claude/CLAUDE.md). Pour vérifier une modification :
 
 ```sh
 claude plugin validate .
