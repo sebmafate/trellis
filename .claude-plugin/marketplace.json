@@ -7,9 +7,12 @@
   },
   "plugins": [
     {
-      "name": "trellis",
+      "name": "trellis-flow",
       "description": "Skills and agents that carry a project from a raw idea to shipped software: incubate, architect, slice, deliver, resume.",
       "source": "./"
     }
-  ]
+  ],
+  "renames": {
+    "trellis": "trellis-flow"
+  }
 }

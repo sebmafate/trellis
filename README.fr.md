@@ -6,7 +6,9 @@
 
 Un plugin [Claude Code](https://claude.com/claude-code) de skills et d'agents qui accompagne un projet de l'idée brute jusqu'au logiciel livré. Il donne au projet une structure pour grandir, sans décider de sa direction.
 
-> Statut : travail en cours (0.11.0). Sous [licence MIT](LICENSE).
+> Statut : travail en cours (0.12.0). Sous [licence MIT](LICENSE).
+>
+> Trellis n'a aucun lien avec le [Trellis de Mindfold](https://github.com/mindfold-ai/Trellis), un projet distinct qui porte le même nom.
 
 ## Le principe
 
@@ -65,26 +67,48 @@ Idées pour plus tard : une phase de maintenance (mises à jour de dépendances,
 ## Utilisation
 
 ```
-claude plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
+claude plugin install trellis-flow --marketplace https://github.com/sebmafate/trellis.git
 ```
 
 La forme abrégée `--marketplace sebmafate/trellis` est acceptée aussi. À lancer dans un terminal, puis démarrer une nouvelle session. (Dans l'interface interactive de Claude Code, on peut taper `/plugin install …` ; des hôtes comme T3 Code n'offrent pas cette commande.)
 
-Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis:incubate`. Guide complet (options d'installation, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
+Puis demander à Claude d'incuber une idée, ou invoquer directement `/trellis-flow:incubate`. Guide complet (options d'installation, essai sans installer, détail de chaque étape, dépannage) : [docs/usage.fr.md](docs/usage.fr.md).
+
+## Changement de nom (0.12.0)
+
+Le projet s'appelle toujours **Trellis** et son dépôt reste `sebmafate/trellis`. Seul l'identifiant du plugin a changé, de `trellis` à **`trellis-flow`**, pour qu'on ne le confonde pas avec un projet distinct qui porte le même nom.
+
+| | Avant 0.12.0 | Depuis 0.12.0 |
+| --- | --- | --- |
+| Identifiant du plugin | `trellis` | `trellis-flow` |
+| Installation | `claude plugin install trellis …` | `claude plugin install trellis-flow …` |
+| Skills | `/trellis:incubate` | `/trellis-flow:incubate` |
+| Agents | `trellis:developer` | `trellis-flow:developer` |
+
+Le marketplace s'appelle toujours `trellis`, et les dossiers `.trellis/` comme les documents de tes projets ne changent pas. Seul ce que tu tapes change.
+
+**Si tu avais installé Trellis avant la 0.12.0**, lance ces deux commandes dans un terminal, puis démarre une nouvelle session :
+
+```
+claude plugin marketplace update trellis
+claude plugin install trellis-flow@trellis
+```
+
+Le marketplace déclare le renommage : Claude Code reporte donc ton ancien réglage `trellis@trellis` sur le nouveau nom. La seconde commande n'est nécessaire qu'une fois, car le plugin renommé n'est pas encore téléchargé. Vérifie avec `claude plugin list`. Tout ce que tu as enregistré avec le préfixe `/trellis:` (notes, scripts, le `CLAUDE.md` d'un projet généré par un ancien `bootstrap`) doit maintenant utiliser `/trellis-flow:`.
 
 ## Exemples de prompts
 
 Chacun fonctionne tel quel, depuis la racine de ton projet. Le tableau complet des recettes est dans le [guide d'usage](docs/usage.fr.md).
 
-1. **Transformer une idée en spécification.** `/trellis:incubate un petit outil qui transforme mes notes de réunion en liste d'actions datées`
+1. **Transformer une idée en spécification.** `/trellis-flow:incubate un petit outil qui transforme mes notes de réunion en liste d'actions datées`
    Claude t'interroge une question à la fois, challenge l'idée (utilisateurs, périmètre, hors-périmètre, risques, test peu coûteux, critères d'arrêt) et écrit `SPEC.md` avec des exigences numérotées.
-2. **Placer sous Trellis un projet qui a déjà du code.** `/trellis:adopt standard`
+2. **Placer sous Trellis un projet qui a déjà du code.** `/trellis-flow:adopt standard`
    Claude lit le code, les tests, la CI et l'historique git, pose quelques questions auxquelles le code ne répond pas, puis rédige `CLAUDE.md`, `ARCHITECTURE.md`, des ADR rétroactifs et une base de tests dans `.trellis/adopt/`, chaque élément marqué « à confirmer » avec sa preuve. Il ne modifie pas ton code.
-3. **Reprendre un projet après une pause.** `/trellis:resume`
+3. **Reprendre un projet après une pause.** `/trellis-flow:resume`
    Claude lit `STATUS.md`, `PLAN.md`, l'historique git et l'arbre de travail, puis dit où en est le projet, ce qui est périmé ou incohérent, et la prochaine étape exacte.
 4. **Obtenir un avis sceptique.** `Utilise l'agent devils-advocate sur mon SPEC.md.`
    Un agent en lecture seule signale les critères de succès flous, la dérive de périmètre, les exigences invérifiables et les options écartées trop faibles. Il ne modifie rien.
-5. **Construire des tranches pendant que tu fais autre chose.** `/trellis:autopilot next --push --review`
+5. **Construire des tranches pendant que tu fais autre chose.** `/trellis-flow:autopilot next --push --review`
    Une petite équipe d'agents construit la prochaine tranche en test d'abord sur sa propre branche, la vérifie de façon indépendante et relit le diff. Avec `--push`, elle ouvre une pull request par tranche ; sans, tout reste local. Elle ne fusionne jamais.
 
 ## Ce que Trellis exécute

@@ -37,6 +37,6 @@
 
 ## Travailler ici avec Trellis
 
-- Reprendre le projet : `/trellis:resume`, puis `/trellis:deliver`.
-- Une exigence, une décision ou le design change : `/trellis:change-course`.
-- Un choix à consigner : `/trellis:adr`. Une inconnue à lever : `/trellis:spike`.
+- Reprendre le projet : `/trellis-flow:resume`, puis `/trellis-flow:deliver`.
+- Une exigence, une décision ou le design change : `/trellis-flow:change-course`.
+- Un choix à consigner : `/trellis-flow:adr`. Une inconnue à lever : `/trellis-flow:spike`.

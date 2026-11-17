@@ -11,7 +11,7 @@ Give the user an accurate, short answer to **"where are we and what do I do next
 
 - **Evidence over recall.** Everything in the report comes from files, git or tests you actually looked at. Say when the status document and the repository disagree.
 - **Short.** One screen. The user is trying to get moving, not to read a report.
-- **One recommended next action**, concrete enough to run (for example "`/trellis:deliver SL3`").
+- **One recommended next action**, concrete enough to run (for example "`/trellis-flow:deliver SL3`").
 - **Read-mostly.** Do not change code or documents. Offer to refresh `STATUS.md` and do it only if the user agrees.
 - **Works with partial documents.** Use what exists; say what is missing and what that costs.
 

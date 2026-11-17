@@ -18,4 +18,4 @@
 
 ## Next action
 
-`/trellis:follow-up 3` to address the review comments, then `/trellis:autopilot SL3`.
+`/trellis-flow:follow-up 3` to address the review comments, then `/trellis-flow:autopilot SL3`.

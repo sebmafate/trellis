@@ -9,19 +9,19 @@ Trellis est un plugin [Claude Code](https://claude.com/claude-code). Il ajoute d
 Il faut Claude Code. Les commandes ci-dessous sont des **commandes de terminal** (`claude plugin …`), qui fonctionnent partout où Claude Code est installé, y compris dans des hôtes comme T3 Code. Dans l'interface interactive de Claude Code, on peut taper la même chose en commande à barre oblique (`/plugin install …`, `/plugin marketplace update …`) ; là où cette commande n'existe pas, utilise le terminal. Installe le plugin depuis la marketplace de ce dépôt :
 
 ```
-claude plugin install trellis --marketplace https://github.com/sebmafate/trellis.git
+claude plugin install trellis-flow --marketplace https://github.com/sebmafate/trellis.git
 ```
 
 La forme abrégée `owner/repo` est acceptée aussi :
 
 ```
-claude plugin install trellis --marketplace sebmafate/trellis
+claude plugin install trellis-flow --marketplace sebmafate/trellis
 ```
 
 **Depuis un fork privé ou une copie auto-hébergée**, l'URL HTTPS échoue (Git ne peut pas demander de mot de passe dans ce contexte). Utilise plutôt la forme SSH `git@hôte:propriétaire/dépôt.git`, par exemple :
 
 ```
-claude plugin install trellis --marketplace git@example.com:proprietaire/trellis.git
+claude plugin install trellis-flow --marketplace git@example.com:proprietaire/trellis.git
 ```
 
 Claude Code **refuse les URL `ssh://…`** (« Invalid marketplace source format »). La forme `git@hôte:chemin` ne peut pas porter de port : un port SSH non standard doit donc être déclaré dans `~/.ssh/config` (`Host example.com` avec `Port 2222`, par exemple).
@@ -30,9 +30,9 @@ La même chose en deux étapes, utile à connaître pour les mises à jour :
 
 ```
 claude plugin marketplace add <URL du dépôt>
-claude plugin install trellis@trellis
+claude plugin install trellis-flow@trellis
 claude plugin marketplace update trellis
-claude plugin update trellis@trellis
+claude plugin update trellis-flow@trellis
 claude plugin list
 ```
 
@@ -49,7 +49,7 @@ C'est aussi ainsi qu'on teste ses propres modifications en travaillant sur le pl
 
 ### Vérifier que ça marche
 
-Lance `claude plugin list` dans un terminal : `trellis@trellis` doit apparaître comme activé. Les plugins sont chargés au démarrage d'une session : **démarre une nouvelle session** (un nouveau fil dans T3 Code) après l'installation ou une mise à jour. Puis tape `/trellis:` là où les commandes à barre oblique existent et cherche `trellis:incubate`, ou demande simplement à Claude d'incuber une idée.
+Lance `claude plugin list` dans un terminal : `trellis-flow@trellis` doit apparaître comme activé. Les plugins sont chargés au démarrage d'une session : **démarre une nouvelle session** (un nouveau fil dans T3 Code) après l'installation ou une mise à jour. Puis tape `/trellis-flow:` là où les commandes à barre oblique existent et cherche `trellis-flow:incubate`, ou demande simplement à Claude d'incuber une idée.
 
 ## 2. Le principe en une image
 
@@ -116,7 +116,7 @@ Ouvre Claude Code **dans le dossier où vivra le projet** (un dossier vide ou un
 ou appelle directement le skill :
 
 ```
-/trellis:incubate un petit outil qui transforme mes commits en compte rendu d'activité mensuel
+/trellis-flow:incubate un petit outil qui transforme mes commits en compte rendu d'activité mensuel
 ```
 
 Les deux fonctionnent. L'appel direct est pratique si Claude ne reconnaît pas le skill de lui-même.
@@ -160,7 +160,7 @@ Les exigences ont des identifiants stables (`R1`, `R2`, ...), une priorité (Mus
 ### Trouver un nom (`naming`)
 
 ```
-/trellis:naming
+/trellis-flow:naming
 ```
 
 Facultatif : il demande d'abord si tu veux de l'aide, et s'arrête si ce n'est pas le cas. Il pose un court cahier des charges (ce que le nom doit évoquer et ne pas suggérer, qui le dira et le lira, les langues, où il doit être disponible, où vivra le projet), propose une douzaine de candidats dans des pistes différentes (métaphore, mot inventé, évocateur, autres langues) avec la raison et le risque connu de chacun, et t'aide à retenir trois à cinq finalistes. Il **passe ensuite les finalistes au crible sur le web** et note où et quand : noms identiques ou proches dans le domaine, domaines, noms de dépôts et de paquets, boutiques d'applications, sens dans d'autres langues, et les registres publics de marques qu'il a réellement pu interroger. Le verdict est « aucun conflit trouvé dans les endroits vérifiés », « conflit proche » ou « bloquant », jamais « libre ». Écrit dans `docs/naming.md` ; le nom choisi entre dans le titre de la spécification et son journal des décisions. Tu peux aussi lui demander de vérifier un nom que tu as déjà. C'est un premier criblage, pas une recherche de marque ni un avis juridique : pour un projet commercial, fais consulter les registres par un professionnel.
@@ -170,7 +170,7 @@ Facultatif : il demande d'abord si tu veux de l'aide, et s'arrête si ce n'est p
 Lance-le dans le même dossier, une fois `SPEC.md` en place :
 
 ```
-/trellis:architect
+/trellis-flow:architect
 ```
 
 ou demande simplement : « Quelle est la bonne architecture pour ça ? »
@@ -189,7 +189,7 @@ Conseils : demande la valeur par défaut qu'il prendrait si tu hésites ; dis «
 `architect` l'utilise automatiquement, mais tu peux l'appeler seul chaque fois que tu fais un choix technique :
 
 ```
-/trellis:adr on a choisi SQLite plutôt que Postgres car l'app est mono-utilisateur et hors ligne
+/trellis-flow:adr on a choisi SQLite plutôt que Postgres car l'app est mono-utilisateur et hors ligne
 ```
 
 Il écrit `docs/adr/NNNN-titre-court.md` (numéroté, une décision par fichier) avec le contexte, **les options envisagées et pourquoi les autres sont écartées**, la décision, les conséquences (y compris négatives) et un déclencheur mesurable pour la réexaminer. Il tient aussi à jour `docs/adr/README.md` (l'index) et le tableau des décisions d'`ARCHITECTURE.md`.
@@ -204,7 +204,7 @@ Demande-le avec des mots simples, par exemple :
 
 > Utilise l'agent devils-advocate pour relire mon SPEC.md.
 
-> Lance trellis:devils-advocate sur l'architecture et les ADR.
+> Lance trellis-flow:devils-advocate sur l'architecture et les ADR.
 
 Il lit `SPEC.md`, `ARCHITECTURE.md`, `docs/adr/` et `STATUS.md`, et rend : un jugement d'ensemble, les problèmes **bloquants**, les **importants**, les mineurs, les deux ou trois questions auxquelles tu dois répondre, et ce qui est solide. Chaque constat cite le fichier et la section. Il s'adapte au projet (un outil de week-end n'est pas jugé selon des normes d'entreprise) et dit « aucun problème bloquant » quand c'est vrai.
 
@@ -215,7 +215,7 @@ Bons moments pour l'appeler : juste après `incubate` (avant d'investir), et apr
 Pour tout projet avec une interface. Lance-le après `incubate`, avant ou en parallèle d'`architect` :
 
 ```
-/trellis:ux
+/trellis-flow:ux
 ```
 
 Il lit `SPEC.md` et traite : les utilisateurs et leur contexte, des **objectifs UX testables**, les **parcours** (un par exigence Must, dont la première utilisation), la structure de l'information, l'**inventaire des écrans avec tous leurs états** (vide, chargement, erreur, hors ligne, première utilisation...), des maquettes filaires en ASCII pour les écrans critiques, et les textes clés de l'interface. Tout cite des identifiants d'exigences, et il se termine par un parcours à blanc de chaque parcours et un contrôle de couverture (chaque Must visible par l'utilisateur a un écran ; chaque écran sert une exigence).
@@ -227,7 +227,7 @@ Le résultat est la **partie UX de `DESIGN.md`**. Il ne dit rien des couleurs ni
 Lance-le quand la partie UX existe et que la plateforme est décidée :
 
 ```
-/trellis:ui
+/trellis-flow:ui
 ```
 
 Il nomme les conventions de plateforme à suivre, propose un **petit ensemble de jetons sémantiques** (couleur avec valeurs claire et sombre, typographie, espacements, formes, mouvement) avec les ratios de contraste calculés et consignés, liste les **composants avec leurs états** (en préférant les composants natifs et en justifiant ceux sur mesure), et écrit les règles d'accessibilité (taille des cibles, mise à l'échelle du texte, étiquettes pour lecteur d'écran, ordre du focus, réduction des animations). Le résultat est la **partie UI de `DESIGN.md`**.
@@ -239,7 +239,7 @@ Si la plateforme n'est pas décidée, il le signale et propose de produire des j
 Lance-le après l'architecture (et le design, s'il y a une interface), avant le découpage :
 
 ```
-/trellis:test-strategy
+/trellis-flow:test-strategy
 ```
 
 Il identifie les risques qui comptent, choisit un dosage proportionné de niveaux de test et construit une **matrice de vérification** : chaque exigence reçoit une vérification concrète et observable à un niveau donné. Il couvre aussi les données de test (pas de données personnelles dans le dépôt), les environnements, les **portes de qualité** (ce qui bloque, ce qui avertit seulement), les tests non fonctionnels et manuels, et une **définition de « fini »** pour chaque tranche. Le résultat est `TESTING.md`.
@@ -257,7 +257,7 @@ Il vérifie les parcours par rapport aux exigences, les états manquants, le nom
 ## 12. Passer en revue l'existant (`prior-art`)
 
 ```
-/trellis:prior-art
+/trellis-flow:prior-art
 ```
 
 Une version plus poussée et sourcée du survol fait par `incubate`, proposée par défaut quand le projet est destiné à d'autres personnes. Vous convenez de cinq à huit **critères tirés de vos exigences**, puis il examine produits, projets open source, fonctions de plateformes et combinaisons d'outils, évalue chacun selon les critères (avec liens et date de vérification, et affirmations des éditeurs signalées comme telles), et conclut par un verdict : **adopter, adapter, construire ou ne rien faire**. Écrit dans `docs/prior-art.md`. « Adopte plutôt X » est un résultat valable.
@@ -267,7 +267,7 @@ Pour un projet destiné à d'autres personnes, il ajoute un court **angle march�
 ## 13. Lever une inconnue (`spike`)
 
 ```
-/trellis:spike une extension de partage peut-elle écrire dans le stockage partagé en moins de 200 ms ?
+/trellis-flow:spike une extension de partage peut-elle écrire dans le stockage partagé en moins de 200 ms ?
 ```
 
 Cadre **une seule question**, avec des critères de succès, d'échec et de non-conclusion écrits **avant** l'expérience, et une durée maximale. Il aide à concevoir l'expérience la moins chère, à l'exécuter et à consigner le résultat dans `docs/spikes/NNNN-titre.md`, puis reporte le verdict dans l'ADR (une décision `proposée` devient `acceptée`, ou est remplacée), la table des risques de l'architecture, les critères d'abandon de la spécification et le plan. Le code d'un spike est jetable.
@@ -275,7 +275,7 @@ Cadre **une seule question**, avec des critères de succès, d'échec et de non-
 ## 14. Mettre en place le projet (`bootstrap`)
 
 ```
-/trellis:bootstrap
+/trellis-flow:bootstrap
 ```
 
 À lancer après l'architecture et la stratégie de tests. Il reprend la stack de vos ADR, montre son plan, puis utilise le **générateur officiel** de la stack pour créer la structure, ajoute `docs/`, `.gitignore`, un README minimal et `CHANGELOG.md`, et écrit le **`CLAUDE.md` du projet** (où est chaque document, les vraies commandes de build et de test, les règles). Il se termine par un **squelette fonctionnel** qui compile et passe un test. Il n'écrase jamais de fichier existant, et créer un dépôt distant, pousser ou activer la CI attend votre accord.
@@ -283,7 +283,7 @@ Cadre **une seule question**, avec des critères de succès, d'échec et de non-
 ## 15. Planifier le travail (`slice`)
 
 ```
-/trellis:slice
+/trellis-flow:slice
 ```
 
 Découpe le travail dans `PLAN.md` : des **tranches verticales** (`SL0`, `SL1`...), chacune observable, testable et petite, avec des critères d'acceptation tirés de la matrice de vérification, les exigences, parcours et écrans qu'elle sert, une taille (S / M / L) et ses dépendances. La tranche 0 est le squelette fonctionnel ; les points risqués viennent tôt ; chaque Must est couvert par une tranche (un tableau de couverture le vérifie) ; les états d'erreur et de vide sont planifiés aussi. Les tranches lointaines restent grossières. Le relancer après un changement conserve les identifiants des tranches faites.
@@ -291,7 +291,7 @@ Découpe le travail dans `PLAN.md` : des **tranches verticales** (`SL0`, `SL1`..
 ## 16. Construire des tranches (`deliver` ou `autopilot`)
 
 ```
-/trellis:deliver SL1
+/trellis-flow:deliver SL1
 ```
 
 ou « livre la prochaine tranche ». Pour une tranche : il reformule les critères, écrit les **tests d'abord** et les voit échouer, implémente le minimum pour qu'ils passent, lance tests, lint et build (et essaie réellement ce que voit l'utilisateur), propose une vérification indépendante par le `verifier`, puis met à jour `PLAN.md`, `STATUS.md`, `CHANGELOG.md` et la matrice de tests, et commite si vous l'avez accepté. Il signale les écarts au lieu de les cacher, n'affaiblit jamais un test pour le faire passer, et s'arrête après chaque tranche. Il demande une fois si chaque tranche doit être commitée sur sa propre branche.
@@ -299,8 +299,8 @@ ou « livre la prochaine tranche ». Pour une tranche : il reformule les critèr
 ### Ou laisser une équipe le faire : `autopilot`
 
 ```
-/trellis:autopilot next --push
-/trellis:autopilot SL3 SL4 --parallel 2 --rounds 3 --push
+/trellis-flow:autopilot next --push
+/trellis-flow:autopilot SL3 SL4 --parallel 2 --rounds 3 --push
 ```
 
 `autopilot` fait travailler une petite **équipe d'agents** qui mène des tranches du plan jusqu'à une **pull request ouverte**, une PR par tranche. Il s'exécute dans votre session (lui seul peut vous parler) ; les agents font le travail :
@@ -341,19 +341,19 @@ product-owner ─► task-writer ─► developer ◄──► QA (verifier) ─
 
 ```
 # En local seulement : voir ce que produit l'équipe ; rien ne quitte votre machine
-/trellis:autopilot SL2
+/trellis-flow:autopilot SL2
 
 # Construire la prochaine tranche prête, la pousser et ouvrir une pull request
-/trellis:autopilot next --push
+/trellis-flow:autopilot next --push
 
 # Deux tranches indépendantes en même temps, en brouillon, avec une relecture dont le commentaire est posté pour vous
-/trellis:autopilot SL3 SL4 --parallel 2 --draft --push --review --review-comment
+/trellis-flow:autopilot SL3 SL4 --parallel 2 --draft --push --review --review-comment
 
 # Une tranche délicate : un développeur plus fort, et pas plus de 2 tours de QA
-/trellis:autopilot SL5 --dev-model opus --rounds 2 --push
+/trellis-flow:autopilot SL5 --dev-model opus --rounds 2 --push
 
 # Relecture seule, sans boucle : vous avez le rapport, rien n'est corrigé dans votre dos
-/trellis:autopilot SL2 --push --review --review-rounds 0
+/trellis-flow:autopilot SL2 --push --review --review-rounds 0
 ```
 
 Vous pouvez aussi simplement le dire : « fais tourner l'équipe sur la prochaine tranche, pousse-la et fais relire la pull request ».
@@ -375,8 +375,8 @@ Chaque agent déclare son modèle dans la ligne `model:` de son en-tête, dans `
 #### Relire la pull request (`--review`)
 
 ```
-/trellis:autopilot next --push --review
-/trellis:autopilot SL3 SL4 --push --review --review-comment
+/trellis-flow:autopilot next --push --review
+/trellis-flow:autopilot SL3 SL4 --push --review --review-comment
 ```
 
 La QA répond à « la tranche respecte-t-elle ses critères ? ». La relecture répond à l'autre question, celle qu'un collègue attentif se pose avant de fusionner : « serais-je à l'aise pour maintenir ce code ? ». Avec `--review`, quand une tranche a passé la QA et le contrôle final, l'agent `pr-reviewer` lit le **vrai diff** par rapport à la branche de base et signale les bugs et les cas non gérés, le code peu clair ou inutilement complexe, les doublons, les écarts avec les conventions du code et les ADR, les changements risqués (sécurité, dépendances, migrations), le périmètre qui déborde, et si la description de la pull request dit bien ce que fait le diff. Il **ne reçoit ni le rapport du développeur ni celui de la QA** : il se forge son propre avis. Il rend un rapport ; il ne modifie rien, n'approuve rien et ne poste rien.
@@ -442,10 +442,10 @@ Vous pouvez aussi utiliser les agents seuls : demandez au `product-owner` « que
 *Facultatif. Il ne se lance jamais tout seul et `autopilot` ne l'appelle jamais.*
 
 ```
-/trellis:follow-up 3
-/trellis:follow-up 3 --ci --push
-/trellis:follow-up 3 --comments --push --reply
-/trellis:follow-up slice/SL2-exclude-noise --from-file feedback.md
+/trellis-flow:follow-up 3
+/trellis-flow:follow-up 3 --ci --push
+/trellis-flow:follow-up 3 --comments --push --reply
+/trellis-flow:follow-up slice/SL2-exclude-noise --from-file feedback.md
 ```
 
 Quand une personne a relu votre pull request, ou qu'un contrôle a échoué, `follow-up` transforme ces retours en commits de correction **sur la même branche** :
@@ -480,7 +480,7 @@ Un agent qui relit une branche ou une pull request comme le ferait un relecteur 
 ## 18. Publier (`publish`)
 
 ```
-/trellis:publish
+/trellis-flow:publish
 ```
 
 Contrôles avant publication (arbre propre, tranches prévues faites, tests complets, portes de publication, changelog), une version proposée, des notes de version, une construction depuis le commit de publication (dont **signature et notarisation Apple**, magasins d'applications, paquets ou conteneurs selon vos ADR), une **vérification de l'artefact construit dans un environnement propre**, puis la publication et un plan de retour arrière. Chaque étape visible de l'extérieur (étiquette, envoi, soumission à un magasin, déploiement, annonce) demande votre feu vert explicite.
@@ -488,7 +488,7 @@ Contrôles avant publication (arbre propre, tranches prévues faites, tests comp
 ## 19. Reprendre un projet (`resume`)
 
 ```
-/trellis:resume
+/trellis-flow:resume
 ```
 
 Lit `STATUS.md`, `PLAN.md` et git, et répond en un écran : la phase, ce qui est fait, ce qui est en cours (branche, travail non commité), ce qui est ouvert ou périmé, et **une prochaine action** avec la commande exacte. Il signale quand le document de statut et le dépôt ne s'accordent pas. Lecture seule ; il propose de rafraîchir `STATUS.md` et ne le fait que si vous êtes d'accord.
@@ -496,7 +496,7 @@ Lit `STATUS.md`, `PLAN.md` et git, et répond en un écran : la phase, ce qui es
 ## 20. Changer de cap (`change-course`)
 
 ```
-/trellis:change-course abandonner la synchronisation
+/trellis-flow:change-course abandonner la synchronisation
 ```
 
 Pour une exigence nouvelle, modifiée ou abandonnée, un pivot ou un changement de technologie. Il montre l'**impact** sur la spécification, les ADR, l'architecture, le design, les tests, le plan et le code, mesure le changement et le coût de ne pas changer, vérifie si un critère d'abandon est touché, et avance sur votre décision. Il met ensuite les documents à jour **dans l'ordre des dépendances** sans rien renuméroter : les exigences abandonnées sont marquées `dropped`, les décisions changées deviennent de nouveaux ADR qui remplacent les anciens.
@@ -504,7 +504,7 @@ Pour une exigence nouvelle, modifiée ou abandonnée, un pivot ou un changement 
 ## 21. Faire le point (`retro`)
 
 ```
-/trellis:retro
+/trellis-flow:retro
 ```
 
 Pour la fin d'une phase, d'un jalon, d'une publication ou du projet. Il rassemble les faits (tranches prévues et faites, spikes, décisions, changements), compare le résultat aux **critères de succès et d'abandon d'origine**, demande votre propre point de vue, et conclut par un verdict explicite : continuer, pivoter, mettre en pause, abandonner ou terminé. Les actions disent où elles vivront. Écrit dans `docs/retro/AAAA-MM-JJ-titre.md`.
@@ -512,7 +512,7 @@ Pour la fin d'une phase, d'un jalon, d'une publication ou du projet. Il rassembl
 ## 22. Voir tous vos projets (`project-overview`)
 
 ```
-/trellis:project-overview ~/projets
+/trellis-flow:project-overview ~/projets
 ```
 
 Lit chaque dossier de projet (statut, statut de la spécification, avancement du plan, activité git) et donne une ligne comparable par projet avec des alertes (périmé, bloqué, pas de document de statut, critère d'abandon proche), puis suggère sur quoi **se concentrer, quoi débloquer et quoi mettre en pause**. Lecture seule ; il n'écrit un fichier de synthèse que si vous le demandez.
@@ -545,7 +545,7 @@ Pour un **projet existant** : `adopt` ─► (`security-reviewer`) ─► (`test
 Un parcours condensé sur un petit projet, [commit-report](../examples/README.fr.md) (fictif : un outil en ligne de commande qui transforme un mois d'historique git en compte rendu). Ce que vous tapez, ce qui se passe, ce que vous obtenez. Les documents laissés sont dans `examples/commit-report/` (en anglais).
 
 ```
-Vous     /trellis:incubate un outil en ligne de commande qui transforme mes commits en compte rendu mensuel
+Vous     /trellis-flow:incubate un outil en ligne de commande qui transforme mes commits en compte rendu mensuel
 Claude   Je comprends : un outil qui lit l'historique git local et écrit le compte rendu mensuel que
          vous devez à un client. C'est bien cela ?
 Vous     oui
@@ -562,47 +562,47 @@ Claude   Verdict : Tester d'abord.   Écrit : SPEC.md, STATUS.md
 
 | Étape | Vous tapez | Vous obtenez |
 | --- | --- | --- |
-| 1. Idée | `/trellis:incubate …` | `SPEC.md` (R1 à R7, critères d'arrêt), `STATUS.md` |
+| 1. Idée | `/trellis-flow:incubate …` | `SPEC.md` (R1 à R7, critères d'arrêt), `STATUS.md` |
 | 2. Second avis | « Utilise l'agent devils-advocate sur mon SPEC.md. » | un rapport : bloquant, important, mineur |
-| 3. Outils existants | `/trellis:prior-art` (proposé par défaut pour un produit) | `docs/prior-art.md` : « adopter d'abord la boucle `git log` » |
+| 3. Outils existants | `/trellis-flow:prior-art` (proposé par défaut pour un produit) | `docs/prior-art.md` : « adopter d'abord la boucle `git log` » |
 | 4. Le test | vous le faites (une heure) | le journal de la spécification : « A1 confirmée, on continue » |
-| 5. Architecture | `/trellis:architect` | `ARCHITECTURE.md`, ADR 0001 et 0002 |
-| 6. Interface | `/trellis:ux` | `DESIGN.md` (commandes, sortie, messages d'erreur) |
-| 7. Tests | `/trellis:test-strategy` | `TESTING.md` (exigence → contrôle) |
-| 8. Squelette | `/trellis:bootstrap` | `CLAUDE.md` du projet, CI, un hello-world qui passe |
-| 9. Plan | `/trellis:slice` | `PLAN.md` (SL0 à SL5 avec critères d'acceptation) |
-| 10. Premières tranches | `/trellis:deliver SL0`, `/trellis:deliver SL1` | tests d'abord, commits, documents à jour |
-| 11. L'équipe | `/trellis:autopilot SL2 --push --review` | une pull request ; rapports dans `.trellis/runs/` |
-| 12. Retours | `/trellis:follow-up 3 --push --reply` | corrections poussées, un commentaire de synthèse |
-| 13. Publication | `/trellis:publish` | version, changelog, tag (chaque étape sortante confirmée) |
+| 5. Architecture | `/trellis-flow:architect` | `ARCHITECTURE.md`, ADR 0001 et 0002 |
+| 6. Interface | `/trellis-flow:ux` | `DESIGN.md` (commandes, sortie, messages d'erreur) |
+| 7. Tests | `/trellis-flow:test-strategy` | `TESTING.md` (exigence → contrôle) |
+| 8. Squelette | `/trellis-flow:bootstrap` | `CLAUDE.md` du projet, CI, un hello-world qui passe |
+| 9. Plan | `/trellis-flow:slice` | `PLAN.md` (SL0 à SL5 avec critères d'acceptation) |
+| 10. Premières tranches | `/trellis-flow:deliver SL0`, `/trellis-flow:deliver SL1` | tests d'abord, commits, documents à jour |
+| 11. L'équipe | `/trellis-flow:autopilot SL2 --push --review` | une pull request ; rapports dans `.trellis/runs/` |
+| 12. Retours | `/trellis-flow:follow-up 3 --push --reply` | corrections poussées, un commentaire de synthèse |
+| 13. Publication | `/trellis-flow:publish` | version, changelog, tag (chaque étape sortante confirmée) |
 
-Pour reprendre après une pause : `/trellis:resume`. Il lit `STATUS.md`, le plan et git, et dit où vous en êtes et l'unique prochaine action.
+Pour reprendre après une pause : `/trellis-flow:resume`. Il lit `STATUS.md`, le plan et git, et dit où vous en êtes et l'unique prochaine action.
 
 ### Recettes : que taper quand…
 
 | Situation | Ce qu'il faut taper |
 | --- | --- |
-| J'ai une idée vague | `/trellis:incubate <l'idée en une phrase>` |
-| Est-ce que quelque chose comme ça existe déjà ? | `/trellis:prior-art` |
-| Il me faut un nom | `/trellis:naming` (ou « aide-moi à trouver un nom pour ce projet ») |
-| Je viens de faire un choix technique | `/trellis:adr nous avons choisi X plutôt que Y parce que …` |
-| Je ne sais pas si X va marcher | `/trellis:spike X peut-il faire Y en moins de 200 ms ?` |
+| J'ai une idée vague | `/trellis-flow:incubate <l'idée en une phrase>` |
+| Est-ce que quelque chose comme ça existe déjà ? | `/trellis-flow:prior-art` |
+| Il me faut un nom | `/trellis-flow:naming` (ou « aide-moi à trouver un nom pour ce projet ») |
+| Je viens de faire un choix technique | `/trellis-flow:adr nous avons choisi X plutôt que Y parce que …` |
+| Je ne sais pas si X va marcher | `/trellis-flow:spike X peut-il faire Y en moins de 200 ms ?` |
 | Je veux un avis sceptique sur ma spécification | « Utilise l'agent devils-advocate sur mon SPEC.md. » |
-| Je reviens après deux semaines | `/trellis:resume` |
-| Je veux ajouter ou retirer une exigence | `/trellis:change-course abandonner la synchronisation` |
-| Construire la prochaine tranche sous mes yeux | `/trellis:deliver SL3` |
-| Construire des tranches pendant que je fais autre chose | `/trellis:autopilot next --push --review` |
-| Une personne a relu ma PR, ou la CI a échoué | `/trellis:follow-up <numéro de PR>` |
+| Je reviens après deux semaines | `/trellis-flow:resume` |
+| Je veux ajouter ou retirer une exigence | `/trellis-flow:change-course abandonner la synchronisation` |
+| Construire la prochaine tranche sous mes yeux | `/trellis-flow:deliver SL3` |
+| Construire des tranches pendant que je fais autre chose | `/trellis-flow:autopilot next --push --review` |
+| Une personne a relu ma PR, ou la CI a échoué | `/trellis-flow:follow-up <numéro de PR>` |
 | Vérifier que documents et code concordent | « Utilise l'agent coherence-checker. » |
-| Le projet a déjà du code | `/trellis:adopt` |
-| Lequel de mes projets a besoin de moi ? | `/trellis:project-overview ~/projects` |
-| Publier | `/trellis:publish` |
+| Le projet a déjà du code | `/trellis-flow:adopt` |
+| Lequel de mes projets a besoin de moi ? | `/trellis-flow:project-overview ~/projects` |
+| Publier | `/trellis-flow:publish` |
 
 ## 26. Adopter un projet existant (`adopt`)
 
 ```
-/trellis:adopt standard
-/trellis:adopt full --draft
+/trellis-flow:adopt standard
+/trellis-flow:adopt full --draft
 ```
 
 Pour un projet qui **a déjà du code**. Le code sert de preuve et les documents sont des **hypothèses** tant que vous ne les avez pas confirmés.
@@ -627,15 +627,15 @@ Les noms (skills, agents, fichiers) sont en anglais. Les documents sont génér�
 
 | Symptôme | Cause probable et solution |
 | --- | --- |
-| `/trellis:incubate` est inconnu | Le plugin n'est pas chargé dans cette session. Vérifie `claude plugin list`, démarre une **nouvelle session** après l'installation, ou lance Claude Code avec `--plugin-dir`. |
-| Claude n'utilise pas le skill quand tu décris une idée | Appelle-le explicitement avec `/trellis:incubate`. |
+| `/trellis-flow:incubate` est inconnu | Le plugin n'est pas chargé dans cette session. Vérifie `claude plugin list`, démarre une **nouvelle session** après l'installation, ou lance Claude Code avec `--plugin-dir`. |
+| Claude n'utilise pas le skill quand tu décris une idée | Appelle-le explicitement avec `/trellis-flow:incubate`. |
 | Il demande ce que tu as déjà écrit | Mets tes notes dans le dossier du projet (README, notes) avant de commencer, pour qu'il les lise à l'étape 1. |
 | L'entretien paraît trop long | Dis-le. Le skill dimensionne l'entretien selon l'idée et peut sauter les sujets déjà réglés. |
 | `Invalid marketplace source format` | Tu as passé une URL `ssh://…`. Utilise `git@hôte:propriétaire/dépôt.git` (voir section 1). |
-| `Cannot add marketplace "trellis": its source doesn't match its extraKnownMarketplaces entry` | Le nom de marketplace `trellis` est déjà déclaré depuis une autre source (une installation précédente depuis un miroir ou un fork). Claude Code n'ajoute pas le même nom depuis une source différente. Supprime-la puis ajoute-la depuis la source voulue : `claude plugin marketplace remove trellis`, puis `claude plugin install trellis --marketplace <nouvelle source>`. La suppression désinstalle aussi le plugin, que la seconde commande réinstalle. |
+| `Cannot add marketplace "trellis": its source doesn't match its extraKnownMarketplaces entry` | Le nom de marketplace `trellis` est déjà déclaré depuis une autre source (une installation précédente depuis un miroir ou un fork). Claude Code n'ajoute pas le même nom depuis une source différente. Supprime-la puis ajoute-la depuis la source voulue : `claude plugin marketplace remove trellis`, puis `claude plugin install trellis-flow --marketplace <nouvelle source>`. La suppression désinstalle aussi le plugin, que la seconde commande réinstalle. |
 | `unable to get password from user` | Tu as utilisé une URL HTTPS sur un dépôt privé (un fork privé, par exemple). Utilise la forme SSH. |
 | L'état du projet s'affiche à chaque début de session et je n'en veux pas | Définis la variable d'environnement `TRELLIS_NO_STATUS=1`. |
-| Une mise à jour n'est pas arrivée | Lance `claude plugin marketplace update trellis` puis `claude plugin update trellis@trellis` dans un terminal, et démarre une nouvelle session. |
+| Une mise à jour n'est pas arrivée | Lance `claude plugin marketplace update trellis` puis `claude plugin update trellis-flow@trellis` dans un terminal, et démarre une nouvelle session. |
 
 ## 29. Contribuer et travailler sur le plugin
 

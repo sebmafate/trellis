@@ -3,13 +3,13 @@
 > Illustrative example, written by hand. In a real project these files live in `.trellis/runs/<run>/` and `.trellis/followups/`, which are **excluded from git**; they are shown here so you can see what each agent produces. The command was:
 >
 > ```
-> /trellis:autopilot SL2 --push --review
+> /trellis-flow:autopilot SL2 --push --review
 > ```
 >
 > then, after a human review and a failing check on the pull request:
 >
 > ```
-> /trellis:follow-up 3 --push --reply
+> /trellis-flow:follow-up 3 --push --reply
 > ```
 
 | File | Written by | What it is |

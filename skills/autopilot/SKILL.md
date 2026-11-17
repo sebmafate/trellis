@@ -77,7 +77,7 @@ Create `.trellis/runs/<run-id>/state.md` (create the folders if needed) (run id:
 
 ### 2. Product owner
 
-Launch the `product-owner` agent (`trellis:product-owner`) with the plan, the options and the parallelism limit. Read its `STATUS:` line:
+Launch the `product-owner` agent (`trellis-flow:product-owner`) with the plan, the options and the parallelism limit. Read its `STATUS:` line:
 
 - `proposal`: present the proposed slices, their order, base branches (stacked or default) and the reasons; ask the user to confirm or adjust. If the user named slices explicitly, still run the product-owner to check readiness and bases, and show any warning.
 - `nothing-ready`: report why and stop.
@@ -88,7 +88,7 @@ Launch the `product-owner` agent (`trellis:product-owner`) with the plan, the op
 For each confirmed slice, in dependency order:
 
 1. **Worktree and branch**: create them yourself so the base is exactly right: `git worktree add -b slice/<ID>-<short-title> .trellis/worktrees/<ID> <base>`, where `<base>` is the default branch, or the **previous slice's branch** when stacking. Refuse to reuse an existing branch without asking.
-2. **Task writer**: launch `trellis:task-writer` with the slice, the base branch and the worktree path. Save its brief to `.trellis/runs/<run-id>/<ID>/brief.md`.
+2. **Task writer**: launch `trellis-flow:task-writer` with the slice, the base branch and the worktree path. Save its brief to `.trellis/runs/<run-id>/<ID>/brief.md`.
    - `ready`: continue.
    - `needs-decision`: step 5, then re-run or resume the task writer with the answer.
    - `blocked`: tell the user what would unblock it, mark the slice `blocked`, and move on to the others.
@@ -97,11 +97,11 @@ For each confirmed slice, in dependency order:
 
 For each slice that is `ready` (several at once up to `--parallel`; launch independent slices' agents in the same message so they run concurrently):
 
-1. **Developer**: launch `trellis:developer` (with `model` set to `--dev-model` when given) with the brief, the worktree path and the branch. Save its report to `<ID>/dev-report-1.md`.
+1. **Developer**: launch `trellis-flow:developer` (with `model` set to `--dev-model` when given) with the brief, the worktree path and the branch. Save its report to `<ID>/dev-report-1.md`.
    - `done`: go to QA.
    - `needs-decision`: step 5, then resume the same developer with the answer.
    - `blocked`: tell the user, mark the slice `blocked`, continue with the others.
-2. **QA**: launch `trellis:verifier` (with `model` set to `--review-model` when given) with the worktree path, the brief, the plan's criteria and the developer's report. Save the report to `<ID>/qa-report-N.md`. Read the `VERDICT:` line:
+2. **QA**: launch `trellis-flow:verifier` (with `model` set to `--review-model` when given) with the worktree path, the brief, the plan's criteria and the developer's report. Save the report to `<ID>/qa-report-N.md`. Read the `VERDICT:` line:
    - `accept` or `accept-with-notes`: the slice is ready to publish. Keep the notes for the pull request.
    - `reject`: send the QA's numbered findings to the same developer (resume it) in **fix mode**, then run the QA again with the previous findings. Repeat up to `--rounds` rounds.
    - `needs-decision`: step 5.
@@ -114,7 +114,7 @@ Update `state.md` after every step.
 When any agent returns `needs-decision` (or `blocked` with a decision inside):
 
 1. Gather the **decision requests**: the question, the options with consequences, the agent's recommendation, and whether it is architectural. If several slices are waiting, batch up to four questions in one ask and let independent slices keep moving meanwhile.
-2. **Ask the user**, with the recommended option first. If you cannot ask interactively, write the questions to `state.md`, stop cleanly, and tell the user to answer and re-run `/trellis:autopilot`, which resumes from the state.
+2. **Ask the user**, with the recommended option first. If you cannot ask interactively, write the questions to `state.md`, stop cleanly, and tell the user to answer and re-run `/trellis-flow:autopilot`, which resumes from the state.
 3. **Record the answer.** If it is architectural or hard to reverse, record it as an ADR with the `adr` skill's method, in the slice's worktree and branch, and commit it there so it lands in the pull request. Otherwise add it to the brief's decisions and to the pull request.
 4. **Resume the agent** that asked, with the answer, using `SendMessage` to its agent ID so it keeps its context. If it cannot be resumed, launch a fresh agent with the brief, the previous report and the answer.
 
@@ -131,7 +131,7 @@ For each slice that passed QA, before publishing, check it yourself in its workt
 For each slice that passed the final gate, **before** anything is pushed, so that fixes land in the same pull request and a local-only run is reviewed too.
 
 1. **Draft the description.** Write the pull request description now (see step 8.3) into `.trellis/runs/<run-id>/<ID>/pr.md`, so the reviewer can check it against the diff. Refresh it after any fix round.
-2. **Reviewer**: launch `trellis:pr-reviewer` (with `model` set to `--review-model` when given) with the worktree path, the base branch, the slice and its criteria, the brief and the draft description. Do **not** pass the developer's or the QA's reports. Save its report to `<ID>/review-N.md` and, from its "Comment for the pull request" section, `<ID>/review-comment.md` (rewritten at each round: it must describe the final state). Read the `REVIEW:` line:
+2. **Reviewer**: launch `trellis-flow:pr-reviewer` (with `model` set to `--review-model` when given) with the worktree path, the base branch, the slice and its criteria, the brief and the draft description. Do **not** pass the developer's or the QA's reports. Save its report to `<ID>/review-N.md` and, from its "Comment for the pull request" section, `<ID>/review-comment.md` (rewritten at each round: it must describe the final state). Read the `REVIEW:` line:
    - `approve` or `comments`: the slice is ready to publish. Keep the remarks for the pull request description (section "Review").
    - `changes-requested`: if rounds remain (`--review-rounds`, default 1), send the reviewer's numbered findings to the same developer (resume it) in **fix mode**, then run the QA (`verifier`, re-test mode) on the new state, re-run the final gate (step 6), and re-run the reviewer with its previous findings. A QA rejection at this point is an ordinary QA round of step 4 (bounded by `--rounds`, counting the rounds already used). With `--review-rounds 0` or rounds exhausted, go to 3.
    - `needs-decision`: step 5, then re-run or resume the reviewer with the answer.
@@ -174,7 +174,7 @@ Give the user a short, scannable summary:
 - Decisions taken and ADRs written; decisions still open.
 - What was not verified, and any QA or review notes to look at; Blocking review findings still open.
 - **Merge order** (important when stacked) and the cleanup commands to run after merging: `git worktree remove <path>` and `git branch -d <branch>` for each slice.
-- What remains in the plan, and the suggested next run. Mention, once and without running it, that `/trellis:follow-up <PR>` can act on a human review or a failing CI later (optional).
+- What remains in the plan, and the suggested next run. Mention, once and without running it, that `/trellis-flow:follow-up <PR>` can act on a human review or a failing CI later (optional).
 
 Do not merge anything, and do not start another run unprompted.
 

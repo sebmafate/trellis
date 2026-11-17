@@ -6,7 +6,7 @@ Trellis est un plugin [Claude Code](https://claude.com/claude-code) fait d'instr
 
 ## Versions prises en charge
 
-Seule la **dernière version** reçoit des correctifs. Mettez à jour (`claude plugin marketplace update trellis`, puis `claude plugin update trellis@trellis`) avant de signaler un problème, pour vérifier qu'il existe encore.
+Seule la **dernière version** reçoit des correctifs. Mettez à jour (`claude plugin marketplace update trellis`, puis `claude plugin update trellis-flow@trellis`) avant de signaler un problème, pour vérifier qu'il existe encore.
 
 ## Signaler une vulnérabilité
 

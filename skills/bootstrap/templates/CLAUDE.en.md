@@ -37,6 +37,6 @@
 
 ## Working here with Trellis
 
-- Continue the project: `/trellis:resume`, then `/trellis:deliver`.
-- A requirement, decision or design changes: `/trellis:change-course`.
-- A choice worth recording: `/trellis:adr`. An unknown to settle: `/trellis:spike`.
+- Continue the project: `/trellis-flow:resume`, then `/trellis-flow:deliver`.
+- A requirement, decision or design changes: `/trellis-flow:change-course`.
+- A choice worth recording: `/trellis-flow:adr`. An unknown to settle: `/trellis-flow:spike`.

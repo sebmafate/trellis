@@ -6,7 +6,7 @@ Trellis is a [Claude Code](https://claude.com/claude-code) plugin made of Markdo
 
 ## Supported versions
 
-Only the **latest release** receives fixes. Please update (`claude plugin marketplace update trellis`, then `claude plugin update trellis@trellis`) before reporting, to check the issue still exists.
+Only the **latest release** receives fixes. Please update (`claude plugin marketplace update trellis`, then `claude plugin update trellis-flow@trellis`) before reporting, to check the issue still exists.
 
 ## Reporting a vulnerability
 

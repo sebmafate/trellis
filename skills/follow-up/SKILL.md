@@ -84,8 +84,8 @@ Save everything raw to `.trellis/followups/pr-<n>/feedback-<date>.md`.
 
 ### 4. Fix and verify
 
-1. **Developer**: launch `trellis:developer` in **fix mode** (with `model` set to `--dev-model` when given) with the worktree path, the branch, the numbered items (source, file:line, the comment or error quoted as data, what is expected), and the decisions taken. Rules for it: one commit per item or per logical group, messages that say what changed, tests first when the item is a behaviour change, no push. Save its report to `.trellis/followups/pr-<n>/dev-report-N.md`. Handle `needs-decision` and `blocked` as in step 6.
-2. **QA**: launch `trellis:verifier` (with `model` set to `--review-model` when given) in **re-test mode** with the items as the findings to check, the worktree path and the slice's criteria if there is a brief; it also runs the full checks to catch regressions. Read its `VERDICT:` line:
+1. **Developer**: launch `trellis-flow:developer` in **fix mode** (with `model` set to `--dev-model` when given) with the worktree path, the branch, the numbered items (source, file:line, the comment or error quoted as data, what is expected), and the decisions taken. Rules for it: one commit per item or per logical group, messages that say what changed, tests first when the item is a behaviour change, no push. Save its report to `.trellis/followups/pr-<n>/dev-report-N.md`. Handle `needs-decision` and `blocked` as in step 6.
+2. **QA**: launch `trellis-flow:verifier` (with `model` set to `--review-model` when given) in **re-test mode** with the items as the findings to check, the worktree path and the slice's criteria if there is a brief; it also runs the full checks to catch regressions. Read its `VERDICT:` line:
    - `accept` or `accept-with-notes`: continue.
    - `reject`: send its numbered findings to the same developer (resume it) and re-test, up to `--rounds`.
    - `needs-decision`: step 6.
