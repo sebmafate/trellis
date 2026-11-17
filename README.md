@@ -107,6 +107,14 @@ Trellis is Markdown (skills and agent prompts) plus one small shell script. It h
 
 Nothing else leaves your machine. If you only use the planning and design skills, Trellis stays within your project's files and the web research above.
 
+## Support and contact
+
+Trellis is a personal project maintained by one person, Sébastien Ferrand. Support is best effort, with no guaranteed delay, and covers the latest release.
+
+- **Questions, bugs, ideas:** open an [issue](https://github.com/sebmafate/trellis/issues). For a bug, give the Trellis version (`plugin.json`), your Claude Code version (`claude --version`), where you run it (terminal, IDE, desktop, T3 Code…), the skill or agent involved and what you expected.
+- **Security problem:** do not open a public issue. Use GitHub's private reporting as described in [SECURITY.md](SECURITY.md).
+- **Troubleshooting:** the [usage guide](docs/usage.md) has a troubleshooting section.
+
 ## Languages
 
 Names (skills, agents, files) are in English. Documentation and templates are in English and French; generated documents follow the language of the project.
